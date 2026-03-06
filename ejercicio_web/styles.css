@@ -16,6 +16,22 @@
   --tertiary-accent: #E6D8A8;
 }
 
+/* Dark mode (por defecto) */
+:root {
+  --bg: #0f0f0f;
+  --text: #F2F2F2;
+  --accent: #D4AF37;
+  --card-bg: #1a1a1a;
+}
+
+/* Light mode */
+body.light-mode {
+  --bg: #F7F5EF;
+  --text: #4A4A4A;
+  --accent: #D4AF37;
+  --card-bg: #faf7f3;
+}
+
 /* =====================
    RESET
 ===================== */
@@ -26,8 +42,8 @@
 }
 
 body {
-  background: var(--secondary-background);
-  color: var(--secondary-text);
+  background: var(--bg);
+  color: var(--text);
   font-family: 'Montserrat', sans-serif;
 }
 
@@ -38,6 +54,38 @@ h4,
 h5,
 h6 {
   font-family: 'Playfair Display', serif;
+}
+
+/* =====================
+   CAMBIO DE DARK / LIGHT
+===================== */
+.mode-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;               
+  
+  font-size: 10px;
+  padding: 10px 18px;
+  
+  background: var(--bg);   
+  color: var(--accent);            
+  
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
+}
+
+.mode-toggle:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+}
+
+.mode-toggle:active {
+  transform: scale(0.95);
 }
 
 /* =====================
@@ -77,6 +125,7 @@ h6 {
   justify-self: start;
   display: flex;
   align-items: center;
+  gap: 30px; 
 }
 
 .threebars {
@@ -96,7 +145,7 @@ h6 {
 .threebars span {
   height: 2px;
   width: 100%;
-  background: white;
+  background: var(--bg);
   transition: 0.3s ease;
 }
 
@@ -134,12 +183,12 @@ h6 {
   align-items: center;
   gap: 12px;
   padding-bottom: 4px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.6);
   cursor: text;
 }
 
-.search-text {
+input#search {
   color: var(--primary-text);
+  background: none;
   opacity: 0.9;
   font-size: 15px;
   letter-spacing: 0.6px;
@@ -150,8 +199,30 @@ h6 {
   border-bottom-color: var(--primary-accent);
 }
 
-.search-container:hover .search-text {
+.search-container:hover input#search {
   opacity: 1;
+}
+
+/* =====================
+   CARRITO DE COMPRA
+===================== */
+.hidden {
+  display: none;
+}
+
+.cart-wrapper {
+  position: relative;
+  width: 200px;
+}
+
+.icon-cart-container {
+  position: absolute;
+  top: 30px;
+  right: 0;
+  background: var(--primary-background);
+  border: 2px solid var(--secondary-accent);
+  padding: 10px;
+  width: 200px;
 }
 
 /* =====================
@@ -170,7 +241,7 @@ h6 {
    ICONS
 ===================== */
 .icon {
-  stroke: var(--primary-text);
+  stroke: var(--bg);
   cursor: pointer;
   opacity: 0.85;
   transition: opacity 0.2s ease, transform 0.2s ease;
@@ -203,7 +274,7 @@ h6 {
   left: 0;
   width: 280px;
   height: 100vh;
-  background: #0f0f0f;
+  background: var(--bg);
   transform: translateX(-100%);
   transition: 0.35s ease;
   z-index: 300;
@@ -220,7 +291,7 @@ h6 {
 
 .side-menu nav ul li a {
   text-decoration: none;
-  color: white;
+  color: var(--text);
   font-family: 'Playfair Display', serif;
   font-size: 22px;
   letter-spacing: 0.5px;
@@ -287,218 +358,10 @@ h6 {
 }
 
 /* =====================
-   BRANDS
-===================== */
-/*SECCION BASE*/
-.brands-section {
-  position: relative;
-  width: 100%;
-  padding: 30px 80px;
-  background: var(--primary-background);
-}
-
-/*CONTENEDOR CORREDIZO*/
-.brands-container {
-  display: flex;
-  gap: 60px;
-
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  scrollbar-width: none;
-  /* Firefox */
-}
-
-.brands-container::-webkit-scrollbar {
-  display: none;
-  /* Chrome */
-}
-
-/*MARCA INDIVIDUAL*/
-.brand-item {
-  max-width: 320px;
-  max-height: 150px;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  opacity: 0.7;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.brand-item img {
-  max-width: 320px;
-  max-height: 150px;
-  object-fit: contain;
-}
-
-.brand-item:hover {
-  opacity: 1;
-  transform: scale(1.05);
-}
-
-
-/*FLECHAS (ICONOS)*/
-.brand-arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-
-  width: 44px;
-  height: 44px;
-
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  border-radius: 50%;
-
-  color: var(--primary-background);
-  font-size: 22px;
-  cursor: pointer;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  z-index: 2;
-  transition: background 0.3s ease;
-}
-
-.brand-arrow:hover {
-  background: rgba(212, 175, 55, 0.8);
-}
-
-.brand-arrow.left {
-  left: 20px;
-}
-
-.brand-arrow.right {
-  right: 20px;
-}
-
-
-/* =====================
-   CATEGORIES
-===================== */
-/*Sección base*/
-.categories {
-  position: relative;
-  width: 100%;
-  padding: 30px 80px;
-  background: var(--primary-background);
-}
-
-/*Carrusel horizontal*/
-.categories-track {
-  display: flex;
-  gap: 24px;
-
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  scrollbar-width: none;
-}
-
-.categories-track::-webkit-scrollbar {
-  display: none;
-}
-
-/*Card Individual*/
-.category-card {
-  position: relative;
-  min-width: 320px;
-  height: 210px;
-  border-radius: 16px;
-  overflow: hidden;
-
-  text-decoration: none;
-  color: white;
-  flex-shrink: 0;
-}
-
-.category-card img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* Overlay de texto */
-.category-overlay {
-  position: absolute;
-  inset: 0;
-
-  background: linear-gradient(to top,
-      rgba(0, 0, 0, 0.7),
-      rgba(0, 0, 0, 0.15),
-      rgba(0, 0, 0, 0));
-
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-}
-
-.category-small {
-  font-size: 14px;
-  letter-spacing: 1px;
-  opacity: 0.8;
-  text-transform: uppercase;
-}
-
-.category-overlay h3 {
-  font-family: 'Playfair Display', serif;
-  font-size: 34px;
-  margin-top: 6px;
-}
-
-/* Hover */
-.category-card img {
-  transition: transform 0.6s ease;
-}
-
-.category-card:hover img {
-  transform: scale(1.05);
-}
-
-/* Flechas Laterales*/
-.cat-arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-
-  width: 46px;
-  height: 46px;
-
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  border-radius: 50%;
-
-  color: var(--primary-background);
-  font-size: 22px;
-  cursor: pointer;
-
-  z-index: 2;
-}
-
-.cat-arrow:hover {
-  background: rgba(212, 175, 55, 0.8);
-}
-
-.cat-arrow.left {
-  left: 20px;
-}
-
-.cat-arrow.right {
-  right: 20px;
-}
-
-
-/* =====================
    DESTACADOS 
 ===================== */
 .featured {
-  background: var(--primary-background);
+  background: var(--bg);
   padding: 100px 80px;
   text-align: center;
 }
@@ -509,6 +372,7 @@ h6 {
   letter-spacing: 4px;
   font-size: 35px;
   margin-bottom: 30px;
+  color: var(--text);
 }
 
 .featured-tabs {
@@ -520,7 +384,7 @@ h6 {
 }
 
 .featured-tabs button {
-  color: var(--primary-text);
+  color: var(--text);
   background: none;
   border: none;
   cursor: pointer;
@@ -540,17 +404,18 @@ h6 {
 
 .product-card {
   position: relative;
-  background: #faf7f3;
+  background: var(--card-bg);
   padding: 30px;
   border-radius: 10px;
   overflow: hidden;
+  color: var(--text);
 }
 
 .badge {
   position: absolute;
   top: 20px;
   left: 20px;
-  background: #e74c3c;
+  background: var(--badge-bg);
   color: white;
   font-size: 12px;
   padding: 6px 10px;
@@ -595,11 +460,12 @@ h6 {
 }
 
 .new {
-  color: #e74c3c;
+  color: var(--badge-bg);
   font-weight: bold;
 }
 
-.product-action {
+.add-to-cart {
+  font-family: 'Playfair Display', serif;
   position: absolute;
   bottom: 20px;
   left: 20px;
@@ -608,15 +474,17 @@ h6 {
   opacity: 0;
   transform: translateY(10px);
 
-  background: #fff;
+  background: var(--bg);
   border: 1px solid #000;
   padding: 14px;
   cursor: pointer;
+  border-color: var(--text);
+  color: var(--text);
 
   transition: 0.3s ease;
 }
 
-.product-card:hover .product-action {
+.product-card:hover .add-to-cart {
   opacity: 1;
   transform: translateY(0);
 }

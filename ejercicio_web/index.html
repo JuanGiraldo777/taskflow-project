@@ -33,7 +33,6 @@
   <body>
     <!-- OVERLAY -->
     <div class="overlay" id="overlay"></div>
-
     <!-- SIDE MENU -->
     <aside class="side-menu" id="sideMenu">
       <nav>
@@ -49,27 +48,28 @@
       </nav>
     </aside>
 
-    <!-- TOP BAR -->
     <header class="top-bar">
       <div class="nav-content">
         <!--IZQUIERDA-->
         <div class="topbar-left">
+          <button
+            id="darkModeToggle"
+            class="mode-toggle"
+            aria-label="Cambiar modo"
+          >
+            🌙 | ☀️
+          </button>
           <button class="threebars" id="threebars">
-            <span></span>
-            <span></span>
-            <span></span>
+            <span></span> <span></span> <span></span>
           </button>
         </div>
-
         <!-- CENTRO -->
         <div class="logo-topbar">
           <img src="assets/imgs/Maison_PNG.png" alt="Logo Perfumeria" />
         </div>
-
         <!-- DERECHA -->
         <div class="topbar-right">
           <div class="search-container">
-            <span class="search-text">Buscar</span>
             <svg
               class="icon"
               width="30"
@@ -86,8 +86,8 @@
                 d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
               />
             </svg>
+            <input type="text" id="search" placeholder="Buscar perfume" />
           </div>
-
           <div class="icon-user-container">
             <svg
               class="icon"
@@ -106,354 +106,175 @@
               />
             </svg>
           </div>
-
-          <div class="icon-cart-container">
-            <svg
-              class="icon"
-              width="30"
-              height="30"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
-              />
-            </svg>
+          <div class="cart-wrapper">
+            <div class="cart-icon">
+              <svg
+                class="icon"
+                width="30"
+                height="30"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
+                />
+              </svg>
+              <span class="cart-count">0</span>
+            </div>
+            <div class="icon-cart-container hidden">
+              <!--Aqui se renderizan los productos del carrito-->
+            </div>
           </div>
         </div>
       </div>
     </header>
 
     <main>
-    <!-- HERO -->
-    <section class="hero-slider">
-      <div class="slider-track">
-        <div class="slide">
-          <img
-            src="assets/imgs/banner_logo.jpg"
-            alt="Banner con Logo Perfumeria"
-          />
-        </div>
-
-        <div class="slide">
-          <img src="assets/imgs/sale.jpg" alt="Banner de promocion" />
-        </div>
-
-        <div class="slide">
-          <img src="assets/imgs/perfume_1.jpg" alt="Banner de Fragancia 1" />
-        </div>
-
-        <div class="slide">
-          <img src="assets/imgs/pack.jpg" alt="Banner de pack fragancias" />
-        </div>
-      </div>
-    </section>
-
-    <!--BRANDS-->
-    <section class="brands-section">
-      <button class="brand-arrow left" aria-label="Anterior">&#10094;</button>
-
-      <div class="brands-container" id="brandsScroll">
-        <div class="brand-item">
-          <img src="assets/brands/dior.svg" alt="Dior" />
-        </div>
-        <div class="brand-item">
-          <img src="assets/brands/chanel.svg" alt="Chanel" />
-        </div>
-        <div class="brand-item">
-          <img src="assets/brands/bharara.svg" alt="Bharara" />
-        </div>
-        <div class="brand-item">
-          <img src="assets/brands/carolinaherrera.svg" alt="Carolina Herrera" />
-        </div>
-        <div class="brand-item">
-          <img src="assets/brands/versace.svg" alt="Versace" />
-        </div>
-        <div class="brand-item">
-          <img src="assets/brands/dolce&gabbana.svg" alt="Dolce&Gabbana" />
-        </div>
-        <div class="brand-item">
-          <img
-            src="assets/brands/jeanpaulgaultier.svg"
-            alt="Jeanpaulgaultier"
-          />
-        </div>
-        <div class="brand-item">
-          <img src="assets/brands/moschino.svg" alt="Moschino" />
-        </div>
-        <div class="brand-item">
-          <img src="assets/brands/odyssey.svg" alt="Odyssey" />
-        </div>
-        <div class="brand-item">
-          <img src="assets/brands/pacorabanne.svg" alt="Paco Rabanne" />
-        </div>
-      </div>
-
-      <button class="brand-arrow right" aria-label="Siguiente">&#10095;</button>
-    </section>
-
-    <!-- CATEGORÍAS -->
-    <section class="categories">
-      <button class="cat-arrow left" aria-label="Anterior">&#10094;</button>
-
-      <div class="categories-track" id="categoriesScroll">
-        <a href="#arabes" class="category-card">
-          <img src="assets/img_categories/arabe.png" alt="Perfumes Árabes" />
-          <div class="category-overlay">
-            <span class="category-small">Perfumes</span>
-            <h3>Árabes</h3>
-          </div>
-        </a>
-
-        <a href="#nicho" class="category-card">
-          <img src="assets/img_categories/nicho.png" alt="Perfumes de Nicho" />
-          <div class="category-overlay">
-            <span class="category-small">Perfumes</span>
-            <h3>De Nicho</h3>
-          </div>
-        </a>
-
-        <a href="#disenador" class="category-card">
-          <img
-            src="assets/img_categories/diseñador.png"
-            alt="Perfumes Diseñador"
-          />
-          <div class="category-overlay">
-            <span class="category-small">Perfumes</span>
-            <h3>Diseñador</h3>
-          </div>
-        </a>
-
-        <a href="#originales" class="category-card">
-          <img
-            src="assets/img_categories/original.png"
-            alt="Perfumes Originales"
-          />
-          <div class="category-overlay">
-            <span class="category-small">Perfumes</span>
-            <h3>Originales</h3>
-          </div>
-        </a>
-        <a href="#amaderado" class="category-card">
-          <img
-            src="assets/img_categories/amaderado.png"
-            alt="Perfumes Amaderado"
-          />
-          <div class="category-overlay">
-            <span class="category-small">Perfumes</span>
-            <h3>Amaderado</h3>
-          </div>
-        </a>
-        <a href="#florales" class="category-card">
-          <img
-            src="assets/img_categories/florales.png"
-            alt="Perfumes Florales"
-          />
-          <div class="category-overlay">
-            <span class="category-small">Perfumes</span>
-            <h3>Florales</h3>
-          </div>
-        </a>
-      </div>
-
-      <button class="cat-arrow right" aria-label="Siguiente">&#10095;</button>
-    </section>
-
-    <!-- DESTACADOS -->
-    <section class="featured">
-      <h2 class="featured-title">DESTACADOS O MAS VENDIDOS</h2>
-
-      <div class="featured-tabs">
-        <button class="active">Perfumes en tendencia</button>
-        <span>/</span>
-        <button>Nuevos</button>
-        <span>/</span>
-        <button>Top ventas mujer</button>
-        <span>/</span>
-        <button>Top ventas hombres</button>
-      </div>
-
-      <div class="product-grid">
-        <!-- Card producto 1 -->
-        <article class="product-card">
-          <span class="badge">OFERTA</span>
-
-          <a href="producto.html" class="product-image">
+      <!-- HERO -->
+      <section class="hero-slider">
+        <div class="slider-track">
+          <div class="slide">
             <img
-              src="assets/imgs_destacados/bharara_king_producto.png"
-              alt="Bharara King"
+              src="assets/imgs/banner_logo.jpg"
+              alt="Banner con Logo Perfumeria"
             />
-          </a>
-
-          <div class="product-info">
-            <span class="brand">BHARARA</span>
-            <h3>Bharara King</h3>
-
-            <div class="price">
-              <span class="old">$340.000</span>
-              <span class="from">Desde</span>
-              <span class="new">$25.000</span>
-            </div>
           </div>
-
-          <button class="product-action">+ SELECCIONE OPCIONES</button>
-        </article>
-
-        <!-- Card producto 2 -->
-        <article class="product-card">
-          <span class="badge">OFERTA</span>
-
-          <a href="producto.html" class="product-image">
-            <img
-              src="assets/imgs_destacados/afnan_9pm_producto.png"
-              alt="Afnan 9PM"
-            />
-          </a>
-
-          <div class="product-info">
-            <span class="brand">AFNAN</span>
-            <h3>Afnan 9PM</h3>
-
-            <div class="price">
-              <span class="old">$340.000</span>
-              <span class="from">Desde</span>
-              <span class="new">$25.000</span>
-            </div>
+          <div class="slide">
+            <img src="assets/imgs/sale.jpg" alt="Banner de promocion" />
           </div>
-
-          <button class="product-action">+ SELECCIONE OPCIONES</button>
-        </article>
-
-        <!-- Card producto 3 -->
-        <article class="product-card">
-          <span class="badge">OFERTA</span>
-
-          <a href="producto.html" class="product-image">
-            <img
-              src="assets/imgs_destacados/asad_lattafa_producto.png"
-              alt="ASAD Lattafa"
-            />
-          </a>
-
-          <div class="product-info">
-            <span class="brand">LATTAFA</span>
-            <h3>ASAD</h3>
-
-            <div class="price">
-              <span class="old">$340.000</span>
-              <span class="from">Desde</span>
-              <span class="new">$25.000</span>
-            </div>
+          <div class="slide">
+            <img src="assets/imgs/perfume_1.jpg" alt="Banner de Fragancia 1" />
           </div>
-
-          <button class="product-action">+ SELECCIONE OPCIONES</button>
-        </article>
-
-        <!-- Card producto 4 -->
-        <article class="product-card">
-          <span class="badge">OFERTA</span>
-
-          <a href="producto.html" class="product-image">
-            <img
-              src="assets/imgs_destacados/dior_sauvage_producto.png"
-              alt="Dior Sauvage"
-            />
-          </a>
-
-          <div class="product-info">
-            <span class="brand">DIOR</span>
-            <h3>Dior Sauvage</h3>
-
-            <div class="price">
-              <span class="old">$340.000</span>
-              <span class="from">Desde</span>
-              <span class="new">$25.000</span>
-            </div>
+          <div class="slide">
+            <img src="assets/imgs/pack.jpg" alt="Banner de pack fragancias" />
           </div>
+        </div>
+      </section>
 
-          <button class="product-action">+ SELECCIONE OPCIONES</button>
-        </article>
-      </div>
-    </section>
+      <!-- DESTACADOS -->
+      <section class="featured">
+        <h2 class="featured-title">DESTACADOS O MAS VENDIDOS</h2>
+        <div class="featured-tabs">
+          <button class="active">Perfumes en tendencia</button> <span>/</span>
+          <button>Nuevos</button> <span>/</span>
+          <button>Top ventas mujer</button> <span>/</span>
+          <button>Top ventas hombres</button>
+        </div>
+        <div class="product-grid">
+          <!-- Card producto 1 -->
+          <article class="product-card" data-name="bharara king">
+            <span class="badge">OFERTA</span>
+            <a href="producto.html" class="product-image">
+              <img
+                src="assets/imgs_destacados/bharara_king_producto.png"
+                alt="Bharara King"
+              />
+            </a>
+            <div class="product-info">
+              <span class="brand">BHARARA</span>
+              <h3>Bharara King</h3>
+              <div class="price">
+                <span class="old">$340.000</span>
+                <span class="from">Desde</span> <span class="new">$25.000</span>
+              </div>
+            </div>
+            <button
+              class="add-to-cart"
+              data-id="1"
+              data-name="Bharara King"
+              data-price="25000"
+            >
+              AÑADIR AL CARRITO
+            </button>
+          </article>
+          <!-- Card producto 2 -->
+          <article class="product-card" data-name="afnan 9PM">
+            <span class="badge">OFERTA</span>
+            <a href="producto.html" class="product-image">
+              <img
+                src="assets/imgs_destacados/afnan_9pm_producto.png"
+                alt="Afnan 9PM"
+              />
+            </a>
+            <div class="product-info">
+              <span class="brand">AFNAN</span>
+              <h3>Afnan 9PM</h3>
+              <div class="price">
+                <span class="old">$340.000</span>
+                <span class="from">Desde</span> <span class="new">$55.000</span>
+              </div>
+            </div>
+            <button
+              class="add-to-cart"
+              data-id="2"
+              data-name="Afnan 9PM"
+              data-price="55000"
+            >
+              AÑADIR AL CARRITO
+            </button>
+          </article>
+          <!-- Card producto 3 -->
+          <article class="product-card" data-name="lattafa ASAD">
+            <span class="badge">OFERTA</span>
+            <a href="producto.html" class="product-image">
+              <img
+                src="assets/imgs_destacados/asad_lattafa_producto.png"
+                alt="ASAD Lattafa"
+              />
+            </a>
+            <div class="product-info">
+              <span class="brand">LATTAFA</span>
+              <h3>ASAD</h3>
+              <div class="price">
+                <span class="old">$340.000</span>
+                <span class="from">Desde</span> <span class="new">$45.000</span>
+              </div>
+            </div>
+            <button
+              class="add-to-cart"
+              data-id="3"
+              data-name="ASAD Lattafa"
+              data-price="45000"
+            >
+              AÑADIR AL CARRITO
+            </button>
+          </article>
+          <!-- Card producto 4 -->
+          <article class="product-card" data-name="dior sauvage">
+            <span class="badge">OFERTA</span>
+            <a href="producto.html" class="product-image">
+              <img
+                src="assets/imgs_destacados/dior_sauvage_producto.png"
+                alt="Dior Sauvage"
+              />
+            </a>
+            <div class="product-info">
+              <span class="brand">DIOR</span>
+              <h3>Dior Sauvage</h3>
+              <div class="price">
+                <span class="old">$340.000</span>
+                <span class="from">Desde</span> <span class="new">$35.000</span>
+              </div>
+            </div>
+            <button
+              class="add-to-cart"
+              data-id="4"
+              data-name="Dior Sauvage"
+              data-price="35000"
+            >
+              AÑADIR AL CARRITO
+            </button>
+          </article>
+        </div>
+      </section>
     </main>
 
     <!-- SCRIPT -->
-    <script>
-      /* =====================
-       BARRA DE NAVEGACIÓN
-       ===================== */
-      const threebars = document.getElementById("threebars");
-      const sideMenu = document.getElementById("sideMenu");
-      const overlay = document.getElementById("overlay");
-
-      threebars.addEventListener("click", () => {
-        sideMenu.classList.add("active");
-        overlay.classList.add("active");
-      });
-
-      overlay.addEventListener("click", () => {
-        sideMenu.classList.remove("active");
-        overlay.classList.remove("active");
-      });
-
-      /* =====================
-        SLIDE IMAGES
-      ===================== */
-      let index = 0;
-      const track = document.querySelector(".slider-track");
-      const slides = document.querySelectorAll(".slide");
-
-      setInterval(() => {
-        index = (index + 1) % slides.length;
-        track.style.transform = `translateX(-${index * 100}%)`;
-      }, 5000);
-
-      /* =====================
-      FLECHAS BRANDS
-      ===================== */
-      const container = document.getElementById("brandsScroll");
-      const scrollAmount = 300;
-
-      document
-        .querySelector(".brand-arrow.left")
-        .addEventListener("click", () => {
-          container.scrollBy({
-            left: -scrollAmount,
-            behavior: "smooth",
-          });
-        });
-
-      document
-        .querySelector(".brand-arrow.right")
-        .addEventListener("click", () => {
-          container.scrollBy({
-            left: scrollAmount,
-            behavior: "smooth",
-          });
-        });
-
-      /* =====================
-       FLECHAS CATEGORIES
-      ===================== */
-      const categories = document.getElementById("categoriesScroll");
-      const step = 340;
-
-      document
-        .querySelector(".cat-arrow.left")
-        .addEventListener("click", () => {
-          categories.scrollBy({ left: -step, behavior: "smooth" });
-        });
-
-      document
-        .querySelector(".cat-arrow.right")
-        .addEventListener("click", () => {
-          categories.scrollBy({ left: step, behavior: "smooth" });
-        });
-    </script>
+    <script src="/ejercicio_web/app.js"></script>
   </body>
 </html>
