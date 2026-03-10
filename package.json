@@ -1,0 +1,29 @@
+{
+  "name": "proyecto_practicas_ce",
+  "version": "1.0.0",
+  "description": "Repositorio de prácticas y portfolio personal orientado al Desarrollo de APlicaciones Multiplataforma.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "postcss ejercicio_web/src/style.css -o ejercicio_web/src/output.css",
+    "watch": "postcss ejercicio_web/src/style.css -o ejercicio_web/src/output.css --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JuanGiraldo777/taskflow-project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/JuanGiraldo777/taskflow-project/issues"
+  },
+  "homepage": "https://github.com/JuanGiraldo777/taskflow-project#readme",
+  "dependencies": {
+    "@tailwindcss/postcss": "^4.2.1",
+    "postcss": "^8.5.8",
+    "postcss-cli": "^11.0.1",
+    "tailwindcss": "^4.2.1"
+  }
+}
