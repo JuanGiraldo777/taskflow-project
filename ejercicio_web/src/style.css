@@ -1,1 +1,114 @@
+/* 1. Importa Tailwind v4 (reemplaza los 3 @tailwind de v3) */
 @import "tailwindcss";
+
+@source "../**/*.html";      /* ejercicio_web/*.html  → index.html, producto.html, etc */
+@source "../**/*.js";        /* ejercicio_web/*.js    → app.js */
+
+/* 2. Registra tu tema para que Tailwind genere utilidades custom */
+@theme {
+  /* Tus colores como tokens de Tailwind */
+  --color-bg: var(--bg);
+  --color-text: var(--text);
+  --color-accent: var(--accent);
+  --color-card: var(--card-bg);
+  --color-gold: #D4AF37;
+  --color-gold-dark: #B8962E;
+  --color-gold-light: #E6D8A8;
+
+  /* Tus fuentes */
+  --font-sans: 'Montserrat', sans-serif;
+  --font-serif: 'Playfair Display', serif;
+}
+
+/* 3. Variables CSS del tema (dark por defecto, light con clase) */
+:root {
+  --bg: #0f0f0f;
+  --text: #F2F2F2;
+  --accent: #D4AF37;
+  --card-bg: #1a1a1a;
+  --badge-bg: #D4AF37;
+}
+
+body.light-mode {
+  --bg: #F7F5EF;
+  --text: #4A4A4A;
+  --accent: #D4AF37;
+  --card-bg: #faf7f3;
+}
+
+/* 4. Reset básico (Tailwind ya incluye Preflight, pero mantenemos lo tuyo) */
+body {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+  font-family: 'Montserrat', sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Playfair Display', serif;
+}
+
+/* 5. Lo que NO se puede expresar bien con utilidades — se queda aquí */
+
+/* Top bar gradient (no hay utilidad para gradientes multi-stop con rgba) */
+.top-bar {
+  background: linear-gradient(
+    to bottom,
+    rgba(212, 175, 55, 0.9),
+    rgba(212, 175, 55, 0.5),
+    rgba(212, 175, 55, 0)
+  );
+}
+
+/* Hamburger spans */
+.threebars span {
+  height: 2px;
+  width: 100%;
+  background: var(--bg);
+  transition: 0.3s ease;
+}
+
+/* Slider track */
+.slider-track {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 1s ease;
+}
+
+/* Side menu transition */
+.side-menu {
+  transform: translateX(-100%);
+  transition: 0.35s ease;
+}
+
+.side-menu.active {
+  transform: translateX(0);
+}
+
+.overlay {
+  opacity: 0;
+  visibility: hidden;
+  transition: 0.3s ease;
+}
+
+.overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Add to cart hover animation */
+.add-to-cart {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: 0.3s ease;
+}
+
+.product-card:hover .add-to-cart {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.product-card:hover img {
+  transform: scale(1.05);
+}

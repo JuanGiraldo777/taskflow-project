@@ -32,53 +32,113 @@
 
   <body>
     <!-- OVERLAY -->
-    <div class="overlay" id="overlay"></div>
+    <div class="overlay fixed inset-0 bg-black/45 z-[250]" id="overlay"></div>
+
     <!-- SIDE MENU -->
-    <aside class="side-menu" id="sideMenu">
+    <aside
+      class="side-menu fixed top-0 left-0 w-[280px] h-screen bg-(--bg) z-[300] pt-[140px] px-8"
+      id="sideMenu"
+    >
       <nav>
-        <ul>
-          <li><a href="#">Ver Todos</a></li>
-          <li><a href="#">Caballero</a></li>
-          <li><a href="#">Mujer</a></li>
-          <li><a href="#">Diseñador</a></li>
-          <li><a href="#">Unisex</a></li>
-          <li><a href="#">Arabe</a></li>
-          <li><a href="#">Nicho</a></li>
+        <ul class="list-none">
+          <li class="mb-7">
+            <a
+              href="#"
+              class="no-underline text-(--text) font-serif text-[22px] tracking-wide"
+              >Ver Todos</a
+            >
+          </li>
+          <li class="mb-7">
+            <a
+              href="#"
+              class="no-underline text-(--text) font-serif text-[22px] tracking-wide"
+              >Caballero</a
+            >
+          </li>
+          <li class="mb-7">
+            <a
+              href="#"
+              class="no-underline text-(--text) font-serif text-[22px] tracking-wide"
+              >Mujer</a
+            >
+          </li>
+          <li class="mb-7">
+            <a
+              href="#"
+              class="no-underline text-(--text) font-serif text-[22px] tracking-wide"
+              >Diseñador</a
+            >
+          </li>
+          <li class="mb-7">
+            <a
+              href="#"
+              class="no-underline text-(--text) font-serif text-[22px] tracking-wide"
+              >Unisex</a
+            >
+          </li>
+          <li class="mb-7">
+            <a
+              href="#"
+              class="no-underline text-(--text) font-serif text-[22px] tracking-wide"
+              >Arabe</a
+            >
+          </li>
+          <li class="mb-7">
+            <a
+              href="#"
+              class="no-underline text-(--text) font-serif text-[22px] tracking-wide"
+              >Nicho</a
+            >
+          </li>
         </ul>
       </nav>
     </aside>
 
-    <header class="top-bar">
-      <div class="nav-content">
+    <header class="top-bar absolute top-0 left-0 w-full h-[150px] z-10">
+      <div
+        class="max-w-[1400px] mx-auto h-full grid grid-cols-[1fr_auto_1fr] items-center px-12 text-(--primary-text)"
+      >
         <!--IZQUIERDA-->
-        <div class="topbar-left">
+        <div class="justify-self-start flex items-center gap-8">
           <button
             id="darkModeToggle"
-            class="mode-toggle"
+            class="mode-toggle flex items-center justify-center gap-2 text-[10px] px-[18px] py-[10px] bg-(--bg) text-(--accent) border-none rounded-[30px] cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.3)] transition-all duration-200 hover:scale-105 hover:shadow-[0_6px_16px_rgba(0,0,0,0.4)] active:scale-95"
             aria-label="Cambiar modo"
           >
             🌙 | ☀️
           </button>
-          <button class="threebars" id="threebars">
+          <button
+            class="threebars w-[26px] h-[18px] flex flex-col justify-between bg-transparent border-none cursor-pointer p-0"
+            id="threebars"
+          >
             <span></span> <span></span> <span></span>
           </button>
         </div>
+
         <!-- CENTRO -->
-        <div class="logo-topbar">
-          <img src="assets/imgs/Maison_PNG.png" alt="Logo Perfumeria" />
+        <div class="justify-self-center">
+          <img
+            src="assets/imgs/Maison_PNG.png"
+            alt="Logo Perfumeria"
+            class="h-[200px] block"
+          />
         </div>
+
         <!-- DERECHA -->
-        <div class="topbar-right">
-          <div class="search-container">
+        <div
+          class="justify-self-end flex items-center gap-[26px] font-sans text-sm tracking-wide"
+        >
+          <div
+            class="search-container flex items-center gap-3 pb-1 cursor-text hover:border-b hover:border-(--accent)"
+          >
             <svg
-              class="icon"
+              class="stroke-(--bg) cursor-pointer opacity-85 hover:opacity-100 hover:-translate-y-px transition-all duration-200"
               width="30"
               height="30"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
               stroke-width="1.5"
-              stroke="currentColor"
             >
               <path
                 stroke-linecap="round"
@@ -86,18 +146,23 @@
                 d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
               />
             </svg>
-            <input type="text" id="search" placeholder="Buscar perfume" />
+            <input
+              type="text"
+              id="search"
+              placeholder="Buscar perfume"
+              class="text-(--primary-text) bg-transparent opacity-90 text-[15px] tracking-wide border-none outline-none focus:opacity-100 transition-opacity duration-200"
+            />
           </div>
-          <div class="icon-user-container">
+
+          <div>
             <svg
-              class="icon"
+              class="stroke-(--bg) cursor-pointer opacity-85 hover:opacity-100 hover:-translate-y-px transition-all duration-200"
               width="30"
               height="30"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
               stroke-width="1.5"
-              stroke="currentColor"
             >
               <path
                 stroke-linecap="round"
@@ -106,17 +171,17 @@
               />
             </svg>
           </div>
-          <div class="cart-wrapper">
-            <div class="cart-icon">
+
+          <div class="relative">
+            <div class="cart-icon cursor-pointer relative">
               <svg
-                class="icon"
+                class="stroke-(--bg) cursor-pointer opacity-85 hover:opacity-100 hover:-translate-y-px transition-all duration-200"
                 width="30"
                 height="30"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke-width="1.5"
-                stroke="currentColor"
               >
                 <path
                   stroke-linecap="round"
@@ -124,9 +189,14 @@
                   d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
                 />
               </svg>
-              <span class="cart-count">0</span>
+              <span
+                class="cart-count absolute -top-2 -right-2 bg-(--accent) text-black text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold"
+                >0</span
+              >
             </div>
-            <div class="icon-cart-container hidden">
+            <div
+              class="icon-cart-container hidden absolute top-[40px] right-0 bg-black border-2 border-(--accent) p-[10px] w-[200px] z-50"
+            >
               <!--Aqui se renderizan los productos del carrito-->
             </div>
           </div>
@@ -136,57 +206,101 @@
 
     <main>
       <!-- HERO -->
-      <section class="hero-slider">
+      <section class="relative w-full h-screen min-h-[550px] overflow-hidden">
         <div class="slider-track">
-          <div class="slide">
+          <div class="slide w-full h-full shrink-0">
             <img
               src="assets/imgs/banner_logo.jpg"
               alt="Banner con Logo Perfumeria"
+              class="w-full h-full object-cover object-top"
             />
           </div>
-          <div class="slide">
-            <img src="assets/imgs/sale.jpg" alt="Banner de promocion" />
+          <div class="slide w-full h-full shrink-0">
+            <img
+              src="assets/imgs/sale.jpg"
+              alt="Banner de promocion"
+              class="w-full h-full object-cover object-top"
+            />
           </div>
-          <div class="slide">
-            <img src="assets/imgs/perfume_1.jpg" alt="Banner de Fragancia 1" />
+          <div class="slide w-full h-full shrink-0">
+            <img
+              src="assets/imgs/perfume_1.jpg"
+              alt="Banner de Fragancia 1"
+              class="w-full h-full object-cover object-top"
+            />
           </div>
-          <div class="slide">
-            <img src="assets/imgs/pack.jpg" alt="Banner de pack fragancias" />
+          <div class="slide w-full h-full shrink-0">
+            <img
+              src="assets/imgs/pack.jpg"
+              alt="Banner de pack fragancias"
+              class="w-full h-full object-cover object-top"
+            />
           </div>
         </div>
       </section>
 
       <!-- DESTACADOS -->
-      <section class="featured">
-        <h2 class="featured-title">
+      <section class="bg-(--bg) py-[100px] px-20 text-center">
+        <h2 class="font-serif tracking-[4px] text-[35px] mb-8 text-(--text)">
           DESTACADOS O MAS VENDIDOS
         </h2>
-        <div class="featured-tabs">
-          <button class="active">Perfumes en tendencia</button> <span>/</span>
-          <button>Nuevos</button> <span>/</span>
-          <button>Top ventas mujer</button> <span>/</span>
-          <button>Top ventas hombres</button>
+        <div class="flex justify-center gap-4 mb-16 text-sm">
+          <button
+            class="active text-(--text) bg-transparent border-none cursor-pointer font-serif font-bold"
+          >
+            Perfumes en tendencia
+          </button>
+          <span>/</span>
+          <button
+            class="text-(--text) bg-transparent border-none cursor-pointer font-serif"
+          >
+            Nuevos
+          </button>
+          <span>/</span>
+          <button
+            class="text-(--text) bg-transparent border-none cursor-pointer font-serif"
+          >
+            Top ventas mujer
+          </button>
+          <span>/</span>
+          <button
+            class="text-(--text) bg-transparent border-none cursor-pointer font-serif"
+          >
+            Top ventas hombres
+          </button>
         </div>
-        <div class="product-grid">
+
+        <!-- GRID -->
+        <div
+          class="grid grid-cols-4 gap-8 max-lg:grid-cols-2 max-sm:grid-cols-1"
+        >
           <!-- Card producto 1 -->
-          <article class="product-card" data-name="bharara king">
-            <span class="badge">OFERTA</span>
-            <a href="producto.html" class="product-image">
+          <article
+            class="product-card relative bg-(--card-bg) p-8 rounded-xl overflow-hidden text-(--text)"
+            data-name="bharara king"
+          >
+            <span
+              class="absolute top-5 left-5 bg-(--accent) text-black text-xs px-[10px] py-[6px] rounded"
+              >OFERTA</span
+            >
+            <a href="producto.html" class="block">
               <img
                 src="assets/imgs_destacados/bharara_king_producto.png"
                 alt="Bharara King"
+                class="w-[90%] h-[280px] object-contain transition-transform duration-300"
               />
             </a>
-            <div class="product-info">
-              <span class="brand">BHARARA</span>
-              <h3>Bharara King</h3>
-              <div class="price">
-                <span class="old">$340.000</span>
-                <span class="from">Desde</span> <span class="new">$25.000</span>
+            <div class="mt-1">
+              <span class="text-xs text-[#999]">BHARARA</span>
+              <h3 class="font-serif text-lg my-2">Bharara King</h3>
+              <div class="flex gap-2 items-center">
+                <span class="line-through text-[#999]">$340.000</span>
+                <span class="text-xs">Desde</span>
+                <span class="text-(--accent) font-bold">$25.000</span>
               </div>
             </div>
             <button
-              class="add-to-cart"
+              class="add-to-cart font-serif absolute bottom-5 left-5 right-5 bg-(--bg) border border-(--text) text-(--text) py-[14px] cursor-pointer"
               data-id="1"
               data-name="Bharara King"
               data-price="25000"
@@ -194,25 +308,34 @@
               AÑADIR AL CARRITO
             </button>
           </article>
+
           <!-- Card producto 2 -->
-          <article class="product-card" data-name="afnan 9PM">
-            <span class="badge">OFERTA</span>
-            <a href="producto.html" class="product-image">
+          <article
+            class="product-card relative bg-(--card-bg) p-8 rounded-xl overflow-hidden text-(--text)"
+            data-name="afnan 9PM"
+          >
+            <span
+              class="absolute top-5 left-5 bg-(--accent) text-black text-xs px-[10px] py-[6px] rounded"
+              >OFERTA</span
+            >
+            <a href="producto.html" class="block">
               <img
                 src="assets/imgs_destacados/afnan_9pm_producto.png"
                 alt="Afnan 9PM"
+                class="w-[90%] h-[280px] object-contain transition-transform duration-300"
               />
             </a>
-            <div class="product-info">
-              <span class="brand">AFNAN</span>
-              <h3>Afnan 9PM</h3>
-              <div class="price">
-                <span class="old">$340.000</span>
-                <span class="from">Desde</span> <span class="new">$55.000</span>
+            <div class="mt-1">
+              <span class="text-xs text-[#999]">AFNAN</span>
+              <h3 class="font-serif text-lg my-2">Afnan 9PM</h3>
+              <div class="flex gap-2 items-center">
+                <span class="line-through text-[#999]">$340.000</span>
+                <span class="text-xs">Desde</span>
+                <span class="text-(--accent) font-bold">$55.000</span>
               </div>
             </div>
             <button
-              class="add-to-cart"
+              class="add-to-cart font-serif absolute bottom-5 left-5 right-5 bg-(--bg) border border-(--text) text-(--text) py-[14px] cursor-pointer"
               data-id="2"
               data-name="Afnan 9PM"
               data-price="55000"
@@ -220,25 +343,34 @@
               AÑADIR AL CARRITO
             </button>
           </article>
+
           <!-- Card producto 3 -->
-          <article class="product-card" data-name="lattafa ASAD">
-            <span class="badge">OFERTA</span>
-            <a href="producto.html" class="product-image">
+          <article
+            class="product-card relative bg-(--card-bg) p-8 rounded-xl overflow-hidden text-(--text)"
+            data-name="lattafa ASAD"
+          >
+            <span
+              class="absolute top-5 left-5 bg-(--accent) text-black text-xs px-[10px] py-[6px] rounded"
+              >OFERTA</span
+            >
+            <a href="producto.html" class="block">
               <img
                 src="assets/imgs_destacados/asad_lattafa_producto.png"
                 alt="ASAD Lattafa"
+                class="w-[90%] h-[280px] object-contain transition-transform duration-300"
               />
             </a>
-            <div class="product-info">
-              <span class="brand">LATTAFA</span>
-              <h3>ASAD</h3>
-              <div class="price">
-                <span class="old">$340.000</span>
-                <span class="from">Desde</span> <span class="new">$45.000</span>
+            <div class="mt-1">
+              <span class="text-xs text-[#999]">LATTAFA</span>
+              <h3 class="font-serif text-lg my-2">ASAD</h3>
+              <div class="flex gap-2 items-center">
+                <span class="line-through text-[#999]">$340.000</span>
+                <span class="text-xs">Desde</span>
+                <span class="text-(--accent) font-bold">$45.000</span>
               </div>
             </div>
             <button
-              class="add-to-cart"
+              class="add-to-cart font-serif absolute bottom-5 left-5 right-5 bg-(--bg) border border-(--text) text-(--text) py-[14px] cursor-pointer"
               data-id="3"
               data-name="ASAD Lattafa"
               data-price="45000"
@@ -246,25 +378,34 @@
               AÑADIR AL CARRITO
             </button>
           </article>
+
           <!-- Card producto 4 -->
-          <article class="product-card" data-name="dior sauvage">
-            <span class="badge">OFERTA</span>
-            <a href="producto.html" class="product-image">
+          <article
+            class="product-card relative bg-(--card-bg) p-8 rounded-xl overflow-hidden text-(--text)"
+            data-name="dior sauvage"
+          >
+            <span
+              class="absolute top-5 left-5 bg-(--accent) text-black text-xs px-[10px] py-[6px] rounded"
+              >OFERTA</span
+            >
+            <a href="producto.html" class="block">
               <img
                 src="assets/imgs_destacados/dior_sauvage_producto.png"
                 alt="Dior Sauvage"
+                class="w-[90%] h-[280px] object-contain transition-transform duration-300"
               />
             </a>
-            <div class="product-info">
-              <span class="brand">DIOR</span>
-              <h3>Dior Sauvage</h3>
-              <div class="price">
-                <span class="old">$340.000</span>
-                <span class="from">Desde</span> <span class="new">$35.000</span>
+            <div class="mt-1">
+              <span class="text-xs text-[#999]">DIOR</span>
+              <h3 class="font-serif text-lg my-2">Dior Sauvage</h3>
+              <div class="flex gap-2 items-center">
+                <span class="line-through text-[#999]">$340.000</span>
+                <span class="text-xs">Desde</span>
+                <span class="text-(--accent) font-bold">$35.000</span>
               </div>
             </div>
             <button
-              class="add-to-cart"
+              class="add-to-cart font-serif absolute bottom-5 left-5 right-5 bg-(--bg) border border-(--text) text-(--text) py-[14px] cursor-pointer"
               data-id="4"
               data-name="Dior Sauvage"
               data-price="35000"

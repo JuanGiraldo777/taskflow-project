@@ -1,0 +1,9 @@
+{
+  "css.customData": [],
+  "css.validate": false,
+  "editor.quickSuggestions": {
+    "strings": "on"
+  },
+  "tailwindCSS.lint.cssConflict": "ignore",
+  "tailwindCSS.lint.recommendedVariantOrder": "ignore"
+}
