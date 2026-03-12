@@ -128,10 +128,15 @@ function renderCart() {
   // Limpiar para que no duplique
   cartContainer.innerHTML = "";
 
+  // Actualizar contador del carrito
+  const totalItems = cart.reduce((sum, p) => sum + p.quantity, 0);
+  cartCount.textContent = totalItems;
+
   if (cart.length === 0) {
     cartContainer.innerHTML = "<h3>Carrito vacío</h3>";
     return;
   }
+
   // Recorrer el array
   cart.forEach((product) => {
     // Crear elemento dinamico
@@ -150,10 +155,21 @@ function renderCart() {
     cartContainer.appendChild(item);
   });
 
-  // Actualizar contador del carrito
-  const totalItems = cart.reduce((sum, p) => sum + p.quantity, 0);
-  cartCount.textContent = totalItems;
+  // Botón vaciar — solo aparece si hay productos
+  const clearBtn = document.createElement("button");
+  clearBtn.textContent = "Vaciar carrito";
+  clearBtn.onclick = clearCart;
+  clearBtn.className = "w-full py-2 bg-(--accent) text-black font-bold cursor-pointer";
+  cartContainer.appendChild(clearBtn);
+}
 
+// =====================
+// Limpiar todo el carrito
+// =====================
+function clearCart() {
+  cart = [];
+  localStorage.setItem("cart", JSON.stringify(cart));
+  renderCart();
 }
 
 // =====================
@@ -210,6 +226,7 @@ cartContainer.addEventListener("click", (e) => {
   renderCart();
 });
 
+
 // =====================
 // Toggle carrito al hacer clic en el icono
 // =====================
@@ -222,6 +239,7 @@ console.log("Cart inicial:", cart);
 // Render inicial
 // =====================
 renderCart();
+
 
 // DARK / LIGHT MODE
 const toggleButton = document.getElementById("darkModeToggle");

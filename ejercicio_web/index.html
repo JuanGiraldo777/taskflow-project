@@ -110,6 +110,7 @@
           <button
             class="threebars w-[26px] h-[18px] flex flex-col justify-between bg-transparent border-none cursor-pointer p-0"
             id="threebars"
+            aria-label="Seccion de despliegue de categorias"
           >
             <span></span> <span></span> <span></span>
           </button>
@@ -150,7 +151,7 @@
               type="text"
               id="search"
               placeholder="Buscar perfume"
-              class="text-(--primary-text) bg-transparent opacity-90 text-[15px] tracking-wide border-none outline-none focus:opacity-100 transition-opacity duration-200"
+              class="text-white bg-transparent opacity-90 text-[15px] tracking-wide border-none outline-none focus:opacity-100 transition-opacity duration-200"
             />
           </div>
 
@@ -195,8 +196,11 @@
               >
             </div>
             <div
-              class="icon-cart-container hidden absolute top-[40px] right-0 bg-black border-2 border-(--accent) p-[10px] w-[200px] z-50"
-            >
+              class="icon-cart-container hidden absolute top-[40px] right-0 bg-(--card-bg) border-2 border-(--accent) p-[10px] w-[200px] z-50">
+
+              <!-- Botón vaciar carrito -->
+              <button onclick="clearCart()" aria-label="Eliminacion productos carrito">Vaciar carrito</button>
+
               <!--Aqui se renderizan los productos del carrito-->
             </div>
           </div>
@@ -304,6 +308,7 @@
               data-id="1"
               data-name="Bharara King"
               data-price="25000"
+              aria-label="Añadir producto al Carrito"
             >
               AÑADIR AL CARRITO
             </button>
@@ -339,6 +344,7 @@
               data-id="2"
               data-name="Afnan 9PM"
               data-price="55000"
+              aria-label="Añadir producto al Carrito"
             >
               AÑADIR AL CARRITO
             </button>
@@ -374,6 +380,7 @@
               data-id="3"
               data-name="ASAD Lattafa"
               data-price="45000"
+              aria-label="Añadir producto al Carrito"
             >
               AÑADIR AL CARRITO
             </button>
@@ -409,6 +416,7 @@
               data-id="4"
               data-name="Dior Sauvage"
               data-price="35000"
+              aria-label="Añadir producto al Carrito"
             >
               AÑADIR AL CARRITO
             </button>
