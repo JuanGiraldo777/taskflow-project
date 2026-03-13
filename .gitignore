@@ -1,0 +1,24 @@
+# Dependencias de Node
+node_modules/
+
+# Credenciales y configuración sensible de Cursor/MCP
+.cursor/mcp.json
+
+# Variables de entorno (por si añades un .env en el futuro)
+.env
+.env.local
+.env.production
+
+# Tailwind - archivo generado automáticamente, no necesita subirse
+src/output.css
+
+# Archivos de sistema operativo
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Configuración de VSCode
+.vscode
