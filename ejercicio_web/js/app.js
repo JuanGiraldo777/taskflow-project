@@ -5,9 +5,13 @@ import { initSlider } from "./slider.js";
 import { initSearch } from "./search.js";
 import { initCart } from "./cart.js";
 import { initThemeToggle } from "./theme.js";
+import { initAdvancedFilters } from "./filters.js";
 
 // 1. Renderiza los productos dinámicamente (PRIMERO - genera las cards con botones)
 renderProducts();
+
+// 1.5 Inicializa los filtros avanzados (después de que las cards estén renderizadas)
+initAdvancedFilters();
 
 // 2. Inicializa la navegación principal (menú lateral, iconos, etc.)
 initNav();

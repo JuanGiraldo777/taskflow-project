@@ -34,7 +34,7 @@ const PRODUCTS = [
 ];
 
 export function renderProducts() {
-  const gridContainer = document.querySelector(".grid.grid-cols-4");
+  const gridContainer = document.querySelector("#products-grid");
   gridContainer.innerHTML = ""; // Vaciar el contenedor
 
   PRODUCTS.forEach((product) => {
@@ -42,6 +42,8 @@ export function renderProducts() {
     productCard.className =
       "product-card relative bg-(--card-bg) p-8 rounded-xl overflow-hidden text-(--text)";
     productCard.dataset.name = product.name.toLowerCase();
+    productCard.dataset.brand = product.brand.toLowerCase();
+    productCard.dataset.price = product.discountedPrice;
 
     productCard.innerHTML = `
       <span class="absolute top-5 left-5 bg-(--accent) text-black text-xs px-[10px] py-[6px] rounded">OFERTA</span>
