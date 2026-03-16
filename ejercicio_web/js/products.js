@@ -31,6 +31,38 @@ const PRODUCTS = [
     discountedPrice: 45000,
     image: "assets/imgs_destacados/dior_sauvage_producto.png",
   },
+  {
+    id: 5,
+    name: "Versace Eros Flame",
+    brand: "VERSACE",
+    originalPrice: 340000,
+    discountedPrice: 75000,
+    image: "assets/imgs_destacados/versace_eros_flame_producto.png",
+  },
+  {
+    id: 6,
+    name: "Creed Aventus",
+    brand: "CREED",
+    originalPrice: 340000,
+    discountedPrice: 88000,
+    image: "assets/imgs_destacados/creed_aventus_producto.png",
+  },
+  {
+    id: 7,
+    name: "Ariana Grande Cloud",
+    brand: "ARIANA GRANDE",
+    originalPrice: 340000,
+    discountedPrice: 35000,
+    image: "assets/imgs_destacados/ariana_grande_cloud_producto.png",
+  },
+  {
+    id: 8,
+    name: "Odyssey Homme",
+    brand: "ODYSSEY",
+    originalPrice: 340000,
+    discountedPrice: 80000,
+    image: "assets/imgs_destacados/odyssey_homme_producto.png",
+  },
 ];
 
 export function renderProducts() {

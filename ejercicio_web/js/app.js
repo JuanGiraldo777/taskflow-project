@@ -6,6 +6,7 @@ import { initSearch } from "./search.js";
 import { initCart } from "./cart.js";
 import { initThemeToggle } from "./theme.js";
 import { initAdvancedFilters } from "./filters.js";
+import { renderReviews } from "./reviews.js";
 
 // 1. Renderiza los productos dinámicamente (PRIMERO - genera las cards con botones)
 renderProducts();
@@ -28,5 +29,8 @@ initCart();
 // 6. Inicializa el cambio de tema (modo claro/oscuro)
 initThemeToggle();
 
-// 7. Inicializa la lista de deseos (ÚLTIMO - después de que las cards estén renderizadas)
+// 7. Inicializa la lista de deseos (después de que las cards estén renderizadas)
 initWishlist();
+
+// 8. Renderiza las reseñas (ÚLTIMO - se inicializa al final)
+renderReviews();
