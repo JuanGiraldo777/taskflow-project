@@ -65,6 +65,8 @@ const PRODUCTS = [
   },
 ];
 
+import { trackProductView } from "./user.js";
+
 export function renderProducts() {
   const gridContainer = document.querySelector("#products-grid");
   gridContainer.innerHTML = ""; // Vaciar el contenedor
@@ -79,7 +81,7 @@ export function renderProducts() {
 
     productCard.innerHTML = `
       <span class="absolute top-5 left-5 bg-(--accent) text-black text-xs px-[10px] py-[6px] rounded">OFERTA</span>
-      <a href="producto.html" class="block">
+      <a href="producto.html" class="block product-link">
         <img
           src="${product.image}"
           alt="${product.name}"
@@ -129,5 +131,11 @@ export function renderProducts() {
     `;
 
     gridContainer.appendChild(productCard);
+
+    // Tracking de productos vistos
+    const productLink = productCard.querySelector(".product-link");
+    productLink?.addEventListener("click", () => {
+      trackProductView(product.id, product.name, product.discountedPrice);
+    });
   });
 }

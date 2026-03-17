@@ -1,3 +1,9 @@
+import {
+  getUserName,
+  activateCoupon,
+  getUserRecommendation,
+} from "./user.js";
+
 const REVIEWS_STORAGE_KEY = "maison-reviews";
 
 function getReviewsFromStorage() {
@@ -19,26 +25,158 @@ function calculateAverageRating(reviews) {
   return (sum / reviews.length).toFixed(1);
 }
 
-function validateReview(name, rating, comment) {
+/**
+ * Valida los campos del formulario y retorna un objeto con:
+ * - isValid: boolean
+ * - errors: objeto con los campos inválidos
+ */
+function validateReviewForm(name, rating, comment) {
+  const errors = {};
+
   if (!name.trim()) {
-    alert("Por favor, ingresa tu nombre");
-    return false;
+    errors.name = "Por favor, ingresa tu nombre";
   }
+
   if (!rating || rating < 1 || rating > 5) {
-    alert("Por favor, selecciona una puntuación de 1 a 5");
-    return false;
+    errors.rating = "Por favor, selecciona una puntuación de 1 a 5";
   }
+
   if (!comment.trim()) {
-    alert("Por favor, escribe un comentario");
-    return false;
+    errors.comment = "Por favor, escribe un comentario";
   }
-  return true;
+
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors,
+  };
 }
 
-export function addReview(name, rating, comment) {
-  if (!validateReview(name, rating, comment)) {
+/**
+ * Muestra mensajes de error en el formulario sin limpiar los valores
+ */
+function showValidationErrors(errors) {
+  // Limpiar errores previos
+  const previousErrors = document.querySelectorAll(".field-error");
+  previousErrors.forEach((el) => el.remove());
+
+  const previousErrorFields = document.querySelectorAll(
+    "input[id='review-name'], textarea[id='review-comment'], .rating-group",
+  );
+  previousErrorFields.forEach((el) => {
+    el.style.borderColor = "";
+    el.classList.remove("border-red-500");
+  });
+
+  // Mostrar nuevos errores
+  let firstErrorElement = null;
+
+  if (errors.name) {
+    const nameInput = document.getElementById("review-name");
+    if (nameInput) {
+      // Aplicar borde de error
+      nameInput.style.borderColor = "var(--accent)";
+      nameInput.style.borderWidth = "2px";
+      if (!firstErrorElement) firstErrorElement = nameInput;
+
+      const errorDiv = document.createElement("div");
+      errorDiv.className = "field-error";
+      errorDiv.style.color = "var(--accent)";
+      errorDiv.style.fontSize = "0.75rem";
+      errorDiv.style.marginTop = "0.25rem";
+      errorDiv.textContent = errors.name;
+      nameInput.parentElement.appendChild(errorDiv);
+    }
+  }
+
+  if (errors.rating) {
+    const ratingGroup = document.querySelector(".rating-group");
+    if (ratingGroup) {
+      // Aplicar borde de error al contenedor
+      ratingGroup.style.borderColor = "var(--accent)";
+      ratingGroup.style.borderWidth = "2px";
+      ratingGroup.style.borderRadius = "0.5rem";
+      ratingGroup.style.padding = "0.5rem";
+      ratingGroup.style.borderStyle = "solid";
+      if (!firstErrorElement)
+        firstErrorElement = document.querySelector("input[name='rating']");
+
+      const errorDiv = document.createElement("div");
+      errorDiv.className = "field-error";
+      errorDiv.style.color = "var(--accent)";
+      errorDiv.style.fontSize = "0.75rem";
+      errorDiv.style.marginTop = "0.25rem";
+      errorDiv.textContent = errors.rating;
+      ratingGroup.parentElement.appendChild(errorDiv);
+    }
+  }
+
+  if (errors.comment) {
+    const commentInput = document.getElementById("review-comment");
+    if (commentInput) {
+      // Aplicar borde de error
+      commentInput.style.borderColor = "var(--accent)";
+      commentInput.style.borderWidth = "2px";
+      if (!firstErrorElement) firstErrorElement = commentInput;
+
+      const errorDiv = document.createElement("div");
+      errorDiv.className = "field-error";
+      errorDiv.style.color = "var(--accent)";
+      errorDiv.style.fontSize = "0.75rem";
+      errorDiv.style.marginTop = "0.25rem";
+      errorDiv.textContent = errors.comment;
+      commentInput.parentElement.appendChild(errorDiv);
+    }
+  }
+
+  // Mover el foco al primer campo inválido
+  if (firstErrorElement) {
+    firstErrorElement.focus();
+  }
+}
+
+/**
+ * Limpia todos los mensajes de error del formulario
+ */
+function clearValidationErrors() {
+  const errorMessages = document.querySelectorAll(".field-error");
+  errorMessages.forEach((el) => el.remove());
+
+  // Remover estilos de error de los inputs
+  const nameInput = document.getElementById("review-name");
+  if (nameInput) {
+    nameInput.style.borderColor = "";
+    nameInput.style.borderWidth = "";
+  }
+
+  const ratingGroup = document.querySelector(".rating-group");
+  if (ratingGroup) {
+    ratingGroup.style.borderColor = "";
+    ratingGroup.style.borderWidth = "";
+    ratingGroup.style.borderRadius = "";
+    ratingGroup.style.padding = "";
+    ratingGroup.style.borderStyle = "";
+  }
+
+  const commentInput = document.getElementById("review-comment");
+  if (commentInput) {
+    commentInput.style.borderColor = "";
+    commentInput.style.borderWidth = "";
+  }
+}
+
+/**
+ * Añade una nueva reseña si la validación es exitosa
+ */
+function addReview(name, rating, comment) {
+  const validation = validateReviewForm(name, rating, comment);
+
+  if (!validation.isValid) {
+    showValidationErrors(validation.errors);
     return;
   }
+
+  // Validación correcta: proceder
+  clearValidationErrors();
 
   const reviews = getReviewsFromStorage();
   const newReview = {
@@ -51,7 +189,20 @@ export function addReview(name, rating, comment) {
 
   reviews.unshift(newReview);
   saveReviewsToStorage(reviews);
-  renderReviews();
+  renderReviewsList();
+
+  // Activar cupón en el primer envío de reseña
+  activateCoupon();
+
+  // Limpiar el formulario SOLO después de envío exitoso
+  const form = document.getElementById("review-form");
+  if (form) {
+    form.reset();
+    const ratingDisplay = document.getElementById("rating-display");
+    if (ratingDisplay) {
+      ratingDisplay.textContent = "";
+    }
+  }
 }
 
 function renderReviewForm() {
@@ -60,6 +211,8 @@ function renderReviewForm() {
 
   const formContainer = reviewsSection.querySelector(".reviews-form-container");
   if (!formContainer) return;
+
+  const userName = getUserName() || "";
 
   formContainer.innerHTML = `
     <div class="bg-(--card-bg) p-8 rounded-xl border border-(--accent) border-opacity-30">
@@ -77,6 +230,7 @@ function renderReviewForm() {
             type="text"
             id="review-name"
             placeholder="Ingresa tu nombre"
+            value="${userName}"
             class="w-full px-4 py-3 bg-(--bg) text-(--text) border border-(--text) border-opacity-50 rounded-lg focus:outline-none focus:border-(--accent) focus:border-opacity-100 transition-colors duration-200 placeholder-opacity-50"
           />
         </div>
@@ -86,7 +240,7 @@ function renderReviewForm() {
           <label class="block text-sm text-(--text) font-sans font-semibold mb-2">
             Puntuación
           </label>
-          <div class="flex gap-3">
+          <div class="rating-group flex gap-3">
             ${[1, 2, 3, 4, 5]
               .map(
                 (star) => `
@@ -103,7 +257,7 @@ function renderReviewForm() {
               >
                 ★
               </label>
-            `
+            `,
               )
               .join("")}
           </div>
@@ -137,9 +291,55 @@ function renderReviewForm() {
   // Event Listeners para estrellas
   const stars = document.querySelectorAll("input[name='rating']");
   const ratingDisplay = document.getElementById("rating-display");
+  const nameInput = document.getElementById("review-name");
+  const commentInput = document.getElementById("review-comment");
+
+  // Limpiar error cuando el usuario escribe en el nombre
+  nameInput?.addEventListener("input", () => {
+    nameInput.style.borderColor = "";
+    nameInput.style.borderWidth = "";
+    // Remover mensaje de error
+    const errorMsg = nameInput.parentElement.querySelector(".field-error");
+    if (errorMsg && errorMsg.textContent.includes("nombre")) {
+      errorMsg.remove();
+    }
+  });
+
+  // Limpiar error cuando el usuario escribe en el comentario
+  commentInput?.addEventListener("input", () => {
+    commentInput.style.borderColor = "";
+    commentInput.style.borderWidth = "";
+    // Remover mensaje de error
+    const errorMsg = commentInput.parentElement.querySelector(".field-error");
+    if (errorMsg && errorMsg.textContent.includes("comentario")) {
+      errorMsg.remove();
+    }
+  });
 
   stars.forEach((star) => {
     star.addEventListener("change", () => {
+      // Limpiar error de rating si existe
+      const ratingGroup = document.querySelector(".rating-group");
+      if (ratingGroup) {
+        ratingGroup.style.borderColor = "";
+        ratingGroup.style.borderWidth = "";
+        ratingGroup.style.borderRadius = "";
+        ratingGroup.style.padding = "";
+        ratingGroup.style.borderStyle = "";
+      }
+      // Remover el mensaje de error asociado al rating
+      const errorMsgs =
+        ratingGroup?.parentElement?.querySelectorAll(".field-error");
+      errorMsgs?.forEach((msg) => {
+        // Solo remover si es el mensaje de error del rating (no otros)
+        if (
+          msg.textContent.includes("Puntuación") ||
+          msg.textContent.includes("selecciona una puntuación")
+        ) {
+          msg.remove();
+        }
+      });
+
       ratingDisplay.textContent = generateStars(parseInt(star.value));
     });
 
@@ -157,19 +357,17 @@ function renderReviewForm() {
     }
   });
 
-  // Form submission
+  // Form submission - usar la nueva validación
   const form = document.getElementById("review-form");
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     const name = document.getElementById("review-name").value;
-    const rating = document.querySelector("input[name='rating']:checked")?.value;
+    const rating = document.querySelector(
+      "input[name='rating']:checked",
+    )?.value;
     const comment = document.getElementById("review-comment").value;
 
     addReview(name, rating, comment);
-
-    // Limpiar formulario
-    form.reset();
-    ratingDisplay.textContent = "";
   });
 }
 
@@ -181,6 +379,7 @@ function renderReviewsList() {
   const listContainer = reviewsSection.querySelector(".reviews-list-container");
   if (!listContainer) return;
 
+  const userRecommendation = getUserRecommendation() || "";
   const averageRating = calculateAverageRating(reviews);
 
   let html = `
@@ -207,6 +406,21 @@ function renderReviewsList() {
       </div>
     </div>
   `;
+
+  // Mostrar recomendación del usuario si existe
+  if (userRecommendation) {
+    html += `
+      <div class="bg-gradient-to-r from-(--accent) to-(--accent) opacity-90 bg-opacity-20 p-6 rounded-lg border-2 border-(--accent) border-opacity-50 mb-8 relative overflow-hidden">
+        <div class="absolute top-0 left-0 text-6xl opacity-10 font-serif">✨</div>
+        <h4 class="font-serif text-xl text-(--text) mb-3 relative z-10">
+          MI RECOMENDACIÓN ESPECIAL
+        </h4>
+        <p class="text-(--text) font-sans leading-relaxed italic relative z-10">
+          "${userRecommendation}"
+        </p>
+      </div>
+    `;
+  }
 
   if (reviews.length === 0) {
     html += `

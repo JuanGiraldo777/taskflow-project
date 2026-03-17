@@ -9,14 +9,14 @@
       rel="icon"
       type="image/png"
       sizes="32x32"
-      href="assets/imgs/Maison_PNG.png"
+      href="assets/imgs/M_DORADA.png"
     />
 
     <link
       rel="icon"
       type="image/png"
       sizes="16x16"
-      href="assets/imgs/Maison_PNG.png"
+      href="assets/imgs/M_DORADA.png"
     />
 
     <!-- Optimización fuentes -->
@@ -33,6 +33,48 @@
   <body>
     <!-- OVERLAY -->
     <div class="overlay fixed inset-0 bg-black/45 z-[250]" id="overlay"></div>
+
+    <!-- CART OVERLAY -->
+    <div
+      class="cart-overlay fixed inset-0 bg-black/40 z-[350] hidden"
+      id="cart-overlay"
+    ></div>
+
+    <!-- CART DRAWER -->
+    <aside
+      class="cart-drawer fixed top-0 right-0 h-screen w-[420px] max-sm:w-full bg-(--bg) z-[360] translate-x-full transition-transform duration-300 ease-out flex flex-col"
+      id="cart-drawer"
+    >
+      <!-- Header del drawer -->
+      <div
+        class="flex items-center justify-between p-6 border-b border-gray-700 bg-(--card-bg)"
+      >
+        <h2 class="font-serif text-(--text) text-xl tracking-wide">
+          Tu Carrito
+        </h2>
+        <button
+          id="close-cart-btn"
+          class="text-gray-400 hover:text-(--accent) transition-colors p-1"
+          aria-label="Cerrar carrito"
+        >
+          <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+            <path
+              d="M19.35 6.04C18.67 5.36 17.55 5.36 16.87 6.04L12 10.91 7.13 6.04c-.67-.68-1.79-.68-2.47 0-.68.67-.68 1.79 0 2.47L9.53 12l-4.87 4.87c-.68.68-.68 1.79 0 2.47.67.68 1.79.68 2.47 0L12 13.09l4.87 4.87c.67.68 1.79.68 2.47 0 .68-.68.68-1.79 0-2.47L14.47 12l4.88-4.96c.68-.68.68-1.81 0-2.47z"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Items del carrito (scrollable) -->
+      <div id="cart-items" class="flex-1 overflow-y-auto px-2 py-4 space-y-px">
+        <!-- Aquí se renderizan dinámicamente los productos -->
+      </div>
+
+      <!-- Footer con total y botones -->
+      <div id="cart-footer" class="bg-(--card-bg)">
+        <!-- Aquí se renderizan el total y botones de acción -->
+      </div>
+    </aside>
 
     <!-- SIDE MENU -->
     <aside
@@ -94,15 +136,17 @@
       </nav>
     </aside>
 
-    <header class="top-bar absolute top-0 left-0 w-full h-[150px] z-10">
+    <header
+      class="top-bar absolute top-0 left-0 w-full h-[200px] max-sm:h-[180px] z-10 backdrop-blur-md bg-(--bg)/20"
+    >
       <div
-        class="max-w-[1400px] mx-auto h-full grid grid-cols-[1fr_auto_1fr] items-center px-12 text-(--primary-text)"
+        class="max-w-[1400px] mx-auto h-full grid grid-cols-[1fr_auto_1fr] max-sm:grid-cols-[auto_1fr_auto] items-center px-12 max-sm:px-4 max-sm:gap-2 text-(--primary-text)"
       >
         <!--IZQUIERDA-->
-        <div class="justify-self-start flex items-center gap-8">
+        <div class="justify-self-start flex items-center gap-8 max-sm:gap-3">
           <button
             id="darkModeToggle"
-            class="mode-toggle flex items-center justify-center gap-2 text-[10px] px-[18px] py-[10px] bg-(--bg) text-(--accent) border-none rounded-[30px] cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.3)] transition-all duration-200 hover:scale-105 hover:shadow-[0_6px_16px_rgba(0,0,0,0.4)] active:scale-95"
+            class="mode-toggle flex items-center justify-center gap-2 text-[10px] px-[18px] py-[10px] max-sm:px-3 max-sm:py-2 max-sm:text-[8px] bg-(--bg) text-(--accent) border-none rounded-[30px] cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.3)] transition-all duration-200 hover:scale-105 hover:shadow-[0_6px_16px_rgba(0,0,0,0.4)] active:scale-95"
             aria-label="Cambiar modo"
           >
             🌙 | ☀️
@@ -116,11 +160,11 @@
           </button>
           <button
             id="filter-btn"
-            class="filter-btn bg-transparent border-none cursor-pointer p-0"
+            class="filter-btn bg-transparent border-none cursor-pointer p-0 min-w-8 min-h-8"
             aria-label="Abrir panel de filtros"
           >
             <svg
-              class="stroke-(--bg) cursor-pointer opacity-85 hover:opacity-100 hover:-translate-y-px transition-all duration-200"
+              class="stroke-(--bg) cursor-pointer opacity-85 hover:opacity-100 hover:-translate-y-px transition-all duration-200 max-sm:w-6 max-sm:h-6"
               width="30"
               height="30"
               xmlns="http://www.w3.org/2000/svg"
@@ -140,21 +184,22 @@
         <!-- CENTRO -->
         <div class="justify-self-center">
           <img
-            src="assets/imgs/Maison_PNG.png"
+            id="main-logo"
+            src="assets/imgs/LOGO_PRINCIPAL_NEGRO.png"
             alt="Logo Perfumeria"
-            class="h-[200px] block"
+            class="h-[200px] max-sm:h-[100px] block"
           />
         </div>
 
         <!-- DERECHA -->
         <div
-          class="justify-self-end flex items-center gap-[26px] font-sans text-sm tracking-wide"
+          class="justify-self-end flex items-center gap-[26px] max-sm:gap-3 font-sans text-sm max-sm:text-xs tracking-wide"
         >
           <div
-            class="search-container flex items-center gap-3 pb-1 cursor-text hover:border-b hover:border-(--accent)"
+            class="search-container relative hidden sm:flex items-center gap-3 pb-1 cursor-text hover:border-b hover:border-(--accent)"
           >
             <svg
-              class="stroke-(--bg) cursor-pointer opacity-85 hover:opacity-100 hover:-translate-y-px transition-all duration-200"
+              class="stroke-(--bg) cursor-pointer opacity-85 hover:opacity-100 hover:-translate-y-px transition-all duration-200 max-sm:w-6 max-sm:h-6"
               width="30"
               height="30"
               xmlns="http://www.w3.org/2000/svg"
@@ -172,32 +217,46 @@
               type="text"
               id="search"
               placeholder="Buscar perfume"
-              class="text-white bg-transparent opacity-90 text-[15px] tracking-wide border-none outline-none focus:opacity-100 transition-opacity duration-200"
+              class="text-white bg-transparent opacity-90 text-[15px] max-sm:text-xs tracking-wide border-none outline-none focus:opacity-100 transition-opacity duration-200"
             />
+
+            <!-- SEARCH DROPDOWN -->
+            <div
+              id="search-dropdown"
+              class="hidden absolute top-[100%] left-0 right-0 max-w-[300px] bg-(--card-bg) border border-(--accent) border-opacity-30 rounded-lg shadow-lg z-40 mt-2 backdrop-blur-sm bg-opacity-95"
+            >
+              <!-- Contenido dinámico: tendencias o resultados -->
+            </div>
           </div>
 
           <div>
-            <svg
-              class="stroke-(--bg) cursor-pointer opacity-85 hover:opacity-100 hover:-translate-y-px transition-all duration-200"
-              width="30"
-              height="30"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
+            <button
+              id="user-profile-btn"
+              class="bg-transparent border-none cursor-pointer p-0 min-w-8 min-h-8"
+              aria-label="Abrir perfil de usuario"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
-              />
-            </svg>
+              <svg
+                class="stroke-(--bg) cursor-pointer opacity-85 hover:opacity-100 hover:-translate-y-px transition-all duration-200 max-sm:w-6 max-sm:h-6"
+                width="30"
+                height="30"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
+                />
+              </svg>
+            </button>
           </div>
 
           <div class="relative">
-            <div class="cart-icon cursor-pointer relative">
+            <div class="cart-icon cursor-pointer relative min-w-8 min-h-8">
               <svg
-                class="stroke-(--bg) cursor-pointer opacity-85 hover:opacity-100 hover:-translate-y-px transition-all duration-200"
+                class="stroke-(--bg) cursor-pointer opacity-85 hover:opacity-100 hover:-translate-y-px transition-all duration-200 max-sm:w-6 max-sm:h-6"
                 width="30"
                 height="30"
                 xmlns="http://www.w3.org/2000/svg"
@@ -212,21 +271,16 @@
                 />
               </svg>
               <span
-                class="cart-count absolute -top-2 -right-2 bg-(--accent) text-black text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold"
+                class="cart-count absolute -top-2 -right-2 bg-(--accent) text-black text-xs max-sm:text-[10px] rounded-full w-5 h-5 max-sm:w-4 max-sm:h-4 flex items-center justify-center font-bold"
                 >0</span
               >
-            </div>
-            <div
-              class="icon-cart-container hidden absolute top-[40px] right-0 bg-(--card-bg) border-2 border-(--accent) p-[10px] w-[200px] z-50"
-            >
-              <!-- Aquí se renderizan dinámicamente los productos del carrito -->
             </div>
           </div>
 
           <div class="relative">
-            <div class="wishlist-icon cursor-pointer relative">
+            <div class="wishlist-icon cursor-pointer relative min-w-8 min-h-8">
               <svg
-                class="stroke-(--bg) cursor-pointer opacity-85 hover:opacity-100 hover:-translate-y-px transition-all duration-200"
+                class="stroke-(--bg) cursor-pointer opacity-85 hover:opacity-100 hover:-translate-y-px transition-all duration-200 max-sm:w-6 max-sm:h-6"
                 width="30"
                 height="30"
                 xmlns="http://www.w3.org/2000/svg"
@@ -241,12 +295,12 @@
                 />
               </svg>
               <span
-                class="wishlist-count absolute -top-2 -right-2 bg-(--accent) text-black text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold"
+                class="wishlist-count absolute -top-2 -right-2 bg-(--accent) text-black text-xs max-sm:text-[10px] rounded-full w-5 h-5 max-sm:w-4 max-sm:h-4 flex items-center justify-center font-bold"
                 >0</span
               >
             </div>
             <div
-              class="icon-wishlist-container hidden absolute top-[40px] right-0 bg-(--card-bg) border-2 border-(--accent) p-[10px] w-[200px] z-50"
+              class="icon-wishlist-container hidden absolute top-[40px] right-0 max-sm:left-0 bg-(--card-bg) border-2 border-(--accent) p-[10px] w-[200px] max-sm:w-[180px] z-50"
             >
               <!-- Aquí se renderizan dinámicamente los productos de la wishlist -->
             </div>
@@ -258,9 +312,11 @@
     <!-- PANEL DE FILTROS -->
     <div
       id="filter-panel"
-      class="hidden fixed top-[150px] left-[80px] bg-(--card-bg) border border-(--accent) rounded-lg shadow-lg z-[200] p-6 w-[280px]"
+      class="hidden fixed top-[150px] max-sm:top-[120px] left-[80px] max-sm:left-0 max-sm:right-0 max-sm:w-full max-sm:max-w-[280px] max-sm:mx-auto bg-(--card-bg) border border-(--accent) rounded-lg max-sm:rounded-none shadow-lg z-[200] p-6 max-sm:p-4 w-[280px]"
     >
-      <h3 class="font-serif text-lg text-(--text) mb-6 tracking-wide">FILTROS</h3>
+      <h3 class="font-serif text-lg text-(--text) mb-6 tracking-wide">
+        FILTROS
+      </h3>
 
       <!-- Filtro por Rango de Precio -->
       <div class="mb-6">
@@ -271,15 +327,15 @@
           <input
             id="min-price"
             type="number"
-            placeholder="Min"
-            class="w-1/2 px-2 py-1 bg-(--bg) text-(--text) border border-(--text) rounded text-xs focus:outline-none focus:border-(--accent)"
+            placeholder="Min $0"
+            class="w-1/2 px-2 py-2 max-sm:py-3 bg-(--bg) text-(--text) border border-(--text) rounded text-xs max-sm:text-sm focus:outline-none focus:border-(--accent)"
           />
           <span class="text-(--text) text-xs">-</span>
           <input
             id="max-price"
             type="number"
-            placeholder="Max"
-            class="w-1/2 px-2 py-1 bg-(--bg) text-(--text) border border-(--text) rounded text-xs focus:outline-none focus:border-(--accent)"
+            placeholder="Max $999999"
+            class="w-1/2 px-2 py-2 max-sm:py-3 bg-(--bg) text-(--text) border border-(--text) rounded text-xs max-sm:text-sm focus:outline-none focus:border-(--accent)"
           />
         </div>
       </div>
@@ -290,66 +346,82 @@
           Marca
         </label>
         <div class="space-y-2">
-          <label class="flex items-center gap-2 cursor-pointer text-sm text-(--text)">
+          <label
+            class="flex items-center gap-2 cursor-pointer text-sm max-sm:text-base max-sm:py-2 text-(--text)"
+          >
             <input
               type="checkbox"
-              class="filter-brand-checkbox w-4 h-4 bg-(--bg) border border-(--text) rounded accent-(--accent) cursor-pointer"
+              class="filter-brand-checkbox w-4 h-4 max-sm:w-5 max-sm:h-5 bg-(--bg) border border-(--text) rounded accent-(--accent) cursor-pointer"
               value="bharara"
             />
             BHARARA
           </label>
-          <label class="flex items-center gap-2 cursor-pointer text-sm text-(--text)">
+          <label
+            class="flex items-center gap-2 cursor-pointer text-sm max-sm:text-base max-sm:py-2 text-(--text)"
+          >
             <input
               type="checkbox"
-              class="filter-brand-checkbox w-4 h-4 bg-(--bg) border border-(--text) rounded accent-(--accent) cursor-pointer"
+              class="filter-brand-checkbox w-4 h-4 max-sm:w-5 max-sm:h-5 bg-(--bg) border border-(--text) rounded accent-(--accent) cursor-pointer"
               value="afnan"
             />
             AFNAN
           </label>
-          <label class="flex items-center gap-2 cursor-pointer text-sm text-(--text)">
+          <label
+            class="flex items-center gap-2 cursor-pointer text-sm max-sm:text-base max-sm:py-2 text-(--text)"
+          >
             <input
               type="checkbox"
-              class="filter-brand-checkbox w-4 h-4 bg-(--bg) border border-(--text) rounded accent-(--accent) cursor-pointer"
+              class="filter-brand-checkbox w-4 h-4 max-sm:w-5 max-sm:h-5 bg-(--bg) border border-(--text) rounded accent-(--accent) cursor-pointer"
               value="lattafa"
             />
             LATTAFA
           </label>
-          <label class="flex items-center gap-2 cursor-pointer text-sm text-(--text)">
+          <label
+            class="flex items-center gap-2 cursor-pointer text-sm max-sm:text-base max-sm:py-2 text-(--text)"
+          >
             <input
               type="checkbox"
-              class="filter-brand-checkbox w-4 h-4 bg-(--bg) border border-(--text) rounded accent-(--accent) cursor-pointer"
+              class="filter-brand-checkbox w-4 h-4 max-sm:w-5 max-sm:h-5 bg-(--bg) border border-(--text) rounded accent-(--accent) cursor-pointer"
               value="dior"
             />
             DIOR
           </label>
-          <label class="flex items-center gap-2 cursor-pointer text-sm text-(--text)">
+          <label
+            class="flex items-center gap-2 cursor-pointer text-sm max-sm:text-base max-sm:py-2 text-(--text)"
+          >
             <input
               type="checkbox"
-              class="filter-brand-checkbox w-4 h-4 bg-(--bg) border border-(--text) rounded accent-(--accent) cursor-pointer"
+              class="filter-brand-checkbox w-4 h-4 max-sm:w-5 max-sm:h-5 bg-(--bg) border border-(--text) rounded accent-(--accent) cursor-pointer"
               value="versace"
             />
             VERSACE
           </label>
-          <label class="flex items-center gap-2 cursor-pointer text-sm text-(--text)">
+          <label
+            class="flex items-center gap-2 cursor-pointer text-sm max-sm:text-base max-sm:py-2 text-(--text)"
+          >
             <input
               type="checkbox"
-              class="filter-brand-checkbox w-4 h-4 bg-(--bg) border border-(--text) rounded accent-(--accent) cursor-pointer"
+              class="filter-brand-checkbox w-4 h-4 max-sm:w-5 max-sm:h-5 bg-(--bg) border border-(--text) rounded accent-(--accent) cursor-pointer"
               value="creed"
             />
             CREED
           </label>
-          <label class="flex items-center gap-2 cursor-pointer text-sm text-(--text)">
+          <label
+            class="flex items-center gap-2 cursor-pointer text-sm max-sm:text-base max-sm:py-2 text-(--text)"
+          >
             <input
               type="checkbox"
-              class="filter-brand-checkbox w-4 h-4 bg-(--bg) border border-(--text) rounded accent-(--accent) cursor-pointer"
+              class="filter-brand-checkbox w-4 h-4 max-sm:w-5 max-sm:h-5 bg-(--bg) border border-(--text) rounded accent-(--accent) cursor-pointer"
               value="ariana grande"
             />
             ARIANA GRANDE
           </label>
-          <label class="flex items-center gap-2 cursor-pointer text-sm text-(--text)">
+          <label
+            class="flex items-center gap-2 cursor-pointer text-sm max-sm:text-base max-sm:py-2 text-(--text)"
+          >
             <input
               type="checkbox"
-              class="filter-brand-checkbox w-4 h-4 bg-(--bg) border border-(--text) rounded accent-(--accent) cursor-pointer"
+              class="filter-brand-checkbox w-4 h-4 max-sm:w-5 max-sm:h-5 bg-(--bg) border border-(--text) rounded accent-(--accent) cursor-pointer"
               value="odyssey"
             />
             ODYSSEY
@@ -360,22 +432,24 @@
       <!-- Ordenar por Precio -->
       <div class="mb-6">
         <label class="block text-sm text-(--text) font-serif mb-3 font-bold">
-          Ordenar por Precio
+          Ordenar por
         </label>
         <select
           id="sort-select"
-          class="w-full px-3 py-2 bg-(--bg) text-(--text) border border-(--text) rounded text-xs focus:outline-none focus:border-(--accent)"
+          class="w-full px-3 py-2 max-sm:py-3 max-sm:text-sm bg-(--bg) text-(--text) border border-(--text) rounded text-xs focus:outline-none focus:border-(--accent)"
         >
           <option value="">Sin ordenar</option>
           <option value="price-asc">Menor a Mayor</option>
           <option value="price-desc">Mayor a Menor</option>
+          <option value="name-asc">A → Z</option>
+          <option value="name-desc">Z → A</option>
         </select>
       </div>
 
       <!-- Botón Limpiar Filtros -->
       <button
         id="clear-filters"
-        class="w-full px-4 py-2 bg-(--accent) text-black font-serif font-bold text-sm rounded transition-all duration-200 hover:opacity-90 active:scale-95"
+        class="w-full px-4 py-2 max-sm:py-3 bg-(--accent) text-black font-serif font-bold text-sm max-sm:text-base rounded transition-all duration-200 hover:opacity-90 active:scale-95"
       >
         Limpiar Filtros
       </button>
@@ -383,32 +457,27 @@
 
     <main>
       <!-- HERO -->
-      <section class="relative w-full h-screen min-h-[550px] overflow-hidden">
+      <section
+        class="relative w-full h-screen min-h-[550px] max-sm:min-h-[300px] max-sm:h-[60vh] overflow-hidden pt-[150px] max-sm:pt-[120px]"
+      >
         <div class="slider-track">
           <div class="slide w-full h-full shrink-0">
             <img
-              src="assets/imgs/banner_logo.jpg"
-              alt="Banner con Logo Perfumeria"
-              class="w-full h-full object-cover object-top"
-            />
-          </div>
-          <div class="slide w-full h-full shrink-0">
-            <img
-              src="assets/imgs/sale.jpg"
+              src="assets/imgs/banner_secundario.png"
               alt="Banner de promocion"
               class="w-full h-full object-cover object-top"
             />
           </div>
           <div class="slide w-full h-full shrink-0">
             <img
-              src="assets/imgs/perfume_1.jpg"
+              src="assets/imgs/banner_perfumes.png"
               alt="Banner de Fragancia 1"
               class="w-full h-full object-cover object-top"
             />
           </div>
           <div class="slide w-full h-full shrink-0">
             <img
-              src="assets/imgs/pack.jpg"
+              src="assets/imgs/banner_oz_boton.png"
               alt="Banner de pack fragancias"
               class="w-full h-full object-cover object-top"
             />
@@ -417,11 +486,17 @@
       </section>
 
       <!-- DESTACADOS -->
-      <section class="bg-(--bg) py-[100px] px-20 text-center">
-        <h2 class="font-serif tracking-[4px] text-[35px] mb-8 text-(--text)">
+      <section
+        class="bg-(--bg) py-[100px] max-sm:py-12 px-20 max-sm:px-4 sm:px-8 text-center"
+      >
+        <h2
+          class="font-serif tracking-[4px] text-[35px] max-sm:text-xl max-sm:tracking-[2px] mb-8 max-sm:mb-4 text-(--text)"
+        >
           DESTACADOS O MAS VENDIDOS
         </h2>
-        <div class="flex justify-center gap-4 mb-16 text-sm">
+        <div
+          class="flex justify-center gap-4 max-sm:gap-2 max-sm:flex-wrap mb-16 max-sm:mb-8 text-sm max-sm:text-xs"
+        >
           <button
             class="active text-(--text) bg-transparent border-none cursor-pointer font-serif font-bold"
           >
@@ -450,7 +525,7 @@
         <!-- GRID -->
         <div
           id="products-grid"
-          class="grid grid-cols-4 gap-8 max-lg:grid-cols-2 max-sm:grid-cols-1"
+          class="grid grid-cols-4 gap-8 max-lg:grid-cols-2 max-lg:gap-6 max-sm:grid-cols-1 max-sm:gap-4"
         >
           <!-- Las tarjetas de productos se generarán dinámicamente aquí -->
         </div>
@@ -459,7 +534,7 @@
       <!-- RESEÑAS -->
       <section
         id="reviews-section"
-        class="bg-(--bg) py-[100px] px-20"
+        class="bg-(--bg) py-[100px] max-sm:py-12 px-20 max-sm:px-4 sm:px-8"
       >
         <div class="max-w-[1400px] mx-auto">
           <!-- Formulario de Reseña -->

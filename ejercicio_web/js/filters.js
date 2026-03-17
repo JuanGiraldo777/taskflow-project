@@ -6,21 +6,41 @@ export function initAdvancedFilters() {
   // Elementos de los filtros
   const minPriceInput = document.getElementById("min-price");
   const maxPriceInput = document.getElementById("max-price");
-  const filterBrandsCheckboxes = document.querySelectorAll(".filter-brand-checkbox");
+  const filterBrandsCheckboxes = document.querySelectorAll(
+    ".filter-brand-checkbox",
+  );
   const sortSelect = document.getElementById("sort-select");
   const clearFiltersBtn = document.getElementById("clear-filters");
 
   // Abrir/Cerrar panel de filtros
   filterBtn?.addEventListener("click", (e) => {
     e.stopPropagation();
+    const sideMenu = document.getElementById("sideMenu");
+
     filterPanel.classList.toggle("hidden");
-    overlay.classList.toggle("hidden");
+
+    // Mantener overlay visible si algo está abierto (filtros O menú lateral)
+    const isFilterOpen = !filterPanel.classList.contains("hidden");
+    const isMenuOpen = sideMenu?.classList.contains("active");
+
+    if (isFilterOpen || isMenuOpen) {
+      overlay.classList.remove("hidden");
+    } else {
+      overlay.classList.add("hidden");
+    }
   });
 
   // Cerrar panel al hacer click en el overlay o fuera del panel
   overlay?.addEventListener("click", () => {
+    const sideMenu = document.getElementById("sideMenu");
+
     filterPanel.classList.add("hidden");
-    overlay.classList.add("hidden");
+
+    // Solo ocultar overlay si el menú lateral NO está abierto
+    // Esto permite que nav.js maneje el overlay cuando el menú está activo
+    if (!sideMenu || !sideMenu.classList.contains("active")) {
+      overlay.classList.add("hidden");
+    }
   });
 
   filterPanel?.addEventListener("click", (e) => {
@@ -28,8 +48,8 @@ export function initAdvancedFilters() {
   });
 
   // Aplicar filtros en tiempo real
-  minPriceInput?.addEventListener("change", applyFilters);
-  maxPriceInput?.addEventListener("change", applyFilters);
+  minPriceInput?.addEventListener("input", applyFilters);
+  maxPriceInput?.addEventListener("input", applyFilters);
   filterBrandsCheckboxes.forEach((checkbox) => {
     checkbox.addEventListener("change", applyFilters);
   });
@@ -82,11 +102,17 @@ export function initAdvancedFilters() {
       visibleCards.sort((a, b) => {
         const priceA = parseFloat(a.dataset.price);
         const priceB = parseFloat(b.dataset.price);
+        const nameA = a.dataset.name?.toLowerCase() || "";
+        const nameB = b.dataset.name?.toLowerCase() || "";
 
         if (sortValue === "price-asc") {
           return priceA - priceB;
         } else if (sortValue === "price-desc") {
           return priceB - priceA;
+        } else if (sortValue === "name-asc") {
+          return nameA.localeCompare(nameB);
+        } else if (sortValue === "name-desc") {
+          return nameB.localeCompare(nameA);
         }
         return 0;
       });
