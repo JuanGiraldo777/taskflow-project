@@ -241,6 +241,7 @@ export function initWishlist() {
         const productId = parseInt(btn.getAttribute("data-id"));
         const productName = btn.getAttribute("data-name");
         const productPrice = parseInt(btn.getAttribute("data-price"));
+        if (isNaN(productPrice) || productPrice < 0) return;
 
         // Toggle: añade o elimina según esté en wishlist
         toggleWishlistItem(productId, productName, productPrice);

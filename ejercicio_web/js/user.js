@@ -2,6 +2,7 @@
 
 const USER_STORAGE_KEY = "maison-user-profile";
 const COUPON_STORAGE_KEY = "maison-user-coupon";
+let listenersAttached = false;
 
 /**
  * Obtiene el perfil del usuario desde localStorage
@@ -303,7 +304,10 @@ function renderProfileModal() {
     </div>
   `;
 
-  attachProfileModalListeners();
+  if (!listenersAttached) {
+    attachProfileModalListeners();
+    listenersAttached = true;
+  }
 }
 
 /**

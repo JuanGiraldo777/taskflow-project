@@ -1,3 +1,8 @@
+export function updateCardVisibility(card) {
+  card.style.display =
+    card.dataset.filteredOut || card.dataset.searchedOut ? "none" : "block";
+}
+
 export function initAdvancedFilters() {
   const filterBtn = document.getElementById("filter-btn");
   const filterPanel = document.getElementById("filter-panel");
@@ -90,10 +95,12 @@ export function initAdvancedFilters() {
 
       // Mostrar u ocultar card
       if (priceInRange && brandMatches) {
-        card.style.display = "block";
+        delete card.dataset.filteredOut;
+        updateCardVisibility(card);
         visibleCards.push(card);
       } else {
-        card.style.display = "none";
+        card.dataset.filteredOut = "true";
+        updateCardVisibility(card);
       }
     });
 

@@ -112,3 +112,11 @@ h1, h2, h3, h4, h5, h6 {
 .product-card:hover img {
   transform: scale(1.05);
 }
+
+/* Mobile overrides for Tailwind arbitrary values */
+@media (max-width: 640px) {
+  #filter-panel {
+    max-height: 80vh !important;
+    overflow-y: auto !important;
+  }
+}

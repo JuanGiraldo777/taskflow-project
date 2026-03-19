@@ -5,6 +5,8 @@
  * @property {HTMLElement} element - Nodo de la card de producto.
  */
 
+import { updateCardVisibility } from "./filters.js";
+
 const TRENDING_SEARCHES = [
   "Woody",
   "Floral",
@@ -147,7 +149,12 @@ export function initSearch() {
     let matches = 0;
     searchableProducts.forEach((product) => {
       const match = product.name.includes(searchText);
-      product.element.style.display = match ? "block" : "none";
+      if (match) {
+        delete product.element.dataset.searchedOut;
+      } else {
+        product.element.dataset.searchedOut = "true";
+      }
+      updateCardVisibility(product.element);
       if (match) matches++;
     });
 
@@ -164,7 +171,8 @@ export function initSearch() {
 
     // Mostrar todos los productos nuevamente
     searchableProducts.forEach((product) => {
-      product.element.style.display = "block";
+      delete product.element.dataset.searchedOut;
+      updateCardVisibility(product.element);
     });
   }
 

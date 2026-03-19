@@ -348,7 +348,8 @@ function renderReviewForm() {
     });
   });
 
-  document.addEventListener("mouseleave", () => {
+  const ratingGroup = document.querySelector(".rating-group");
+  ratingGroup?.addEventListener("mouseleave", () => {
     const checked = document.querySelector("input[name='rating']:checked");
     if (checked) {
       ratingDisplay.textContent = generateStars(parseInt(checked.value));

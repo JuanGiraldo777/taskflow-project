@@ -2,6 +2,7 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Maison de L'Eternel: Donde el aroma nunca muere</title>
 
     <!-- Favicon -->
@@ -85,49 +86,49 @@
         <ul class="list-none">
           <li class="mb-7">
             <a
-              href="#"
+              href="#ver_todos"
               class="no-underline text-(--text) font-serif text-[22px] tracking-wide"
               >Ver Todos</a
             >
           </li>
           <li class="mb-7">
             <a
-              href="#"
+              href="#caballero"
               class="no-underline text-(--text) font-serif text-[22px] tracking-wide"
               >Caballero</a
             >
           </li>
           <li class="mb-7">
             <a
-              href="#"
+              href="#mujer"
               class="no-underline text-(--text) font-serif text-[22px] tracking-wide"
               >Mujer</a
             >
           </li>
           <li class="mb-7">
             <a
-              href="#"
+              href="#diseñador"
               class="no-underline text-(--text) font-serif text-[22px] tracking-wide"
               >Diseñador</a
             >
           </li>
           <li class="mb-7">
             <a
-              href="#"
+              href="#unisex"
               class="no-underline text-(--text) font-serif text-[22px] tracking-wide"
               >Unisex</a
             >
           </li>
           <li class="mb-7">
             <a
-              href="#"
+              href="#arabe"
               class="no-underline text-(--text) font-serif text-[22px] tracking-wide"
               >Arabe</a
             >
           </li>
           <li class="mb-7">
             <a
-              href="#"
+              href="#nicho"
               class="no-underline text-(--text) font-serif text-[22px] tracking-wide"
               >Nicho</a
             >
@@ -137,16 +138,18 @@
     </aside>
 
     <header
-      class="top-bar absolute top-0 left-0 w-full h-[200px] max-sm:h-[180px] z-10 backdrop-blur-md bg-(--bg)/20"
+      class="top-bar absolute top-0 left-0 w-full h-[200px] max-sm:h-[70px] md:h-[190px] z-10 backdrop-blur-md bg-(--bg)/20"
     >
       <div
-        class="max-w-[1400px] mx-auto h-full grid grid-cols-[1fr_auto_1fr] max-sm:grid-cols-[auto_1fr_auto] items-center px-12 max-sm:px-4 max-sm:gap-2 text-(--primary-text)"
+        class="max-w-[1400px] mx-auto h-full grid grid-cols-[1fr_auto_1fr] max-sm:grid-cols-[auto_1fr_auto] md:grid-cols-[1fr_auto_1fr] items-center px-12 max-sm:px-4 md:px-8 max-sm:gap-2 md:gap-6 text-(--primary-text)"
       >
         <!--IZQUIERDA-->
-        <div class="justify-self-start flex items-center gap-8 max-sm:gap-3">
+        <div
+          class="justify-self-start flex items-center gap-8 max-sm:gap-3 md:gap-5"
+        >
           <button
             id="darkModeToggle"
-            class="mode-toggle flex items-center justify-center gap-2 text-[10px] px-[18px] py-[10px] max-sm:px-3 max-sm:py-2 max-sm:text-[8px] bg-(--bg) text-(--accent) border-none rounded-[30px] cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.3)] transition-all duration-200 hover:scale-105 hover:shadow-[0_6px_16px_rgba(0,0,0,0.4)] active:scale-95"
+            class="mode-toggle flex items-center justify-center gap-2 text-[10px] px-[18px] py-[10px] max-sm:px-3 max-sm:py-2 max-sm:text-[8px] md:px-4 md:py-2 md:text-[9px] bg-(--bg) text-(--accent) border-none rounded-[30px] cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.3)] transition-all duration-200 hover:scale-105 hover:shadow-[0_6px_16px_rgba(0,0,0,0.4)] active:scale-95"
             aria-label="Cambiar modo"
           >
             🌙 | ☀️
@@ -187,19 +190,19 @@
             id="main-logo"
             src="assets/imgs/LOGO_PRINCIPAL_NEGRO.png"
             alt="Logo Perfumeria"
-            class="h-[200px] max-sm:h-[100px] block"
+            class="h-[200px] max-sm:h-[60px] md:h-[140px] block"
           />
         </div>
 
         <!-- DERECHA -->
         <div
-          class="justify-self-end flex items-center gap-[26px] max-sm:gap-3 font-sans text-sm max-sm:text-xs tracking-wide"
+          class="justify-self-end flex items-center gap-[26px] max-sm:gap-3 md:gap-5 font-sans text-sm max-sm:text-xs md:text-sm tracking-wide"
         >
           <div
-            class="search-container relative hidden sm:flex items-center gap-3 pb-1 cursor-text hover:border-b hover:border-(--accent)"
+            class="search-container relative hidden sm:flex md:flex items-center gap-3 pb-1 cursor-text hover:border-b hover:border-(--accent)"
           >
             <svg
-              class="stroke-(--bg) cursor-pointer opacity-85 hover:opacity-100 hover:-translate-y-px transition-all duration-200 max-sm:w-6 max-sm:h-6"
+              class="stroke-(--bg) cursor-pointer opacity-85 hover:opacity-100 hover:-translate-y-px transition-all duration-200 max-sm:w-6 max-sm:h-6 md:w-7 md:h-7"
               width="30"
               height="30"
               xmlns="http://www.w3.org/2000/svg"
@@ -217,7 +220,7 @@
               type="text"
               id="search"
               placeholder="Buscar perfume"
-              class="text-white bg-transparent opacity-90 text-[15px] max-sm:text-xs tracking-wide border-none outline-none focus:opacity-100 transition-opacity duration-200"
+              class="text-white bg-transparent opacity-90 text-[15px] max-sm:text-xs md:text-sm tracking-wide border-none outline-none focus:opacity-100 transition-opacity duration-200"
             />
 
             <!-- SEARCH DROPDOWN -->
@@ -236,7 +239,7 @@
               aria-label="Abrir perfil de usuario"
             >
               <svg
-                class="stroke-(--bg) cursor-pointer opacity-85 hover:opacity-100 hover:-translate-y-px transition-all duration-200 max-sm:w-6 max-sm:h-6"
+                class="stroke-(--bg) cursor-pointer opacity-85 hover:opacity-100 hover:-translate-y-px transition-all duration-200 max-sm:w-6 max-sm:h-6 md:w-7 md:h-7"
                 width="30"
                 height="30"
                 xmlns="http://www.w3.org/2000/svg"
@@ -256,7 +259,7 @@
           <div class="relative">
             <div class="cart-icon cursor-pointer relative min-w-8 min-h-8">
               <svg
-                class="stroke-(--bg) cursor-pointer opacity-85 hover:opacity-100 hover:-translate-y-px transition-all duration-200 max-sm:w-6 max-sm:h-6"
+                class="stroke-(--bg) cursor-pointer opacity-85 hover:opacity-100 hover:-translate-y-px transition-all duration-200 max-sm:w-6 max-sm:h-6 md:w-7 md:h-7"
                 width="30"
                 height="30"
                 xmlns="http://www.w3.org/2000/svg"
@@ -280,7 +283,7 @@
           <div class="relative">
             <div class="wishlist-icon cursor-pointer relative min-w-8 min-h-8">
               <svg
-                class="stroke-(--bg) cursor-pointer opacity-85 hover:opacity-100 hover:-translate-y-px transition-all duration-200 max-sm:w-6 max-sm:h-6"
+                class="stroke-(--bg) cursor-pointer opacity-85 hover:opacity-100 hover:-translate-y-px transition-all duration-200 max-sm:w-6 max-sm:h-6 md:w-7 md:h-7"
                 width="30"
                 height="30"
                 xmlns="http://www.w3.org/2000/svg"
@@ -300,7 +303,7 @@
               >
             </div>
             <div
-              class="icon-wishlist-container hidden absolute top-[40px] right-0 max-sm:left-0 bg-(--card-bg) border-2 border-(--accent) p-[10px] w-[200px] max-sm:w-[180px] z-50"
+              class="icon-wishlist-container hidden absolute top-[40px] right-0 max-sm:left-0 max-sm:right-0 max-sm:fixed max-sm:top-auto bg-(--card-bg) border-2 border-(--accent) p-[10px] w-64 max-sm:w-screen z-50"
             >
               <!-- Aquí se renderizan dinámicamente los productos de la wishlist -->
             </div>
@@ -312,7 +315,7 @@
     <!-- PANEL DE FILTROS -->
     <div
       id="filter-panel"
-      class="hidden fixed top-[150px] max-sm:top-[120px] left-[80px] max-sm:left-0 max-sm:right-0 max-sm:w-full max-sm:max-w-[280px] max-sm:mx-auto bg-(--card-bg) border border-(--accent) rounded-lg max-sm:rounded-none shadow-lg z-[200] p-6 max-sm:p-4 w-[280px]"
+      class="hidden fixed top-[150px] max-sm:top-[120px] left-[80px] max-sm:left-0 max-sm:right-0 max-sm:w-screen max-sm:max-h-[80vh] max-sm:overflow-y-auto max-sm:max-w-[280px] max-sm:mx-auto bg-(--card-bg) border border-(--accent) rounded-lg max-sm:rounded-none shadow-lg z-[200] p-6 max-sm:p-4 w-[280px]"
     >
       <h3 class="font-serif text-lg text-(--text) mb-6 tracking-wide">
         FILTROS
@@ -458,7 +461,7 @@
     <main>
       <!-- HERO -->
       <section
-        class="relative w-full h-screen min-h-[550px] max-sm:min-h-[300px] max-sm:h-[60vh] overflow-hidden pt-[150px] max-sm:pt-[120px]"
+        class="relative w-full h-screen min-h-[550px] max-sm:min-h-[300px] max-sm:h-[60vh] md:min-h-[70vh] overflow-hidden pt-[150px] max-sm:pt-[120px] md:pt-[130px]"
       >
         <div class="slider-track">
           <div class="slide w-full h-full shrink-0">
@@ -487,15 +490,15 @@
 
       <!-- DESTACADOS -->
       <section
-        class="bg-(--bg) py-[100px] max-sm:py-12 px-20 max-sm:px-4 sm:px-8 text-center"
+        class="bg-(--bg) py-[100px] max-sm:py-12 md:py-16 px-20 max-sm:px-4 sm:px-8 md:px-12 text-center section-destacados"
       >
         <h2
-          class="font-serif tracking-[4px] text-[35px] max-sm:text-xl max-sm:tracking-[2px] mb-8 max-sm:mb-4 text-(--text)"
+          class="font-serif tracking-[4px] text-[35px] max-sm:text-xl max-sm:tracking-[2px] md:text-2xl md:tracking-[3px] mb-8 max-sm:mb-4 md:mb-10 text-(--text)"
         >
           DESTACADOS O MAS VENDIDOS
         </h2>
         <div
-          class="flex justify-center gap-4 max-sm:gap-2 max-sm:flex-wrap mb-16 max-sm:mb-8 text-sm max-sm:text-xs"
+          class="flex justify-center gap-4 max-sm:gap-2 md:gap-6 max-sm:flex-wrap md:flex-nowrap max-sm:overflow-x-auto max-sm:pb-2 max-sm:max-w-full max-sm:flex-row mb-16 max-sm:mb-8 md:mb-12 text-sm max-sm:text-xs md:text-sm category-buttons"
         >
           <button
             class="active text-(--text) bg-transparent border-none cursor-pointer font-serif font-bold"
@@ -525,7 +528,7 @@
         <!-- GRID -->
         <div
           id="products-grid"
-          class="grid grid-cols-4 gap-8 max-lg:grid-cols-2 max-lg:gap-6 max-sm:grid-cols-1 max-sm:gap-4"
+          class="grid grid-cols-4 gap-8 max-lg:grid-cols-2 max-lg:gap-6 max-sm:grid-cols-1 max-sm:gap-4 md:gap-8"
         >
           <!-- Las tarjetas de productos se generarán dinámicamente aquí -->
         </div>
@@ -534,7 +537,7 @@
       <!-- RESEÑAS -->
       <section
         id="reviews-section"
-        class="bg-(--bg) py-[100px] max-sm:py-12 px-20 max-sm:px-4 sm:px-8"
+        class="bg-(--bg) py-[100px] max-sm:py-12 md:py-16 px-20 max-sm:px-4 sm:px-8 md:px-12"
       >
         <div class="max-w-[1400px] mx-auto">
           <!-- Formulario de Reseña -->
