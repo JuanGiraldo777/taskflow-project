@@ -2,6 +2,10 @@ const express = require('express');
 const cors    = require('cors');
 const { port } = require('./config/env');
 
+const productRoutes  = require('./routes/product.routes');
+const categoryRoutes = require('./routes/category.routes');
+const brandRoutes    = require('./routes/brand.routes');
+
 const app = express();
 
 // ── Middlewares globales ────────────────────────────────────────────────────
@@ -15,13 +19,10 @@ app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok', message: 'Servidor Maison activo' });
 });
 
-// ── Rutas de negocio (se añadirán en prompts posteriores) ───────────────────
-// app.use('/api/v1/products',  productRoutes);
-// app.use('/api/v1/cart',      cartRoutes);
-// app.use('/api/v1/wishlist',  wishlistRoutes);
-// app.use('/api/v1/reviews',   reviewRoutes);
-// app.use('/api/v1/users',     userRoutes);
-// app.use('/api/v1/auth',      authRoutes);
+// ── Rutas de negocio ────────────────────────────────────────────────────────
+app.use('/api/v1/products',   productRoutes);
+app.use('/api/v1/categories', categoryRoutes);
+app.use('/api/v1/brands',     brandRoutes);
 
 // ── Middleware global de errores (siempre al final, requiere 4 parámetros) ──
 // Express identifica los middlewares de error por tener exactamente 4 params.
