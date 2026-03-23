@@ -1,10 +1,12 @@
-const express = require('express');
-const cors    = require('cors');
-const { port } = require('./config/env');
+const express = require("express");
+const cors = require("cors");
+const { port } = require("./config/env");
 
-const productRoutes  = require('./routes/product.routes');
-const categoryRoutes = require('./routes/category.routes');
-const brandRoutes    = require('./routes/brand.routes');
+const authRoutes = require("./routes/auth.routes");
+const userRoutes = require("./routes/user.routes");
+const productRoutes = require("./routes/product.routes");
+const categoryRoutes = require("./routes/category.routes");
+const brandRoutes = require("./routes/brand.routes");
 
 const app = express();
 
@@ -15,14 +17,16 @@ app.use(express.json());
 // ── Health check ────────────────────────────────────────────────────────────
 // Endpoint para verificar que el servidor responde correctamente.
 // Útil también para que Koyeb compruebe que el servicio está vivo.
-app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'ok', message: 'Servidor Maison activo' });
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok", message: "Servidor Maison activo" });
 });
 
 // ── Rutas de negocio ────────────────────────────────────────────────────────
-app.use('/api/v1/products',   productRoutes);
-app.use('/api/v1/categories', categoryRoutes);
-app.use('/api/v1/brands',     brandRoutes);
+app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/products", productRoutes);
+app.use("/api/v1/categories", categoryRoutes);
+app.use("/api/v1/brands", brandRoutes);
 
 // ── Middleware global de errores (siempre al final, requiere 4 parámetros) ──
 // Express identifica los middlewares de error por tener exactamente 4 params.
@@ -30,13 +34,16 @@ app.use('/api/v1/brands',     brandRoutes);
 app.use((err, req, res, next) => {
   console.error(err);
 
-  if (err.message === 'NOT_FOUND') {
-    return res.status(404).json({ error: 'Recurso no encontrado' });
-  }
+  if (err.message === "NOT_FOUND")
+    return res.status(404).json({ error: "Recurso no encontrado" });
+  if (err.message === "INVALID_CREDENTIALS")
+    return res.status(401).json({ error: "Email o contraseña incorrectos" });
+  if (err.message === "EMAIL_TAKEN")
+    return res.status(409).json({ error: "El email ya está registrado" });
 
   // Para cualquier otro error no controlado: log interno, respuesta genérica.
   // Nunca devolver err.stack al cliente — expone detalles internos del servidor.
-  res.status(500).json({ error: 'Error interno del servidor' });
+  res.status(500).json({ error: "Error interno del servidor" });
 });
 
 // ── Arranque ────────────────────────────────────────────────────────────────
