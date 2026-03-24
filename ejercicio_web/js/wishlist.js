@@ -1,89 +1,77 @@
-// Lista de deseos (wishlist) - Mejora visual y funcionalidad
+import { wishlistApi } from "./api/client.js";
 
-let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+let wishlistState = [];
 
-/**
- * Guarda la wishlist actual en localStorage
- */
-function saveToLocalStorage() {
-  localStorage.setItem("wishlist", JSON.stringify(wishlist));
-}
-
-/**
- * Comprueba si un producto está en la wishlist
- * @param {number} productId
- * @returns {boolean}
- */
 function isInWishlist(productId) {
-  return wishlist.some((item) => item.id === productId);
+  return wishlistState.some((item) => item.product_id === productId);
 }
 
-/**
- * Añade un producto a la wishlist
- * @param {number} productId
- * @param {string} productName
- * @param {number} productPrice
- */
-function addToWishlist(productId, productName, productPrice) {
-  if (!isInWishlist(productId)) {
-    wishlist.push({
-      id: productId,
-      name: productName,
-      price: productPrice,
-    });
-    saveToLocalStorage();
+async function syncWishlist() {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    wishlistState = [];
+    updateWishlistCount();
+    renderWishlistPanel();
+    return;
+  }
+
+  try {
+    wishlistState = await wishlistApi.getWishlist();
+    updateWishlistCount();
+    renderWishlistPanel();
+    initializeFavoriteIcons();
+  } catch (err) {
+    console.error("Error al cargar wishlist:", err);
   }
 }
 
-/**
- * Elimina un producto de la wishlist por ID
- * @param {number} productId
- */
-function removeFromWishlist(productId) {
-  wishlist = wishlist.filter((item) => item.id !== productId);
-  saveToLocalStorage();
-}
+async function addToWishlist(productId) {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("Inicia sesión para añadir a favoritos");
+    return;
+  }
 
-/**
- * Alterna (toggle) un producto en la wishlist
- * @param {number} productId
- * @param {string} productName
- * @param {number} productPrice
- */
-function toggleWishlistItem(productId, productName, productPrice) {
-  if (isInWishlist(productId)) {
-    removeFromWishlist(productId);
-  } else {
-    addToWishlist(productId, productName, productPrice);
+  try {
+    wishlistState = await wishlistApi.addItem(productId);
+    updateWishlistCount();
+    renderWishlistPanel();
+    initializeFavoriteIcons();
+  } catch (err) {
+    console.error(err);
   }
 }
 
-/**
- * Vacía completamente la wishlist
- */
-function clearWishlist() {
-  wishlist = [];
-  saveToLocalStorage();
-  updateWishlistCount();
-  renderWishlistPanel();
+async function removeFromWishlist(itemId) {
+  try {
+    wishlistState = await wishlistApi.removeItem(itemId);
+    updateWishlistCount();
+    renderWishlistPanel();
+    initializeFavoriteIcons();
+  } catch (err) {
+    console.error(err);
+  }
 }
 
-/**
- * Actualiza el contador de la wishlist en el header
- */
+async function clearWishlist() {
+  try {
+    await wishlistApi.clearWishlist();
+    wishlistState = [];
+    updateWishlistCount();
+    renderWishlistPanel();
+    initializeFavoriteIcons();
+  } catch (err) {
+    console.error(err);
+  }
+}
+
 function updateWishlistCount() {
   const countElement = document.querySelector(".wishlist-count");
   if (countElement) {
-    countElement.textContent = wishlist.length;
+    countElement.textContent = String(wishlistState.length);
   }
 }
 
-/**
- * Actualiza el visual del icono de favoritos en una card.
- * Si el producto está en wishlist, colorea el SVG con (--accent).
- * Si no, lo deja con el color original.
- * @param {number} productId
- */
 function updateFavoriteIcon(productId) {
   const button = document.querySelector(
     `.add-to-favorites[data-id="${productId}"]`,
@@ -96,13 +84,11 @@ function updateFavoriteIcon(productId) {
   const inWishlist = isInWishlist(productId);
 
   if (inWishlist) {
-    // Colorear con accent usando CSS variables
     svg.style.fill = "var(--accent)";
     svg.style.stroke = "var(--accent)";
     svg.style.color = "var(--accent)";
     button.classList.add("favorite-active");
   } else {
-    // Descolorear al original
     svg.style.fill = "none";
     svg.style.stroke = "";
     svg.style.color = "";
@@ -110,29 +96,23 @@ function updateFavoriteIcon(productId) {
   }
 }
 
-/**
- * Inicializa todos los iconos de favoritos basado en el estado actual de wishlist
- */
 function initializeFavoriteIcons() {
   const favoriteButtons = document.querySelectorAll(".add-to-favorites");
   favoriteButtons.forEach((button) => {
-    const productId = parseInt(button.getAttribute("data-id"));
-    updateFavoriteIcon(productId);
+    const productId = Number(button.getAttribute("data-id"));
+    if (!Number.isNaN(productId)) {
+      updateFavoriteIcon(productId);
+    }
   });
 }
 
-/**
- * Renderiza el panel flotante con los productos de la wishlist
- */
 function renderWishlistPanel() {
   const container = document.querySelector(".icon-wishlist-container");
   if (!container) return;
 
-  // Limpia el contenedor
   container.innerHTML = "";
 
-  // Si la wishlist está vacía
-  if (wishlist.length === 0) {
+  if (wishlistState.length === 0) {
     container.innerHTML = `
       <div class="p-6 text-center">
         <div class="mb-3">
@@ -147,19 +127,18 @@ function renderWishlistPanel() {
     return;
   }
 
-  // Crea la lista de productos con mejor visual
-  const itemsHtml = wishlist
+  const itemsHtml = wishlistState
     .map(
       (item) => `
     <div class="wishlist-item border-b border-gray-700 py-3 px-4 hover:bg-gray-800/40 transition-colors">
       <div class="flex justify-between items-start gap-2 mb-2">
         <div class="flex-1 min-w-0">
           <p class="text-(--text) text-sm font-serif truncate">${item.name}</p>
-          <p class="text-(--accent) text-sm font-semibold">$${item.price.toLocaleString()}</p>
+          <p class="text-(--accent) text-sm font-semibold">$${Number(item.price || 0).toLocaleString()}</p>
         </div>
         <button
           class="remove-wishlist-item text-gray-400 hover:text-(--accent) hover:scale-125 transition-all duration-150"
-          data-product-id="${item.id}"
+          data-item-id="${item.id}"
           aria-label="Eliminar de lista de deseos"
           title="Eliminar"
         >
@@ -173,7 +152,6 @@ function renderWishlistPanel() {
     )
     .join("");
 
-  // Botón para vaciar todo
   const clearButtonHtml = `
     <button
       id="clearWishlistBtn"
@@ -185,32 +163,24 @@ function renderWishlistPanel() {
 
   container.innerHTML = itemsHtml + clearButtonHtml;
 
-  // Añade event listeners a los botones de eliminar individuales
   container.querySelectorAll(".remove-wishlist-item").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
-      const productId = parseInt(btn.getAttribute("data-product-id"));
-      removeFromWishlist(productId);
-      updateFavoriteIcon(productId);
-      updateWishlistCount();
-      renderWishlistPanel();
+      const itemId = Number(btn.getAttribute("data-item-id"));
+      if (Number.isNaN(itemId)) return;
+      removeFromWishlist(itemId);
     });
   });
 
-  // Listener para el botón de vaciar todo
   const clearBtn = document.getElementById("clearWishlistBtn");
   if (clearBtn) {
     clearBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       clearWishlist();
-      initializeFavoriteIcons();
     });
   }
 }
 
-/**
- * Alterna la visibilidad del panel flotante de wishlist
- */
 function toggleWishlistPanel() {
   const container = document.querySelector(".icon-wishlist-container");
   if (container) {
@@ -218,19 +188,12 @@ function toggleWishlistPanel() {
   }
 }
 
-/**
- * Inicializa la funcionalidad de wishlist
- */
 export function initWishlist() {
-  // Inicializa el contador y el panel al cargar la página
   updateWishlistCount();
   renderWishlistPanel();
   initializeFavoriteIcons();
 
-  // Obtiene el contenedor del grid de productos
   const productsGrid = document.getElementById("products-grid");
-
-  // Event delegation: escucha clics en botones .add-to-favorites
   if (productsGrid) {
     productsGrid.addEventListener("click", (e) => {
       const btn = e.target.closest(".add-to-favorites");
@@ -238,25 +201,22 @@ export function initWishlist() {
         e.preventDefault();
         e.stopPropagation();
 
-        const productId = parseInt(btn.getAttribute("data-id"));
-        const productName = btn.getAttribute("data-name");
-        const productPrice = parseInt(btn.getAttribute("data-price"));
-        if (isNaN(productPrice) || productPrice < 0) return;
+        const productId = Number(btn.getAttribute("data-id"));
+        if (Number.isNaN(productId)) return;
 
-        // Toggle: añade o elimina según esté en wishlist
-        toggleWishlistItem(productId, productName, productPrice);
+        const existingItem = wishlistState.find(
+          (item) => item.product_id === productId,
+        );
 
-        // Actualiza el visual del icono
-        updateFavoriteIcon(productId);
-
-        // Actualiza el contador y el panel
-        updateWishlistCount();
-        renderWishlistPanel();
+        if (existingItem) {
+          removeFromWishlist(existingItem.id);
+        } else {
+          addToWishlist(productId);
+        }
       }
     });
   }
 
-  // Listener para abrir/cerrar el panel de wishlist
   const wishlistIcon = document.querySelector(".wishlist-icon");
   if (wishlistIcon) {
     wishlistIcon.addEventListener("click", (e) => {
@@ -265,20 +225,24 @@ export function initWishlist() {
     });
   }
 
-  // Cierra el panel si se hace clic fuera de él
   document.addEventListener("click", (e) => {
     const wishlistContainer = document.querySelector(
       ".icon-wishlist-container",
     );
-    const wishlistIcon = document.querySelector(".wishlist-icon");
+    const wishlistIconElement = document.querySelector(".wishlist-icon");
 
-    if (wishlistContainer && wishlistIcon) {
+    if (wishlistContainer && wishlistIconElement) {
       if (
         !wishlistContainer.contains(e.target) &&
-        !wishlistIcon.contains(e.target)
+        !wishlistIconElement.contains(e.target)
       ) {
         wishlistContainer.classList.add("hidden");
       }
     }
   });
+
+  window.addEventListener("products-rendered", initializeFavoriteIcons);
+  syncWishlist();
+  window.addEventListener("user-logged-in", () => syncWishlist());
+  window.addEventListener("session-expired", () => syncWishlist());
 }

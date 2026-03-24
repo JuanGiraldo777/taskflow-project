@@ -1,64 +1,11 @@
-// Lógica del carrito de compras - Drawer lateral
+import { cartApi } from "./api/client.js";
 
-const CART_STORAGE_KEY = "cart";
+let cartState = { items: [], total: 0 };
 
-/**
- * @typedef {Object} CartItem
- * @property {string} id - Identificador único del producto.
- * @property {string} name - Nombre del producto.
- * @property {number} price - Precio unitario del producto.
- * @property {number} quantity - Cantidad de unidades en el carrito.
- */
-
-/** @type {CartItem[]} */
-let cartItems = loadCartFromStorage();
-
-/** @type {HTMLElement | null} */
 let cartDrawer;
-/** @type {HTMLElement | null} */
 let cartItemsContainer;
-/** @type {HTMLElement | null} */
 let cartTotalElement;
-/** @type {HTMLElement | null} */
 let cartCounterElement;
-
-/**
- * Carga el carrito previamente guardado en localStorage.
- * @returns {CartItem[]}
- */
-function loadCartFromStorage() {
-  try {
-    const raw = localStorage.getItem(CART_STORAGE_KEY);
-    const parsed = raw ? JSON.parse(raw) : [];
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
-}
-
-/**
- * Guarda el estado actual del carrito en localStorage.
- */
-function saveCartToStorage() {
-  localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
-}
-
-/**
- * Devuelve un producto del carrito por su id.
- * @param {string} id
- * @returns {CartItem | undefined}
- */
-function getCartItemById(id) {
-  return cartItems.find((item) => item.id === id);
-}
-
-/**
- * Calcula el total del carrito.
- * @returns {number}
- */
-function calculateTotal() {
-  return cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-}
 
 /**
  * Crea el nodo DOM que representa un producto en el drawer del carrito.
@@ -66,7 +13,7 @@ function calculateTotal() {
  * @returns {HTMLDivElement}
  */
 function createCartItemElement(item) {
-  const subtotal = item.price * item.quantity;
+  const subtotal = Number(item.price || 0) * Number(item.quantity || 0);
   const itemElement = document.createElement("div");
   itemElement.className =
     "cart-item border-b border-gray-700 py-4 px-4 hover:bg-gray-800/50 transition-colors";
@@ -80,7 +27,7 @@ function createCartItemElement(item) {
       </button>
     </div>
     <div class="flex justify-between items-center mb-3">
-      <span class="text-(--text) text-[13px]">$${item.price.toFixed(2)}</span>
+      <span class="text-(--text) text-[13px]">$${Number(item.price || 0).toFixed(2)}</span>
       <span class="text-gray-400 text-[12px]">x${item.quantity}</span>
     </div>
     <div class="flex items-center justify-between">
@@ -107,10 +54,13 @@ function renderCartDrawer() {
 
   cartItemsContainer.innerHTML = "";
 
-  const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const totalItems = cartState.items.reduce(
+    (sum, item) => sum + Number(item.quantity || 0),
+    0,
+  );
   cartCounterElement.textContent = String(totalItems);
 
-  if (cartItems.length === 0) {
+  if (cartState.items.length === 0) {
     cartItemsContainer.innerHTML = `
       <div class="flex flex-col items-center justify-center h-64 text-center px-4">
         <svg class="w-16 h-16 text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -128,11 +78,11 @@ function renderCartDrawer() {
     return;
   }
 
-  cartItems.forEach((item) => {
+  cartState.items.forEach((item) => {
     cartItemsContainer.appendChild(createCartItemElement(item));
   });
 
-  const total = calculateTotal();
+  const total = Number(cartState.total || 0);
   cartTotalElement.innerHTML = `
     <div class="border-t border-gray-700 p-4 space-y-4">
       <div class="flex justify-between items-center">
@@ -175,73 +125,111 @@ function closeCartDrawer() {
  * @param {string} name
  * @param {number} price
  */
-function addItemToCart(id, name, price) {
-  const existingItem = getCartItemById(id);
-
-  if (existingItem) {
-    existingItem.quantity += 1;
-  } else {
-    cartItems.push({ id, name, price, quantity: 1 });
+async function syncCart() {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    cartState = { items: [], total: 0 };
+    renderCartDrawer();
+    return;
   }
 
-  saveCartToStorage();
-  renderCartDrawer();
-  openCartDrawer();
+  try {
+    cartState = await cartApi.getCart();
+    renderCartDrawer();
+  } catch (err) {
+    console.error("Error al cargar el carrito:", err);
+  }
+}
+
+async function addItemToCart(productId) {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("Inicia sesión para añadir productos al carrito");
+    return;
+  }
+
+  try {
+    cartState = await cartApi.addItem(productId, 1);
+    renderCartDrawer();
+    openCartDrawer();
+  } catch (err) {
+    alert(err.message);
+  }
+}
+
+async function updateQuantity(itemId, quantity) {
+  if (quantity < 1) return;
+
+  try {
+    cartState = await cartApi.updateQuantity(itemId, quantity);
+    renderCartDrawer();
+  } catch (err) {
+    alert(err.message);
+  }
+}
+
+async function removeItem(itemId) {
+  try {
+    cartState = await cartApi.removeItem(itemId);
+    renderCartDrawer();
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 /**
  * Gestiona clicks en botones "Añadir al carrito" de las product cards.
- * @param {MouseEvent} event
+ * @param {HTMLElement} button
  */
-function handleAddToCartClick(event) {
-  const button = /** @type {HTMLElement} */ (event.currentTarget);
-  const id = button.dataset.id;
-  const name = button.dataset.name;
-  const price = Number(button.dataset.price);
+function handleAddToCartClick(button) {
+  const id = Number(button.dataset.id);
 
-  if (!id || !name || Number.isNaN(price)) return;
+  if (!id || Number.isNaN(id)) return;
 
-  addItemToCart(id, name, price);
+  addItemToCart(id);
 }
 
 /**
  * Gestiona clicks dentro del drawer: aumentar/disminuir cantidad, eliminar.
  * @param {MouseEvent} event
  */
-function handleCartDrawerClick(event) {
+async function handleCartDrawerClick(event) {
   const target = /** @type {HTMLElement} */ (event.target);
   const button = target.closest("button");
 
   if (!button) return;
 
-  const id = button.dataset.id;
-  if (!id) return;
+  const id = Number(button.dataset.id);
+  if (!id || Number.isNaN(id)) return;
 
   if (button.classList.contains("increase-qty")) {
-    const item = getCartItemById(id);
-    if (item) item.quantity += 1;
+    const item = cartState.items.find((cartItem) => cartItem.id === id);
+    if (item) {
+      await updateQuantity(item.id, Number(item.quantity) + 1);
+    }
   } else if (button.classList.contains("decrease-qty")) {
-    const item = getCartItemById(id);
-    if (item && item.quantity > 1) {
-      item.quantity -= 1;
+    const item = cartState.items.find((cartItem) => cartItem.id === id);
+    if (item && Number(item.quantity) > 1) {
+      await updateQuantity(item.id, Number(item.quantity) - 1);
     }
   } else if (button.classList.contains("remove-item")) {
-    cartItems = cartItems.filter((item) => item.id !== id);
+    await removeItem(id);
   } else {
     return;
   }
-
-  saveCartToStorage();
-  renderCartDrawer();
 }
 
 /**
  * Vacía completamente el carrito.
  */
-function clearCart() {
-  cartItems = [];
-  saveCartToStorage();
-  renderCartDrawer();
+async function clearCart() {
+  try {
+    await cartApi.clearCart();
+    cartState = { items: [], total: 0 };
+    renderCartDrawer();
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 /**
@@ -255,7 +243,7 @@ export function initCart() {
   const cartIcon = document.querySelector(".cart-icon");
   const closeCartBtn = document.getElementById("close-cart-btn");
   const cartOverlay = document.getElementById("cart-overlay");
-  const addToCartButtons = document.querySelectorAll(".add-to-cart");
+  const productsGrid = document.getElementById("products-grid");
 
   if (
     !cartDrawer ||
@@ -265,10 +253,14 @@ export function initCart() {
   )
     return;
 
-  // Botones "Añadir al carrito"
-  addToCartButtons.forEach((button) => {
-    button.addEventListener("click", handleAddToCartClick);
-  });
+  if (productsGrid) {
+    productsGrid.addEventListener("click", (e) => {
+      const button = e.target.closest(".add-to-cart");
+      if (button) {
+        handleAddToCartClick(button);
+      }
+    });
+  }
 
   // Click en icono carrito: abre el drawer
   cartIcon?.addEventListener("click", openCartDrawer);
@@ -294,4 +286,8 @@ export function initCart() {
   });
 
   renderCartDrawer();
+  syncCart();
+
+  window.addEventListener("user-logged-in", () => syncCart());
+  window.addEventListener("session-expired", () => syncCart());
 }

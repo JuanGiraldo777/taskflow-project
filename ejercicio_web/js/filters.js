@@ -1,7 +1,4 @@
-export function updateCardVisibility(card) {
-  card.style.display =
-    card.dataset.filteredOut || card.dataset.searchedOut ? "none" : "block";
-}
+import { fetchProducts } from "./products.js";
 
 export function initAdvancedFilters() {
   const filterBtn = document.getElementById("filter-btn");
@@ -72,63 +69,21 @@ export function initAdvancedFilters() {
   });
 
   function applyFilters() {
-    const minPrice = parseFloat(minPriceInput?.value) || 0;
-    const maxPrice = parseFloat(maxPriceInput?.value) || Infinity;
+    const minPrice = minPriceInput?.value || "";
+    const maxPrice = maxPriceInput?.value || "";
+
     const selectedBrands = Array.from(filterBrandsCheckboxes)
-      .filter((checkbox) => checkbox.checked)
-      .map((checkbox) => checkbox.value.toLowerCase());
-    const sortValue = sortSelect?.value || "";
+      .filter((cb) => cb.checked)
+      .map((cb) => cb.value.toLowerCase());
 
-    const productCards = document.querySelectorAll(".product-card");
-    let visibleCards = [];
+    const sortBy = sortSelect?.value || "";
 
-    productCards.forEach((card) => {
-      const price = parseFloat(card.dataset.price) || 0;
-      const brand = card.dataset.brand || "";
-
-      // Filtro por rango de precio
-      const priceInRange = price >= minPrice && price <= maxPrice;
-
-      // Filtro por marca (si no hay marcas seleccionadas, mostrar todas)
-      const brandMatches =
-        selectedBrands.length === 0 || selectedBrands.includes(brand);
-
-      // Mostrar u ocultar card
-      if (priceInRange && brandMatches) {
-        delete card.dataset.filteredOut;
-        updateCardVisibility(card);
-        visibleCards.push(card);
-      } else {
-        card.dataset.filteredOut = "true";
-        updateCardVisibility(card);
-      }
+    fetchProducts({
+      minPrice,
+      maxPrice,
+      brands: selectedBrands,
+      sortBy,
+      page: 1,
     });
-
-    // Aplicar ordenamiento
-    if (sortValue && visibleCards.length > 0) {
-      visibleCards.sort((a, b) => {
-        const priceA = parseFloat(a.dataset.price);
-        const priceB = parseFloat(b.dataset.price);
-        const nameA = a.dataset.name?.toLowerCase() || "";
-        const nameB = b.dataset.name?.toLowerCase() || "";
-
-        if (sortValue === "price-asc") {
-          return priceA - priceB;
-        } else if (sortValue === "price-desc") {
-          return priceB - priceA;
-        } else if (sortValue === "name-asc") {
-          return nameA.localeCompare(nameB);
-        } else if (sortValue === "name-desc") {
-          return nameB.localeCompare(nameA);
-        }
-        return 0;
-      });
-
-      // Reorganizar los elementos en el DOM según el ordenamiento
-      const gridContainer = document.getElementById("products-grid");
-      visibleCards.forEach((card) => {
-        gridContainer.appendChild(card);
-      });
-    }
   }
 }

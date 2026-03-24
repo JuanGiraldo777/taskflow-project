@@ -1,107 +1,90 @@
-const PRODUCTS = [
-  {
-    id: 1,
-    name: "Bharara King",
-    brand: "BHARARA",
-    originalPrice: 340000,
-    discountedPrice: 25000,
-    image: "assets/imgs_destacados/bharara_king_producto.png",
-  },
-  {
-    id: 2,
-    name: "Afnan 9PM",
-    brand: "AFNAN",
-    originalPrice: 340000,
-    discountedPrice: 55000,
-    image: "assets/imgs_destacados/afnan_9pm_producto.png",
-  },
-  {
-    id: 3,
-    name: "ASAD Lattafa",
-    brand: "LATTAFA",
-    originalPrice: 340000,
-    discountedPrice: 45000,
-    image: "assets/imgs_destacados/asad_lattafa_producto.png",
-  },
-  {
-    id: 4,
-    name: "Dior Sauvage",
-    brand: "DIOR",
-    originalPrice: 340000,
-    discountedPrice: 45000,
-    image: "assets/imgs_destacados/dior_sauvage_producto.png",
-  },
-  {
-    id: 5,
-    name: "Versace Eros Flame",
-    brand: "VERSACE",
-    originalPrice: 340000,
-    discountedPrice: 75000,
-    image: "assets/imgs_destacados/versace_eros_flame_producto.png",
-  },
-  {
-    id: 6,
-    name: "Creed Aventus",
-    brand: "CREED",
-    originalPrice: 340000,
-    discountedPrice: 88000,
-    image: "assets/imgs_destacados/creed_aventus_producto.png",
-  },
-  {
-    id: 7,
-    name: "Ariana Grande Cloud",
-    brand: "ARIANA GRANDE",
-    originalPrice: 340000,
-    discountedPrice: 35000,
-    image: "assets/imgs_destacados/ariana_grande_cloud_producto.png",
-  },
-  {
-    id: 8,
-    name: "Odyssey Homme",
-    brand: "ODYSSEY",
-    originalPrice: 340000,
-    discountedPrice: 80000,
-    image: "assets/imgs_destacados/odyssey_homme_producto.png",
-  },
-];
-
+import { productsApi } from "./api/client.js";
 import { trackProductView } from "./user.js";
 
-export function renderProducts() {
-  const gridContainer = document.querySelector("#products-grid");
-  gridContainer.innerHTML = ""; // Vaciar el contenedor
+export const currentFilters = {
+  search: "",
+  brands: [],
+  minPrice: "",
+  maxPrice: "",
+  sortBy: "",
+  page: 1,
+  limit: 10,
+};
 
-  PRODUCTS.forEach((product) => {
-    const productCard = document.createElement("article");
-    productCard.className =
+function showLoadingState() {
+  const grid = document.getElementById("products-grid");
+  if (!grid) return;
+
+  grid.innerHTML = `
+    <div class="col-span-4 flex justify-center items-center py-20">
+      <div class="text-(--text) font-serif text-lg opacity-60">Cargando productos...</div>
+    </div>
+  `;
+}
+
+function showErrorState(message) {
+  const grid = document.getElementById("products-grid");
+  if (!grid) return;
+
+  grid.innerHTML = `
+    <div class="col-span-4 flex justify-center items-center py-20">
+      <div class="text-(--text) font-serif text-lg opacity-60">${message}</div>
+    </div>
+  `;
+}
+
+export function renderProducts(products) {
+  const grid = document.getElementById("products-grid");
+  if (!grid) return;
+
+  grid.innerHTML = "";
+
+  if (!products || products.length === 0) {
+    showErrorState("No se encontraron productos con esos filtros.");
+    return;
+  }
+
+  products.forEach((product) => {
+    const hasDiscount = product.discounted_price !== null;
+
+    const card = document.createElement("article");
+    card.className =
       "product-card relative bg-(--card-bg) p-8 rounded-xl overflow-hidden text-(--text)";
-    productCard.dataset.name = product.name.toLowerCase();
-    productCard.dataset.brand = product.brand.toLowerCase();
-    productCard.dataset.price = product.discountedPrice;
+    card.dataset.name = (product.name || "").toLowerCase();
+    card.dataset.brand = (product.brand || "").toLowerCase();
+    card.dataset.price = String(product.price || 0);
 
-    productCard.innerHTML = `
-      <span class="absolute top-5 left-5 bg-(--accent) text-black text-xs px-[10px] py-[6px] rounded">OFERTA</span>
-      <a href="producto.html" class="block product-link">
+    card.innerHTML = `
+      ${
+        hasDiscount
+          ? '<span class="absolute top-5 left-5 bg-(--accent) text-black text-xs px-[10px] py-[6px] rounded">OFERTA</span>'
+          : ""
+      }
+      <a href="producto.html?id=${product.id}" class="block product-link">
         <img
-          src="${product.image}"
+          src="${product.image || "assets/imgs/placeholder.png"}"
           alt="${product.name}"
           class="w-[90%] h-[280px] object-contain transition-transform duration-300"
         />
       </a>
       <div class="mt-1">
-        <span class="text-xs text-[#999]">${product.brand}</span>
+        <span class="text-xs text-[#999]">${product.brand || "SIN MARCA"}</span>
         <h3 class="font-serif text-lg my-2">${product.name}</h3>
         <div class="flex gap-2 items-center">
-          <span class="line-through text-[#999]">$${product.originalPrice.toLocaleString()}</span>
-          <span class="text-xs">Desde</span>
-          <span class="text-(--accent) font-bold">$${product.discountedPrice.toLocaleString()}</span>
+          ${
+            hasDiscount
+              ? `<span class="line-through text-[#999]">$${Number(product.original_price || 0).toLocaleString()}</span>
+                 <span class="text-xs">Desde</span>`
+              : ""
+          }
+          <span class="text-(--accent) font-bold">$${Number(product.price || 0).toLocaleString()}</span>
         </div>
       </div>
       <button
         class="add-to-cart font-serif absolute bottom-5 left-5 right-5 bg-(--bg) border border-(--text) text-(--text) py-[14px] cursor-pointer"
         data-id="${product.id}"
         data-name="${product.name}"
-        data-price="${product.discountedPrice}"
+        data-price="${product.price}"
         aria-label="Añadir producto al Carrito"
       >
         AÑADIR AL CARRITO
@@ -110,32 +93,37 @@ export function renderProducts() {
         class="add-to-favorites absolute top-5 right-5 bg-transparent border-none cursor-pointer"
         data-id="${product.id}"
         data-name="${product.name}"
-        data-price="${product.discountedPrice}"
+        data-price="${product.price}"
         aria-label="Añadir producto a Favoritos"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-          class="w-6 h-6"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M11.48 3.499a5.373 5.373 0 0 0-7.61 0 5.373 5.373 0 0 0 0 7.61L12 19.24l8.13-8.13a5.373 5.373 0 0 0 0-7.61 5.373 5.373 0 0 0-7.61 0l-.02.02Z"
-          />
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+          stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M11.48 3.499a5.373 5.373 0 0 0-7.61 0 5.373 5.373 0 0 0 0 7.61L12 19.24l8.13-8.13a5.373 5.373 0 0 0 0-7.61 5.373 5.373 0 0 0-7.61 0l-.02.02Z"/>
         </svg>
       </button>
     `;
 
-    gridContainer.appendChild(productCard);
-
-    // Tracking de productos vistos
-    const productLink = productCard.querySelector(".product-link");
-    productLink?.addEventListener("click", () => {
-      trackProductView(product.id, product.name, product.discountedPrice);
+    const link = card.querySelector(".product-link");
+    link?.addEventListener("click", () => {
+      trackProductView(product.id);
     });
+
+    grid.appendChild(card);
   });
+
+  window.dispatchEvent(new CustomEvent("products-rendered"));
+}
+
+export async function fetchProducts(filters = {}) {
+  Object.assign(currentFilters, filters);
+  showLoadingState();
+
+  try {
+    const result = await productsApi.getAll(currentFilters);
+    renderProducts(result.data || []);
+  } catch (err) {
+    showErrorState("Error al cargar los productos. Intenta de nuevo.");
+    console.error(err);
+  }
 }

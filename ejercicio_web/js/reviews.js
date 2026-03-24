@@ -1,19 +1,10 @@
-import {
-  getUserName,
-  activateCoupon,
-  getUserRecommendation,
-} from "./user.js";
+import { reviewsApi } from "./api/client.js";
+import { getUserName, getUserRecommendation } from "./user.js";
 
-const REVIEWS_STORAGE_KEY = "maison-reviews";
+const PRODUCT_ID =
+  new URLSearchParams(window.location.search).get("id") || 1;
 
-function getReviewsFromStorage() {
-  const stored = localStorage.getItem(REVIEWS_STORAGE_KEY);
-  return stored ? JSON.parse(stored) : [];
-}
-
-function saveReviewsToStorage(reviews) {
-  localStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(reviews));
-}
+let reviewsState = [];
 
 function generateStars(rating) {
   return "★".repeat(rating) + "☆".repeat(5 - rating);
@@ -21,15 +12,10 @@ function generateStars(rating) {
 
 function calculateAverageRating(reviews) {
   if (reviews.length === 0) return 0;
-  const sum = reviews.reduce((acc, review) => acc + review.rating, 0);
+  const sum = reviews.reduce((acc, review) => acc + Number(review.rating), 0);
   return (sum / reviews.length).toFixed(1);
 }
 
-/**
- * Valida los campos del formulario y retorna un objeto con:
- * - isValid: boolean
- * - errors: objeto con los campos inválidos
- */
 function validateReviewForm(name, rating, comment) {
   const errors = {};
 
@@ -51,11 +37,7 @@ function validateReviewForm(name, rating, comment) {
   };
 }
 
-/**
- * Muestra mensajes de error en el formulario sin limpiar los valores
- */
 function showValidationErrors(errors) {
-  // Limpiar errores previos
   const previousErrors = document.querySelectorAll(".field-error");
   previousErrors.forEach((el) => el.remove());
 
@@ -67,13 +49,11 @@ function showValidationErrors(errors) {
     el.classList.remove("border-red-500");
   });
 
-  // Mostrar nuevos errores
   let firstErrorElement = null;
 
   if (errors.name) {
     const nameInput = document.getElementById("review-name");
     if (nameInput) {
-      // Aplicar borde de error
       nameInput.style.borderColor = "var(--accent)";
       nameInput.style.borderWidth = "2px";
       if (!firstErrorElement) firstErrorElement = nameInput;
@@ -91,14 +71,14 @@ function showValidationErrors(errors) {
   if (errors.rating) {
     const ratingGroup = document.querySelector(".rating-group");
     if (ratingGroup) {
-      // Aplicar borde de error al contenedor
       ratingGroup.style.borderColor = "var(--accent)";
       ratingGroup.style.borderWidth = "2px";
       ratingGroup.style.borderRadius = "0.5rem";
       ratingGroup.style.padding = "0.5rem";
       ratingGroup.style.borderStyle = "solid";
-      if (!firstErrorElement)
+      if (!firstErrorElement) {
         firstErrorElement = document.querySelector("input[name='rating']");
+      }
 
       const errorDiv = document.createElement("div");
       errorDiv.className = "field-error";
@@ -113,7 +93,6 @@ function showValidationErrors(errors) {
   if (errors.comment) {
     const commentInput = document.getElementById("review-comment");
     if (commentInput) {
-      // Aplicar borde de error
       commentInput.style.borderColor = "var(--accent)";
       commentInput.style.borderWidth = "2px";
       if (!firstErrorElement) firstErrorElement = commentInput;
@@ -128,20 +107,15 @@ function showValidationErrors(errors) {
     }
   }
 
-  // Mover el foco al primer campo inválido
   if (firstErrorElement) {
     firstErrorElement.focus();
   }
 }
 
-/**
- * Limpia todos los mensajes de error del formulario
- */
 function clearValidationErrors() {
   const errorMessages = document.querySelectorAll(".field-error");
   errorMessages.forEach((el) => el.remove());
 
-  // Remover estilos de error de los inputs
   const nameInput = document.getElementById("review-name");
   if (nameInput) {
     nameInput.style.borderColor = "";
@@ -164,44 +138,58 @@ function clearValidationErrors() {
   }
 }
 
-/**
- * Añade una nueva reseña si la validación es exitosa
- */
-function addReview(name, rating, comment) {
-  const validation = validateReviewForm(name, rating, comment);
+async function loadReviews() {
+  try {
+    reviewsState = await reviewsApi.getByProduct(PRODUCT_ID);
+    renderReviewsList(reviewsState);
+  } catch (err) {
+    console.error("Error al cargar reseñas:", err);
+  }
+}
 
+async function addReview(name, rating, comment) {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("Inicia sesión para dejar una reseña");
+    return;
+  }
+
+  const validation = validateReviewForm(name, rating, comment);
   if (!validation.isValid) {
     showValidationErrors(validation.errors);
     return;
   }
 
-  // Validación correcta: proceder
   clearValidationErrors();
 
-  const reviews = getReviewsFromStorage();
-  const newReview = {
-    id: Date.now(),
-    name: name.trim(),
-    rating: parseInt(rating),
-    comment: comment.trim(),
-    date: new Date().toISOString(),
-  };
+  try {
+    const result = await reviewsApi.create(PRODUCT_ID, {
+      rating: parseInt(rating, 10),
+      comment: comment.trim(),
+    });
 
-  reviews.unshift(newReview);
-  saveReviewsToStorage(reviews);
-  renderReviewsList();
+    if (result.discountCode) {
+      alert(
+        `¡Gracias por tu reseña! Tu código de descuento: ${result.discountCode}`,
+      );
 
-  // Activar cupón en el primer envío de reseña
-  activateCoupon();
-
-  // Limpiar el formulario SOLO después de envío exitoso
-  const form = document.getElementById("review-form");
-  if (form) {
-    form.reset();
-    const ratingDisplay = document.getElementById("rating-display");
-    if (ratingDisplay) {
-      ratingDisplay.textContent = "";
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+      user.discountCode = result.discountCode;
+      localStorage.setItem("user", JSON.stringify(user));
     }
+
+    await loadReviews();
+
+    const form = document.getElementById("review-form");
+    if (form) {
+      form.reset();
+      const ratingDisplay = document.getElementById("rating-display");
+      if (ratingDisplay) {
+        ratingDisplay.textContent = "";
+      }
+    }
+  } catch (err) {
+    alert(err.message);
   }
 }
 
@@ -221,7 +209,6 @@ function renderReviewForm() {
       </h3>
 
       <form id="review-form" class="space-y-4">
-        <!-- Nombre -->
         <div>
           <label class="block text-sm text-(--text) font-sans font-semibold mb-2">
             Tu Nombre
@@ -235,7 +222,6 @@ function renderReviewForm() {
           />
         </div>
 
-        <!-- Puntuación -->
         <div>
           <label class="block text-sm text-(--text) font-sans font-semibold mb-2">
             Puntuación
@@ -264,7 +250,6 @@ function renderReviewForm() {
           <div id="rating-display" class="text-sm text-(--text) mt-2 opacity-70"></div>
         </div>
 
-        <!-- Comentario -->
         <div>
           <label class="block text-sm text-(--text) font-sans font-semibold mb-2">
             Tu Comentario
@@ -277,7 +262,6 @@ function renderReviewForm() {
           ></textarea>
         </div>
 
-        <!-- Botón Enviar -->
         <button
           type="submit"
           class="w-full mt-6 px-6 py-3 bg-(--accent) text-black font-serif font-bold text-lg rounded-lg transition-all duration-200 hover:opacity-90 active:scale-95 cursor-pointer"
@@ -288,28 +272,23 @@ function renderReviewForm() {
     </div>
   `;
 
-  // Event Listeners para estrellas
   const stars = document.querySelectorAll("input[name='rating']");
   const ratingDisplay = document.getElementById("rating-display");
   const nameInput = document.getElementById("review-name");
   const commentInput = document.getElementById("review-comment");
 
-  // Limpiar error cuando el usuario escribe en el nombre
   nameInput?.addEventListener("input", () => {
     nameInput.style.borderColor = "";
     nameInput.style.borderWidth = "";
-    // Remover mensaje de error
     const errorMsg = nameInput.parentElement.querySelector(".field-error");
     if (errorMsg && errorMsg.textContent.includes("nombre")) {
       errorMsg.remove();
     }
   });
 
-  // Limpiar error cuando el usuario escribe en el comentario
   commentInput?.addEventListener("input", () => {
     commentInput.style.borderColor = "";
     commentInput.style.borderWidth = "";
-    // Remover mensaje de error
     const errorMsg = commentInput.parentElement.querySelector(".field-error");
     if (errorMsg && errorMsg.textContent.includes("comentario")) {
       errorMsg.remove();
@@ -318,7 +297,6 @@ function renderReviewForm() {
 
   stars.forEach((star) => {
     star.addEventListener("change", () => {
-      // Limpiar error de rating si existe
       const ratingGroup = document.querySelector(".rating-group");
       if (ratingGroup) {
         ratingGroup.style.borderColor = "";
@@ -327,11 +305,10 @@ function renderReviewForm() {
         ratingGroup.style.padding = "";
         ratingGroup.style.borderStyle = "";
       }
-      // Remover el mensaje de error asociado al rating
+
       const errorMsgs =
         ratingGroup?.parentElement?.querySelectorAll(".field-error");
       errorMsgs?.forEach((msg) => {
-        // Solo remover si es el mensaje de error del rating (no otros)
         if (
           msg.textContent.includes("Puntuación") ||
           msg.textContent.includes("selecciona una puntuación")
@@ -340,11 +317,11 @@ function renderReviewForm() {
         }
       });
 
-      ratingDisplay.textContent = generateStars(parseInt(star.value));
+      ratingDisplay.textContent = generateStars(parseInt(star.value, 10));
     });
 
     star.addEventListener("mouseover", () => {
-      ratingDisplay.textContent = generateStars(parseInt(star.value));
+      ratingDisplay.textContent = generateStars(parseInt(star.value, 10));
     });
   });
 
@@ -352,31 +329,27 @@ function renderReviewForm() {
   ratingGroup?.addEventListener("mouseleave", () => {
     const checked = document.querySelector("input[name='rating']:checked");
     if (checked) {
-      ratingDisplay.textContent = generateStars(parseInt(checked.value));
+      ratingDisplay.textContent = generateStars(parseInt(checked.value, 10));
     } else {
       ratingDisplay.textContent = "";
     }
   });
 
-  // Form submission - usar la nueva validación
   const form = document.getElementById("review-form");
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     const name = document.getElementById("review-name").value;
-    const rating = document.querySelector(
-      "input[name='rating']:checked",
-    )?.value;
+    const rating = document.querySelector("input[name='rating']:checked")?.value;
     const comment = document.getElementById("review-comment").value;
 
     addReview(name, rating, comment);
   });
 }
 
-function renderReviewsList() {
+function renderReviewsList(reviews) {
   const reviewsSection = document.getElementById("reviews-section");
   if (!reviewsSection) return;
 
-  const reviews = getReviewsFromStorage();
   const listContainer = reviewsSection.querySelector(".reviews-list-container");
   if (!listContainer) return;
 
@@ -408,7 +381,6 @@ function renderReviewsList() {
     </div>
   `;
 
-  // Mostrar recomendación del usuario si existe
   if (userRecommendation) {
     html += `
       <div class="bg-gradient-to-r from-(--accent) to-(--accent) opacity-90 bg-opacity-20 p-6 rounded-lg border-2 border-(--accent) border-opacity-50 mb-8 relative overflow-hidden">
@@ -436,7 +408,7 @@ function renderReviewsList() {
       <div class="space-y-4">
         ${reviews
           .map((review) => {
-            const date = new Date(review.date);
+            const date = new Date(review.created_at);
             const formattedDate = date.toLocaleDateString("es-ES", {
               year: "numeric",
               month: "long",
@@ -448,10 +420,10 @@ function renderReviewsList() {
                 <div class="flex justify-between items-start mb-3">
                   <div>
                     <h4 class="font-serif text-lg text-(--text)">
-                      ${review.name}
+                      ${review.author}
                     </h4>
                     <div class="text text-(--accent) text-lg mt-1">
-                      ${generateStars(review.rating)}
+                      ${generateStars(Number(review.rating))}
                     </div>
                   </div>
                   <span class="text-xs text-(--text) opacity-60">
@@ -459,7 +431,7 @@ function renderReviewsList() {
                   </span>
                 </div>
                 <p class="text-(--text) font-sans opacity-90 leading-relaxed">
-                  ${review.comment}
+                  ${review.comment || ""}
                 </p>
               </div>
             `;
@@ -477,5 +449,5 @@ export function renderReviews() {
   if (!reviewsSection) return;
 
   renderReviewForm();
-  renderReviewsList();
+  loadReviews();
 }
