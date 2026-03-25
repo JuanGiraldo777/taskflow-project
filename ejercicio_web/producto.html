@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Maison - Detalle de producto</title>
+
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="assets/imgs/M_DORADA.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="assets/imgs/M_DORADA.png"
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&family=Playfair+Display:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="src/output.css" />
+  </head>
+
+  <body>
+    <div class="overlay fixed inset-0 bg-black/45 z-[250]" id="overlay"></div>
+
+    <div
+      class="cart-overlay fixed inset-0 bg-black/40 z-[350] hidden"
+      id="cart-overlay"
+    ></div>
+
+    <aside
+      class="cart-drawer fixed top-0 right-0 h-screen w-[420px] max-sm:w-full bg-(--bg) z-[360] translate-x-full transition-transform duration-300 ease-out flex flex-col"
+      id="cart-drawer"
+    >
+      <div
+        class="flex items-center justify-between p-6 border-b border-gray-700 bg-(--card-bg)"
+      >
+        <h2 class="font-serif text-(--text) text-xl tracking-wide">
+          Tu Carrito
+        </h2>
+        <button
+          id="close-cart-btn"
+          class="text-gray-400 hover:text-(--accent) transition-colors p-1"
+          aria-label="Cerrar carrito"
+        >
+          <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+            <path
+              d="M19.35 6.04C18.67 5.36 17.55 5.36 16.87 6.04L12 10.91 7.13 6.04c-.67-.68-1.79-.68-2.47 0-.68.67-.68 1.79 0 2.47L9.53 12l-4.87 4.87c-.68.68-.68 1.79 0 2.47.67.68 1.79.68 2.47 0L12 13.09l4.87 4.87c.67.68 1.79.68 2.47 0 .68-.68.68-1.79 0-2.47L14.47 12l4.88-4.96c.68-.68.68-1.81 0-2.47z"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <div
+        id="cart-items"
+        class="flex-1 overflow-y-auto px-2 py-4 space-y-px"
+      ></div>
+      <div id="cart-footer" class="bg-(--card-bg)"></div>
+    </aside>
+
+    <aside
+      class="side-menu fixed top-0 left-0 w-[280px] h-screen bg-(--bg) z-[300] pt-[140px] px-8"
+      id="sideMenu"
+    >
+      <nav>
+        <ul class="list-none">
+          <li class="mb-7">
+            <a
+              href="index.html"
+              class="no-underline text-(--text) font-serif text-[22px] tracking-wide"
+              >Ver Todos</a
+            >
+          </li>
+          <li class="mb-7">
+            <a
+              href="index.html"
+              class="no-underline text-(--text) font-serif text-[22px] tracking-wide"
+              >Caballero</a
+            >
+          </li>
+          <li class="mb-7">
+            <a
+              href="index.html"
+              class="no-underline text-(--text) font-serif text-[22px] tracking-wide"
+              >Mujer</a
+            >
+          </li>
+          <li class="mb-7">
+            <a
+              href="index.html"
+              class="no-underline text-(--text) font-serif text-[22px] tracking-wide"
+              >Disenador</a
+            >
+          </li>
+          <li class="mb-7">
+            <a
+              href="index.html"
+              class="no-underline text-(--text) font-serif text-[22px] tracking-wide"
+              >Unisex</a
+            >
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <header
+      class="top-bar absolute top-0 left-0 w-full h-[200px] max-sm:h-[70px] md:h-[190px] z-10 backdrop-blur-md bg-(--bg)/20"
+    >
+      <div
+        class="max-w-[1400px] mx-auto h-full grid grid-cols-[1fr_auto_1fr] max-sm:grid-cols-[auto_1fr_auto] md:grid-cols-[1fr_auto_1fr] items-center px-12 max-sm:px-4 md:px-8 max-sm:gap-2 md:gap-6 text-(--primary-text)"
+      >
+        <div
+          class="justify-self-start flex items-center gap-8 max-sm:gap-3 md:gap-5"
+        >
+          <button
+            id="darkModeToggle"
+            class="mode-toggle flex items-center justify-center gap-2 text-[10px] px-[18px] py-[10px] max-sm:px-3 max-sm:py-2 max-sm:text-[8px] md:px-4 md:py-2 md:text-[9px] bg-(--bg) text-(--accent) border-none rounded-[30px] cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.3)] transition-all duration-200 hover:scale-105 hover:shadow-[0_6px_16px_rgba(0,0,0,0.4)] active:scale-95"
+            aria-label="Cambiar modo"
+          >
+            🌙 | ☀️
+          </button>
+          <button
+            class="threebars w-[26px] h-[18px] flex flex-col justify-between bg-transparent border-none cursor-pointer p-0"
+            id="threebars"
+            aria-label="Seccion de despliegue de categorias"
+          >
+            <span></span> <span></span> <span></span>
+          </button>
+        </div>
+
+        <div class="justify-self-center">
+          <a href="index.html">
+            <img
+              id="main-logo"
+              src="assets/imgs/LOGO_PRINCIPAL_NEGRO.png"
+              alt="Logo Perfumeria"
+              class="h-[200px] max-sm:h-[60px] md:h-[140px] block"
+            />
+          </a>
+        </div>
+
+        <div
+          class="justify-self-end flex items-center gap-[26px] max-sm:gap-3 md:gap-5 font-sans text-sm max-sm:text-xs md:text-sm tracking-wide"
+        >
+          <div>
+            <button
+              id="user-profile-btn"
+              class="bg-transparent border-none cursor-pointer p-0 min-w-8 min-h-8"
+              aria-label="Abrir perfil de usuario"
+            >
+              <svg
+                class="stroke-(--bg) cursor-pointer opacity-85 hover:opacity-100 hover:-translate-y-px transition-all duration-200 max-sm:w-6 max-sm:h-6 md:w-7 md:h-7"
+                width="30"
+                height="30"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
+                />
+              </svg>
+            </button>
+          </div>
+
+          <div class="relative">
+            <div class="cart-icon cursor-pointer relative min-w-8 min-h-8">
+              <svg
+                class="stroke-(--bg) cursor-pointer opacity-85 hover:opacity-100 hover:-translate-y-px transition-all duration-200 max-sm:w-6 max-sm:h-6 md:w-7 md:h-7"
+                width="30"
+                height="30"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
+                />
+              </svg>
+              <span
+                class="cart-count absolute -top-2 -right-2 bg-(--accent) text-black text-xs max-sm:text-[10px] rounded-full w-5 h-5 max-sm:w-4 max-sm:h-4 flex items-center justify-center font-bold"
+                >0</span
+              >
+            </div>
+          </div>
+
+          <div class="relative">
+            <div class="wishlist-icon cursor-pointer relative min-w-8 min-h-8">
+              <svg
+                class="stroke-(--bg) cursor-pointer opacity-85 hover:opacity-100 hover:-translate-y-px transition-all duration-200 max-sm:w-6 max-sm:h-6 md:w-7 md:h-7"
+                width="30"
+                height="30"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
+                />
+              </svg>
+              <span
+                class="wishlist-count absolute -top-2 -right-2 bg-(--accent) text-black text-xs max-sm:text-[10px] rounded-full w-5 h-5 max-sm:w-4 max-sm:h-4 flex items-center justify-center font-bold"
+                >0</span
+              >
+            </div>
+            <div
+              class="icon-wishlist-container hidden absolute top-[40px] right-0 max-sm:left-0 max-sm:right-0 max-sm:fixed max-sm:top-auto bg-(--card-bg) border-2 border-(--accent) p-[10px] w-64 max-sm:w-screen z-50"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="pt-[220px] max-sm:pt-[80px] min-h-screen bg-(--bg)">
+      <nav class="max-w-[1400px] mx-auto px-12 max-sm:px-4 py-4 mb-4">
+        <ol class="flex items-center gap-2 text-sm text-(--text) opacity-60">
+          <li>
+            <a href="index.html" class="hover:text-(--accent) transition-colors"
+              >Inicio</a
+            >
+          </li>
+          <li>/</li>
+          <li>
+            <a href="index.html" class="hover:text-(--accent) transition-colors"
+              >Catalogo</a
+            >
+          </li>
+          <li>/</li>
+          <li id="breadcrumb-product" class="opacity-100 text-(--text)">
+            Cargando...
+          </li>
+        </ol>
+      </nav>
+
+      <div class="max-w-[1400px] mx-auto px-12 max-sm:px-4 mb-8">
+        <button
+          onclick="window.history.back()"
+          class="flex items-center gap-2 text-(--text) opacity-70 hover:opacity-100 hover:text-(--accent) transition-all font-sans text-sm"
+        >
+          ← Volver
+        </button>
+      </div>
+
+      <section
+        id="product-detail"
+        class="max-w-[1400px] mx-auto px-12 max-sm:px-4 py-8"
+      >
+        <div class="flex justify-center items-center py-32">
+          <p class="text-(--text) font-serif text-lg opacity-60">
+            Cargando producto...
+          </p>
+        </div>
+      </section>
+
+      <section id="related-products" class="bg-(--bg) py-16 px-12 max-sm:px-4">
+        <div class="max-w-[1400px] mx-auto">
+          <h2
+            class="font-serif tracking-[4px] text-[28px] max-sm:text-xl mb-10 text-(--text)"
+          >
+            TAMBIEN TE PUEDE GUSTAR
+          </h2>
+          <div
+            id="related-grid"
+            class="grid grid-cols-4 gap-8 max-lg:grid-cols-2 max-sm:grid-cols-1"
+          ></div>
+        </div>
+      </section>
+
+      <!-- RESEÑAS -->
+      <section
+        id="reviews-section"
+        class="bg-(--bg) py-[100px] max-sm:py-12 md:py-16 px-20 max-sm:px-4 sm:px-8 md:px-12"
+      >
+        <div class="max-w-[1400px] mx-auto">
+          <!-- Formulario de Reseña -->
+          <div class="reviews-form-container mb-16"></div>
+
+          <!-- Lista de Reseñas -->
+          <div class="reviews-list-container mt-16"></div>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="js/pages/producto.js"></script>
+  </body>
+</html>

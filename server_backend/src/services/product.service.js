@@ -103,6 +103,8 @@ const getById = async (id) => {
     `
     SELECT
       p.id,
+      p.brand_id,
+      p.category_id,
       p.name,
       p.description,
       p.original_price,
@@ -144,4 +146,58 @@ const getAllBrands = async () => {
   return rows;
 };
 
-module.exports = { getAll, getById, getAllCategories, getAllBrands };
+// Productos relacionados
+// Prioriza misma marca (excluyendo el producto actual) y completa con categoría.
+const getRelated = async (productId, brandId, categoryId) => {
+  const [byBrand] = await pool.query(
+    `SELECT
+      p.id,
+      p.name,
+      p.original_price,
+      p.discounted_price,
+      COALESCE(p.discounted_price, p.original_price) AS price,
+      b.name  AS brand,
+      pi.url  AS image
+    FROM products p
+    LEFT JOIN brands         b  ON p.brand_id    = b.id
+    LEFT JOIN product_images pi ON pi.product_id = p.id AND pi.is_main = TRUE
+    WHERE p.brand_id = ? AND p.id != ?
+    LIMIT 4`,
+    [brandId, productId],
+  );
+
+  if (byBrand.length >= 4) {
+    return byBrand;
+  }
+
+  const existingIds = [productId, ...byBrand.map((p) => p.id)];
+  const placeholders = existingIds.map(() => "?").join(", ");
+  const needed = 4 - byBrand.length;
+
+  const [byCategory] = await pool.query(
+    `SELECT
+      p.id,
+      p.name,
+      p.original_price,
+      p.discounted_price,
+      COALESCE(p.discounted_price, p.original_price) AS price,
+      b.name  AS brand,
+      pi.url  AS image
+    FROM products p
+    LEFT JOIN brands         b  ON p.brand_id    = b.id
+    LEFT JOIN product_images pi ON pi.product_id = p.id AND pi.is_main = TRUE
+    WHERE p.category_id = ? AND p.id NOT IN (${placeholders})
+    LIMIT ?`,
+    [categoryId, ...existingIds, needed],
+  );
+
+  return [...byBrand, ...byCategory];
+};
+
+module.exports = {
+  getAll,
+  getById,
+  getAllCategories,
+  getAllBrands,
+  getRelated,
+};

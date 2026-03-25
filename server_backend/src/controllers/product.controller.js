@@ -39,6 +39,29 @@ const getById = async (req, res, next) => {
   }
 };
 
+// GET /api/v1/products/:id/related
+const getRelated = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    if (!id || isNaN(parseInt(id))) {
+      return res.status(400).json({ error: 'ID de producto inválido' });
+    }
+
+    const productId = parseInt(id);
+    const product = await productService.getById(productId);
+    const related = await productService.getRelated(
+      productId,
+      product.brand_id,
+      product.category_id,
+    );
+
+    res.status(200).json(related);
+  } catch (err) {
+    next(err);
+  }
+};
+
 const getAllCategories = async (req, res, next) => {
   try {
     const categories = await productService.getAllCategories();
@@ -57,4 +80,4 @@ const getAllBrands = async (req, res, next) => {
   }
 };
 
-module.exports = { getAll, getById, getAllCategories, getAllBrands };
+module.exports = { getAll, getById, getRelated, getAllCategories, getAllBrands };

@@ -245,4 +245,5 @@ export function initWishlist() {
   syncWishlist();
   window.addEventListener("user-logged-in", () => syncWishlist());
   window.addEventListener("session-expired", () => syncWishlist());
+  window.addEventListener("sync-wishlist", () => syncWishlist());
 }

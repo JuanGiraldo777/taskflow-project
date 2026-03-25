@@ -290,4 +290,5 @@ export function initCart() {
 
   window.addEventListener("user-logged-in", () => syncCart());
   window.addEventListener("session-expired", () => syncCart());
+  window.addEventListener('sync-cart', () => syncCart());
 }
