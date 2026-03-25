@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:3000/api/v1";
+const BASE_URL = "https://maison-backend-7pq8.onrender.com/api/v1";
 
 function getToken() {
   return localStorage.getItem("token");
