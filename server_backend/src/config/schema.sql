@@ -1,13 +1,6 @@
 -- ============================================================
 -- Maison DB — Schema completo actualizado
 -- ============================================================
-
-CREATE DATABASE IF NOT EXISTS maison_db
-  CHARACTER SET utf8mb4
-  COLLATE utf8mb4_unicode_ci;
-
-USE maison_db;
-
 -- Marcas de perfumes (tabla independiente, se amplía con el tiempo)
 CREATE TABLE IF NOT EXISTS brands (
   id   INT AUTO_INCREMENT PRIMARY KEY,
