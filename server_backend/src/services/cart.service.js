@@ -1,3 +1,7 @@
+/**
+ * @file server_backend/src/services/cart.service.js
+ * @description Servicios de negocio para carrito y validación de stock.
+ */
 const pool = require("../config/db");
 
 // ── Ver carrito completo del usuario ────────────────────────────────────────

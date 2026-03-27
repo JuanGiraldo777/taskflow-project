@@ -1,3 +1,7 @@
+/**
+ * @file ejercicio_web/js/reviews.js
+ * @description Módulo de reseñas: formulario, validación y renderizado.
+ */
 import { reviewsApi } from "./api/client.js";
 import { getUserName, getUserRecommendation } from "./user.js";
 

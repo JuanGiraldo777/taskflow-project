@@ -1,3 +1,7 @@
+/**
+ * @file server_backend/src/controllers/wishlist.controller.js
+ * @description Controlador de lista de deseos del usuario autenticado.
+ */
 const wishlistService = require("../services/wishlist.service");
 
 const getWishlist = async (req, res, next) => {

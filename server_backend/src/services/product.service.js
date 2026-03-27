@@ -1,3 +1,7 @@
+/**
+ * @file server_backend/src/services/product.service.js
+ * @description Servicios de catálogo: búsqueda, filtros, detalle y relacionados.
+ */
 const pool = require("../config/db");
 
 const getAll = async ({

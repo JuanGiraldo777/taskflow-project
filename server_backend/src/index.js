@@ -1,3 +1,7 @@
+/**
+ * @file server_backend/src/index.js
+ * @description Punto de entrada del backend Express. Configura middlewares, rutas y manejo global de errores.
+ */
 const express = require("express");
 const cors = require("cors");
 const { port } = require("./config/env");

@@ -1,3 +1,7 @@
+/**
+ * @file ejercicio_web/src/style.css
+ * @description Estilos base y variables visuales de la aplicación frontend.
+ */
 /* 1. Importa Tailwind v4 (reemplaza los 3 @tailwind de v3) */
 @import "tailwindcss";
 

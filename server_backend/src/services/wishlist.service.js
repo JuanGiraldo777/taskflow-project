@@ -1,3 +1,7 @@
+/**
+ * @file server_backend/src/services/wishlist.service.js
+ * @description Servicios de wishlist con control de duplicados.
+ */
 const pool = require("../config/db");
 
 // ── Ver wishlist del usuario ────────────────────────────────────────────────

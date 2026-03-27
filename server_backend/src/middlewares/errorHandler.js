@@ -1,3 +1,7 @@
+/**
+ * @file server_backend/src/middlewares/errorHandler.js
+ * @description Middleware global de errores con mapeo semántico a HTTP.
+ */
 const { nodeEnv } = require("../config/env");
 
 const errorHandler = (err, req, res, next) => {

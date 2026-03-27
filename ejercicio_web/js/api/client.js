@@ -1,3 +1,7 @@
+/**
+ * @file ejercicio_web/js/api/client.js
+ * @description Cliente HTTP del frontend para consumir la API REST del backend.
+ */
 const BASE_URL = "https://maison-backend-7pq8.onrender.com/api/v1";
 
 function getToken() {

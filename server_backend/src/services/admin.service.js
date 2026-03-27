@@ -1,3 +1,7 @@
+/**
+ * @file server_backend/src/services/admin.service.js
+ * @description Servicios de administración para operaciones sobre usuarios.
+ */
 const pool = require("../config/db");
 
 const getAllUsers = async () => {

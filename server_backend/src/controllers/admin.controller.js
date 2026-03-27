@@ -1,3 +1,7 @@
+/**
+ * @file server_backend/src/controllers/admin.controller.js
+ * @description Controlador de administración para gestión de usuarios.
+ */
 const adminService = require("../services/admin.service");
 
 const getAllUsers = async (req, res, next) => {

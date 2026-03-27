@@ -1,3 +1,7 @@
+/**
+ * @file server_backend/src/config/env.js
+ * @description Carga y valida variables de entorno críticas del backend.
+ */
 // Fail Fast — si falta una variable crítica, el servidor se niega a arrancar.
 require("dotenv").config();
 

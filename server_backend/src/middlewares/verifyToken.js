@@ -1,3 +1,7 @@
+/**
+ * @file server_backend/src/middlewares/verifyToken.js
+ * @description Middleware de autenticación JWT y carga de usuario en req.user.
+ */
 const jwt = require("jsonwebtoken");
 const { jwt: jwtConfig } = require("../config/env");
 

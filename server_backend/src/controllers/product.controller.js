@@ -1,3 +1,7 @@
+/**
+ * @file server_backend/src/controllers/product.controller.js
+ * @description Controlador de catálogo de productos, marcas y categorías.
+ */
 const productService = require("../services/product.service");
 
 const getAll = async (req, res, next) => {

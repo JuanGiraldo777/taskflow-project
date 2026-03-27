@@ -1,3 +1,7 @@
+/**
+ * @file server_backend/src/routes/admin.routes.js
+ * @description Definición de rutas de administración bajo /api/v1/admin.
+ */
 const { Router } = require("express");
 const adminController = require("../controllers/admin.controller");
 const verifyToken = require("../middlewares/verifyToken");

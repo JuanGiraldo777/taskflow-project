@@ -1,3 +1,7 @@
+/**
+ * @file server_backend/src/controllers/user.controller.js
+ * @description Controlador de perfil de usuario e historial de visualización.
+ */
 const userService = require("../services/user.service");
 
 // ── GET /api/v1/users/:id ───────────────────────────────────────────────────

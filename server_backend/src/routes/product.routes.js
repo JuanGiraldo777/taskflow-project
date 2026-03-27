@@ -1,3 +1,7 @@
+/**
+ * @file server_backend/src/routes/product.routes.js
+ * @description Definición de rutas de productos bajo /api/v1/products.
+ */
 const { Router } = require("express");
 const productController = require("../controllers/product.controller");
 const verifyToken = require("../middlewares/verifyToken");
