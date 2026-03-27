@@ -1,3 +1,7 @@
+/**
+ * @file server_backend/src/config/db.js
+ * @description Configuración del pool de conexiones MySQL para el backend.
+ */
 const mysql  = require('mysql2/promise');
 const { db, nodeEnv } = require('./env');
 

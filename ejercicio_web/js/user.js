@@ -1,3 +1,7 @@
+/**
+ * @file ejercicio_web/js/user.js
+ * @description Módulo de sesión y perfil de usuario autenticado.
+ */
 import { authApi, userApi } from "./api/client.js";
 
 let isRegisterMode = false;

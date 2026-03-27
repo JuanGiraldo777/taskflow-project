@@ -1,3 +1,7 @@
+/**
+ * @file server_backend/src/routes/review.routes.js
+ * @description Definición de rutas de reseñas bajo /api/v1/reviews.
+ */
 const { Router } = require("express");
 const reviewController = require("../controllers/review.controller");
 const verifyToken = require("../middlewares/verifyToken");

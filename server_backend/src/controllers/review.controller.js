@@ -1,3 +1,7 @@
+/**
+ * @file server_backend/src/controllers/review.controller.js
+ * @description Controlador de reseñas por producto.
+ */
 const reviewService = require("../services/review.service");
 
 const getByProduct = async (req, res, next) => {

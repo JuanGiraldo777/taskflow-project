@@ -1,3 +1,7 @@
+/**
+ * @file ejercicio_web/js/pages/producto.js
+ * @description Lógica de la página de detalle de producto y relacionados.
+ */
 import { productsApi } from "../api/client.js";
 import { cartApi } from "../api/client.js";
 import { wishlistApi } from "../api/client.js";

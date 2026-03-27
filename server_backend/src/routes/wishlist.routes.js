@@ -1,3 +1,7 @@
+/**
+ * @file server_backend/src/routes/wishlist.routes.js
+ * @description Definición de rutas de wishlist bajo /api/v1/wishlist.
+ */
 const { Router } = require("express");
 const wishlistController = require("../controllers/wishlist.controller");
 const verifyToken = require("../middlewares/verifyToken");

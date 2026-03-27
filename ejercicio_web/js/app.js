@@ -1,3 +1,7 @@
+/**
+ * @file ejercicio_web/js/app.js
+ * @description Bootstrap principal de la aplicación frontend.
+ */
 import { fetchProducts } from "./products.js";
 import { initUser } from "./user.js";
 import { initWishlist } from "./wishlist.js";

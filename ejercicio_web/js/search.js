@@ -1,3 +1,7 @@
+/**
+ * @file ejercicio_web/js/search.js
+ * @description Módulo de búsqueda con sugerencias y filtrado remoto.
+ */
 import { fetchProducts } from "./products.js";
 
 const TRENDING_SEARCHES = [

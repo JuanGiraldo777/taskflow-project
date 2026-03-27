@@ -1,3 +1,7 @@
+/**
+ * @file server_backend/src/routes/user.routes.js
+ * @description Definición de rutas de usuario bajo /api/v1/users.
+ */
 const { Router } = require("express");
 const userController = require("../controllers/user.controller");
 const verifyToken = require("../middlewares/verifyToken");

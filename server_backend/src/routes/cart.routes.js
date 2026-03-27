@@ -1,3 +1,7 @@
+/**
+ * @file server_backend/src/routes/cart.routes.js
+ * @description Definición de rutas de carrito bajo /api/v1/cart.
+ */
 const { Router } = require("express");
 const cartController = require("../controllers/cart.controller");
 const verifyToken = require("../middlewares/verifyToken");

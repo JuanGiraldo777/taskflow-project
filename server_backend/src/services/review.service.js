@@ -1,3 +1,7 @@
+/**
+ * @file server_backend/src/services/review.service.js
+ * @description Servicios de reseñas y generación de código de descuento.
+ */
 const pool = require("../config/db");
 
 // ── Generador de código de descuento ────────────────────────────────────────

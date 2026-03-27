@@ -1,3 +1,7 @@
+/**
+ * @file ejercicio_web/js/products.js
+ * @description Módulo de catálogo: consulta API y renderizado de tarjetas de producto.
+ */
 import { productsApi } from "./api/client.js";
 import { trackProductView } from "./user.js";
 

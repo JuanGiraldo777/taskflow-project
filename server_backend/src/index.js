@@ -1,3 +1,7 @@
+/**
+ * @file server_backend/src/index.js
+ * @description Punto de entrada del backend Express. Configura middlewares, rutas y manejo global de errores.
+ */
 const express = require("express");
 const cors = require("cors");
 const { port } = require("./config/env");
@@ -12,6 +16,7 @@ const userRoutes = require("./routes/user.routes");
 const cartRoutes = require("./routes/cart.routes");
 const wishlistRoutes = require("./routes/wishlist.routes");
 const reviewRoutes = require("./routes/review.routes");
+const adminRoutes = require("./routes/admin.routes");
 
 const app = express();
 
@@ -33,6 +38,7 @@ app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/cart", cartRoutes);
 app.use("/api/v1/wishlist", wishlistRoutes);
 app.use("/api/v1/reviews", reviewRoutes);
+app.use("/api/v1/admin", adminRoutes);
 
 // ── Middleware 404 — rutas inexistentes ─────────────────────────────────────
 // Debe ir DESPUÉS de todas las rutas y ANTES del errorHandler

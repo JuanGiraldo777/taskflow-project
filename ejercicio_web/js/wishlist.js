@@ -1,3 +1,7 @@
+/**
+ * @file ejercicio_web/js/wishlist.js
+ * @description Módulo UI e integración API para lista de deseos.
+ */
 import { wishlistApi } from "./api/client.js";
 
 let wishlistState = [];

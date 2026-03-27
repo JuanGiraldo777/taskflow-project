@@ -1,3 +1,7 @@
+/**
+ * @file server_backend/src/controllers/cart.controller.js
+ * @description Controlador del carrito: consulta, alta, modificación y borrado de items.
+ */
 const cartService = require("../services/cart.service");
 
 const getCart = async (req, res, next) => {

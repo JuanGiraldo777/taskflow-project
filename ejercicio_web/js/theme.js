@@ -1,4 +1,8 @@
 /**
+ * @file ejercicio_web/js/theme.js
+ * @description Módulo de alternancia de tema y persistencia visual.
+ */
+/**
  * Actualiza el logo del header según el tema activo
  */
 function updateLogoForTheme(isDarkMode) {

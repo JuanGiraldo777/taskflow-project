@@ -1,3 +1,7 @@
+/**
+ * @file server_backend/src/controllers/auth.controller.js
+ * @description Controlador de autenticación: registro e inicio de sesión.
+ */
 const authService = require("../services/auth.service");
 
 // ── POST /api/v1/auth/register ──────────────────────────────────────────────

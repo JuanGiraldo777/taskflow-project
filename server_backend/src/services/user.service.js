@@ -1,3 +1,7 @@
+/**
+ * @file server_backend/src/services/user.service.js
+ * @description Servicios de perfil de usuario e historial de productos vistos.
+ */
 const pool = require("../config/db");
 
 // ── Obtener perfil ──────────────────────────────────────────────────────────

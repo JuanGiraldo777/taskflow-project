@@ -1,3 +1,7 @@
+/**
+ * @file server_backend/src/services/product.service.js
+ * @description Servicios de catálogo: búsqueda, filtros, detalle y relacionados.
+ */
 const pool = require("../config/db");
 
 const getAll = async ({
@@ -194,10 +198,99 @@ const getRelated = async (productId, brandId, categoryId) => {
   return [...byBrand, ...byCategory];
 };
 
+const create = async ({
+  categoryId,
+  brandId,
+  name,
+  description,
+  originalPrice,
+  discountedPrice,
+  stock,
+  imageUrl,
+}) => {
+  const [result] = await pool.execute(
+    `INSERT INTO products
+      (category_id, brand_id, name, description, original_price, discounted_price, stock)
+     VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    [
+      categoryId,
+      brandId,
+      name,
+      description || null,
+      originalPrice,
+      discountedPrice || null,
+      stock || 0,
+    ],
+  );
+
+  const productId = result.insertId;
+
+  if (imageUrl) {
+    await pool.execute(
+      "INSERT INTO product_images (product_id, url, is_main) VALUES (?, ?, TRUE)",
+      [productId, imageUrl],
+    );
+  }
+
+  return getById(productId);
+};
+
+const update = async (
+  id,
+  {
+    categoryId,
+    brandId,
+    name,
+    description,
+    originalPrice,
+    discountedPrice,
+    stock,
+  },
+) => {
+  const [existing] = await pool.execute(
+    "SELECT id FROM products WHERE id = ?",
+    [id],
+  );
+  if (existing.length === 0) {
+    throw new Error("NOT_FOUND");
+  }
+
+  await pool.execute(
+    `UPDATE products
+     SET category_id = ?, brand_id = ?, name = ?, description = ?,
+         original_price = ?, discounted_price = ?, stock = ?
+     WHERE id = ?`,
+    [
+      categoryId,
+      brandId,
+      name,
+      description || null,
+      originalPrice,
+      discountedPrice || null,
+      stock,
+      id,
+    ],
+  );
+
+  return getById(id);
+};
+
+const remove = async (id) => {
+  const [result] = await pool.execute("DELETE FROM products WHERE id = ?", [
+    id,
+  ]);
+  if (result.affectedRows === 0) {
+    throw new Error("NOT_FOUND");
+  }
+};
+
 module.exports = {
   getAll,
   getById,
   getAllCategories,
   getAllBrands,
   getRelated,
+  create,
+  update,
+  remove,
 };

@@ -1,3 +1,7 @@
+/**
+ * @file ejercicio_web/js/filters.js
+ * @description Módulo de filtros avanzados y ordenación de catálogo.
+ */
 import { fetchProducts } from "./products.js";
 
 export function initAdvancedFilters() {

@@ -1,3 +1,7 @@
+/**
+ * @file ejercicio_web/js/cart.js
+ * @description Módulo UI e integración API para carrito de compras.
+ */
 import { cartApi } from "./api/client.js";
 
 let cartState = { items: [], total: 0 };

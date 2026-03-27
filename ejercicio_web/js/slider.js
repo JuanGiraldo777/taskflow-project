@@ -1,4 +1,8 @@
 /**
+ * @file ejercicio_web/js/slider.js
+ * @description Módulo del slider automático de hero.
+ */
+/**
  * Inicializa el slider de imágenes del hero.
  * Cambia automáticamente de imagen cada cierto intervalo.
  * @param {number} [intervalMs=5000] - Tiempo en milisegundos entre transiciones.

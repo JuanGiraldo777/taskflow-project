@@ -1,4 +1,8 @@
 /**
+ * @file ejercicio_web/js/nav.js
+ * @description Módulo de navegación y control del menú lateral.
+ */
+/**
  * Inicializa la barra de navegación y el menú lateral.
  * Se encarga de abrir/cerrar el menú de forma completamente autónoma,
  * sin dependencias de otros módulos (filters.js, cart.js, wishlist.js, etc).

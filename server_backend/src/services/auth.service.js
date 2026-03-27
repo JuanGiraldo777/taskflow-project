@@ -1,3 +1,7 @@
+/**
+ * @file server_backend/src/services/auth.service.js
+ * @description Servicios de autenticación: hash de contraseña y emisión de JWT.
+ */
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const pool = require("../config/db");
