@@ -8,10 +8,14 @@ const verifyToken = require("../middlewares/verifyToken");
 
 const router = Router();
 
-// Ver reseñas es publico - no requiere token
+// ── Reseñas de TIENDA (sin productId) ───────────────────────────────────────
+// IMPORTANTE: estas rutas van ANTES de /:productId
+router.get("/", reviewController.getStoreReviews);
+router.post("/", verifyToken, reviewController.createStoreReview);
+
+// ── Reseñas de PRODUCTO (con productId) ─────────────────────────────────────
 router.get("/:productId", reviewController.getByProduct);
 
-// Crear reseña requiere token
 router.post("/:productId", verifyToken, reviewController.create);
 
 module.exports = router;

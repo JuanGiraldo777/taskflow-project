@@ -18,8 +18,8 @@ const getAll = async ({
   const params = [];
 
   if (search) {
-    conditions.push("p.name LIKE ?");
-    params.push(`%${search}%`);
+    conditions.push("(p.name LIKE ? OR b.name LIKE ?)");
+    params.push(`%${search}%`, `%${search}%`);
   }
 
   if (category) {
