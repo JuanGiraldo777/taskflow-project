@@ -68,6 +68,7 @@ export const productsApi = {
     return request(`/products${queryString ? `?${queryString}` : ""}`);
   },
   getById: (id) => request(`/products/${id}`),
+  getRelated: (id) => request(`/products/${id}/related`),
 };
 
 export const categoriesApi = {

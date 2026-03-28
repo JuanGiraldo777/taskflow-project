@@ -6,7 +6,6 @@ import { productsApi } from "../api/client.js";
 import { cartApi } from "../api/client.js";
 import { wishlistApi } from "../api/client.js";
 import { trackProductView } from "../user.js";
-import { renderProducts } from "../products.js";
 import { renderReviews } from "../reviews.js";
 import { initCart } from "../cart.js";
 import { initWishlist } from "../wishlist.js";
@@ -334,13 +333,8 @@ async function loadRelated(id) {
   if (!grid || !section) return;
 
   try {
-    const response = await fetch(
-      `http://localhost:3000/api/v1/products/${id}/related`
-    );
 
-    if (!response.ok) throw new Error("No se pudieron cargar relacionados");
-
-    const related = await response.json();
+    const related = await productsApi.getRelated(id);
 
     if (!related || related.length === 0) {
       section.classList.add("hidden");
