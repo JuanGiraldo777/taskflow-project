@@ -1,13 +1,18 @@
 /**
  * @file ejercicio_web/js/reviews.js
  * @description Módulo de reseñas: formulario, validación y renderizado.
+ * Soporta reseñas de tienda (index.html) y reseñas de producto (producto.html)
  */
 import { reviewsApi } from "./api/client.js";
 import { getUserName, getUserRecommendation } from "./user.js";
 
-const PRODUCT_ID =
-  new URLSearchParams(window.location.search).get("id") || 1;
+// Detectar en qué página estamos
+const isProductPage = !!new URLSearchParams(window.location.search).get("id");
+const PRODUCT_ID = new URLSearchParams(window.location.search).get("id") || 1;
 
+// ── Estado de paginación de reseñas de tienda ────────────────────────────────
+let currentPage = 1;
+const LIMIT = 10;
 let reviewsState = [];
 
 function generateStars(rating) {
@@ -19,6 +24,319 @@ function calculateAverageRating(reviews) {
   const sum = reviews.reduce((acc, review) => acc + Number(review.rating), 0);
   return (sum / reviews.length).toFixed(1);
 }
+
+// ── LÓGICA COMPARTIDA ────────────────────────────────────────────────────────
+
+function validateStoreReviewForm(rating, comment) {
+  const errors = {};
+
+  if (!rating || rating < 1 || rating > 5) {
+    errors.rating = "Por favor, selecciona una puntuación de 1 a 5";
+  }
+
+  if (!comment.trim()) {
+    errors.comment = "Por favor, escribe un comentario";
+  }
+
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors,
+  };
+}
+
+function clearValidationErrors() {
+  const errorMessages = document.querySelectorAll(".field-error");
+  errorMessages.forEach((el) => el.remove());
+
+  const ratingGroup = document.querySelector(".rating-group");
+  if (ratingGroup) {
+    ratingGroup.style.borderColor = "";
+    ratingGroup.style.borderWidth = "";
+    ratingGroup.style.borderRadius = "";
+    ratingGroup.style.padding = "";
+    ratingGroup.style.borderStyle = "";
+  }
+
+  const commentInput = document.getElementById("review-comment");
+  if (commentInput) {
+    commentInput.style.borderColor = "";
+    commentInput.style.borderWidth = "";
+  }
+}
+
+// ── RESEÑAS DE TIENDA (index.html) ───────────────────────────────────────────
+
+async function loadStoreReviews(page = 1) {
+  try {
+    const result = await reviewsApi.getStoreReviews(page, LIMIT);
+    renderStoreReviewsList(result.data, result.pagination);
+    currentPage = page;
+  } catch (err) {
+    console.error("Error al cargar reseñas de tienda:", err);
+  }
+}
+
+function renderStoreReviewsList(reviews, pagination) {
+  const listContainer = document.querySelector(".reviews-list-container");
+  if (!listContainer) return;
+
+  const averageRating =
+    reviews.length > 0
+      ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(
+          1,
+        )
+      : 0;
+
+  let html = `
+    <div class="mb-8">
+      <h3 class="font-serif text-2xl text-(--text) mb-4 tracking-wide">
+        RESEÑAS DE CLIENTES
+      </h3>
+      <div class="flex items-center gap-4 text-(--text)">
+        <div class="text-4xl font-serif">
+          ${averageRating > 0 ? averageRating : "Sin reseñas"}
+        </div>
+        ${
+          averageRating > 0
+            ? `
+          <div>
+            <div class="text-2xl text-(--accent)">
+              ${"★".repeat(Math.round(averageRating))}${"☆".repeat(5 - Math.round(averageRating))}
+            </div>
+            <div class="text-sm opacity-70">
+              Basado en ${pagination.total} reseña${pagination.total !== 1 ? "s" : ""}
+            </div>
+          </div>`
+            : ""
+        }
+      </div>
+    </div>
+  `;
+
+  if (reviews.length === 0) {
+    html += `
+      <div class="text-center py-12">
+        <p class="text-(--text) opacity-60 font-sans">
+          No hay reseñas aún. ¡Sé el primero en dejar una!
+        </p>
+      </div>
+    `;
+  } else {
+    html += `
+      <div class="space-y-4">
+        ${reviews
+          .map((review) => {
+            const date = new Date(review.created_at);
+            const formattedDate = date.toLocaleDateString("es-ES", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            });
+            return `
+              <div class="bg-(--card-bg) p-6 rounded-lg border border-(--text) border-opacity-20
+                hover:border-opacity-40 transition-all duration-200">
+                <div class="flex justify-between items-start mb-3">
+                  <div>
+                    <h4 class="font-serif text-lg text-(--text)">${review.author}</h4>
+                    <div class="text-(--accent) text-lg mt-1">
+                      ${generateStars(review.rating)}
+                    </div>
+                  </div>
+                  <span class="text-xs text-(--text) opacity-60">${formattedDate}</span>
+                </div>
+                <p class="text-(--text) font-sans opacity-90 leading-relaxed">
+                  ${review.comment || ""}
+                </p>
+              </div>
+            `;
+          })
+          .join("")}
+      </div>
+    `;
+  }
+
+  // Paginación
+  if (pagination.totalPages > 1) {
+    html += `
+      <div class="flex justify-center items-center gap-4 mt-8">
+        <button
+          id="prev-reviews"
+          class="px-4 py-2 border border-(--text) border-opacity-40 text-(--text)
+            font-sans text-sm hover:border-(--accent) hover:text-(--accent)
+            transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+          ${pagination.page <= 1 ? "disabled" : ""}
+        >
+          ← Anterior
+        </button>
+        <span class="text-(--text) font-sans text-sm opacity-70">
+          ${pagination.page} / ${pagination.totalPages}
+        </span>
+        <button
+          id="next-reviews"
+          class="px-4 py-2 border border-(--text) border-opacity-40 text-(--text)
+            font-sans text-sm hover:border-(--accent) hover:text-(--accent)
+            transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+          ${pagination.page >= pagination.totalPages ? "disabled" : ""}
+        >
+          Siguiente →
+        </button>
+      </div>
+    `;
+  }
+
+  listContainer.innerHTML = html;
+
+  // Event listeners de paginación
+  document.getElementById("prev-reviews")?.addEventListener("click", () => {
+    if (currentPage > 1) loadStoreReviews(currentPage - 1);
+  });
+  document.getElementById("next-reviews")?.addEventListener("click", () => {
+    if (currentPage < pagination.totalPages) loadStoreReviews(currentPage + 1);
+  });
+}
+
+async function submitStoreReview(rating, comment) {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("Inicia sesión para dejar una reseña");
+    return;
+  }
+
+  const validation = validateStoreReviewForm(rating, comment);
+  if (!validation.isValid) {
+    if (validation.errors.rating) {
+      alert(validation.errors.rating);
+    }
+    if (validation.errors.comment) {
+      alert(validation.errors.comment);
+    }
+    return;
+  }
+
+  try {
+    const result = await reviewsApi.createStoreReview({
+      rating: parseInt(rating),
+      comment: comment.trim(),
+    });
+
+    if (result.discountCode) {
+      alert(
+        `¡Gracias por tu reseña! Tu código de descuento: ${result.discountCode}`,
+      );
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+      user.discountCode = result.discountCode;
+      localStorage.setItem("user", JSON.stringify(user));
+    }
+
+    await loadStoreReviews(1);
+    document.getElementById("review-form")?.reset();
+    const ratingDisplay = document.getElementById("rating-display");
+    if (ratingDisplay) ratingDisplay.textContent = "";
+
+    clearValidationErrors();
+  } catch (err) {
+    alert(err.message);
+  }
+}
+
+function renderStoreReviewForm() {
+  const formContainer = document.querySelector(".reviews-form-container");
+  if (!formContainer) return;
+
+  formContainer.innerHTML = `
+    <div class="bg-(--card-bg) p-8 rounded-xl border border-(--accent) border-opacity-30">
+      <h3 class="font-serif text-2xl text-(--text) mb-6 tracking-wide">
+        CUÉNTANOS TU EXPERIENCIA
+      </h3>
+      <form id="review-form" class="space-y-4">
+        <div>
+          <label class="block text-sm text-(--text) font-sans font-semibold mb-2">
+            Puntuación
+          </label>
+          <div class="rating-group flex gap-3">
+            ${[1, 2, 3, 4, 5]
+              .map(
+                (star) => `
+              <input type="radio" id="star-${star}" name="rating"
+                value="${star}" class="hidden"/>
+              <label for="star-${star}"
+                class="cursor-pointer text-4xl transition-all duration-200
+                  hover:text-(--accent) text-opacity-60 hover:text-opacity-100">
+                ★
+              </label>
+            `,
+              )
+              .join("")}
+          </div>
+          <div id="rating-display" class="text-sm text-(--text) mt-2 opacity-70"></div>
+        </div>
+        <div>
+          <label class="block text-sm text-(--text) font-sans font-semibold mb-2">
+            Tu experiencia
+          </label>
+          <textarea
+            id="review-comment"
+            placeholder="Cuéntanos cómo ha sido tu experiencia con Maison de L'Eternel..."
+            rows="5"
+            class="w-full px-4 py-3 bg-(--bg) text-(--text) border border-(--text)
+              border-opacity-50 rounded-lg focus:outline-none focus:border-(--accent)
+              focus:border-opacity-100 transition-colors duration-200 resize-none"
+          ></textarea>
+        </div>
+        <button type="submit"
+          class="w-full mt-6 px-6 py-3 bg-(--accent) text-black font-serif
+            font-bold text-lg rounded-lg transition-all duration-200
+            hover:opacity-90 active:scale-95 cursor-pointer">
+          ENVIAR RESEÑA
+        </button>
+      </form>
+    </div>
+  `;
+
+  // Stars interaction
+  const stars = document.querySelectorAll("input[name='rating']");
+  const ratingDisplay = document.getElementById("rating-display");
+
+  stars.forEach((star) => {
+    star.addEventListener("change", () => {
+      ratingDisplay.textContent =
+        "★".repeat(parseInt(star.value)) + "☆".repeat(5 - parseInt(star.value));
+    });
+
+    star.addEventListener("mouseover", () => {
+      ratingDisplay.textContent =
+        "★".repeat(parseInt(star.value)) + "☆".repeat(5 - parseInt(star.value));
+    });
+  });
+
+  const ratingGroup = document.querySelector(".rating-group");
+  ratingGroup?.addEventListener("mouseleave", () => {
+    const checked = document.querySelector("input[name='rating']:checked");
+    if (checked) {
+      ratingDisplay.textContent =
+        "★".repeat(parseInt(checked.value)) +
+        "☆".repeat(5 - parseInt(checked.value));
+    } else {
+      ratingDisplay.textContent = "";
+    }
+  });
+
+  // Submit
+  document.getElementById("review-form")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const rating = document.querySelector("input[name='rating']:checked")?.value;
+    const comment = document.getElementById("review-comment")?.value;
+
+    if (!rating) {
+      alert("Por favor selecciona una puntuación");
+      return;
+    }
+
+    await submitStoreReview(rating, comment);
+  });
+}
+
+// ── RESEÑAS DE PRODUCTO (producto.html) ──────────────────────────────────────
 
 function validateReviewForm(name, rating, comment) {
   const errors = {};
@@ -113,32 +431,6 @@ function showValidationErrors(errors) {
 
   if (firstErrorElement) {
     firstErrorElement.focus();
-  }
-}
-
-function clearValidationErrors() {
-  const errorMessages = document.querySelectorAll(".field-error");
-  errorMessages.forEach((el) => el.remove());
-
-  const nameInput = document.getElementById("review-name");
-  if (nameInput) {
-    nameInput.style.borderColor = "";
-    nameInput.style.borderWidth = "";
-  }
-
-  const ratingGroup = document.querySelector(".rating-group");
-  if (ratingGroup) {
-    ratingGroup.style.borderColor = "";
-    ratingGroup.style.borderWidth = "";
-    ratingGroup.style.borderRadius = "";
-    ratingGroup.style.padding = "";
-    ratingGroup.style.borderStyle = "";
-  }
-
-  const commentInput = document.getElementById("review-comment");
-  if (commentInput) {
-    commentInput.style.borderColor = "";
-    commentInput.style.borderWidth = "";
   }
 }
 
@@ -448,10 +740,20 @@ function renderReviewsList(reviews) {
   listContainer.innerHTML = html;
 }
 
+// ── renderReviews — punto de entrada principal ───────────────────────────────
+// En index.html → carga reseñas de tienda
+// En producto.html → carga reseñas de producto (lógica existente sin cambios)
 export function renderReviews() {
   const reviewsSection = document.getElementById("reviews-section");
   if (!reviewsSection) return;
 
-  renderReviewForm();
-  loadReviews();
+  if (isProductPage) {
+    // Lógica existente de reseñas de producto
+    renderReviewForm();
+    loadReviews();
+  } else {
+    // Reseñas de tienda para index.html
+    renderStoreReviewForm();
+    loadStoreReviews(1);
+  }
 }

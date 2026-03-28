@@ -147,4 +147,14 @@ export const reviewsApi = {
       method: "POST",
       body: JSON.stringify(data),
     }),
+
+  // Nuevos — reseñas de tienda
+  getStoreReviews: (page = 1, limit = 10) =>
+    request(`/reviews?page=${page}&limit=${limit}`),
+
+  createStoreReview: (data) =>
+    request("/reviews", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
 };
