@@ -40,4 +40,41 @@ const create = async (req, res, next) => {
   }
 };
 
-module.exports = { getByProduct, create };
+const getStoreReviews = async (req, res, next) => {
+  try {
+    const { page, limit } = req.query;
+    const result = await reviewService.getStoreReviews({ page, limit });
+    res.status(200).json(result);
+  } catch (err) {
+    next(err);
+  }
+};
+
+const createStoreReview = async (req, res, next) => {
+  try {
+    const { rating, comment } = req.body;
+
+    if (!rating) {
+      return res.status(400).json({ error: "rating es obligatorio" });
+    }
+    if (rating < 1 || rating > 5) {
+      return res.status(400).json({ error: "rating debe estar entre 1 y 5" });
+    }
+
+    const review = await reviewService.createStoreReview(req.user.id, {
+      rating,
+      comment,
+    });
+
+    res.status(201).json(review);
+  } catch (err) {
+    if (err.message === "ALREADY_REVIEWED") {
+      return res.status(409).json({
+        error: "Ya has dejado una reseña de la tienda",
+      });
+    }
+    next(err);
+  }
+};
+
+module.exports = { getByProduct, create, getStoreReviews, createStoreReview };
