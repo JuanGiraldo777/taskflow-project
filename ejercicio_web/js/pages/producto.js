@@ -335,12 +335,10 @@ async function loadRelated(id) {
 
   try {
     const response = await fetch(
-      `http://localhost:3000/api/v1/products/${id}/related`,
+      `http://localhost:3000/api/v1/products/${id}/related`
     );
 
-    if (!response.ok) {
-      throw new Error("No se pudieron cargar los productos relacionados");
-    }
+    if (!response.ok) throw new Error("No se pudieron cargar relacionados");
 
     const related = await response.json();
 
@@ -349,13 +347,85 @@ async function loadRelated(id) {
       return;
     }
 
-    const previousGrid = document.getElementById("products-grid");
+    // Renderizar directamente en related-grid sin rename
+    grid.innerHTML = '';
 
-    grid.id = "products-grid";
-    renderProducts(related);
-    grid.id = "related-grid";
+    related.forEach((product) => {
+      const hasDiscount = product.discounted_price !== null;
 
-    // Conectar manualmente los botones de wishlist de las cards relacionadas
+      const card = document.createElement("article");
+      card.className = "product-card relative bg-(--card-bg) p-8 rounded-xl overflow-hidden text-(--text)";
+      card.dataset.name  = product.name.toLowerCase();
+      card.dataset.brand = product.brand.toLowerCase();
+      card.dataset.price = product.price;
+
+      card.innerHTML = `
+        ${hasDiscount
+          ? '<span class="absolute top-5 left-5 bg-(--accent) text-black text-xs px-[10px] py-[6px] rounded">OFERTA</span>'
+          : ''}
+        <a href="producto.html?id=${product.id}" class="block product-link">
+          <img
+            src="${product.image || 'assets/imgs/placeholder.png'}"
+            alt="${product.name}"
+            class="w-[90%] h-[280px] object-contain transition-transform duration-300"
+          />
+        </a>
+        <div class="mt-1">
+          <span class="text-xs text-[#999]">${product.brand}</span>
+          <h3 class="font-serif text-lg my-2">${product.name}</h3>
+          <div class="flex gap-2 items-center">
+            ${hasDiscount
+              ? `<span class="line-through text-[#999]">$${product.original_price.toLocaleString()}</span>
+                 <span class="text-xs">Desde</span>`
+              : ''}
+            <span class="text-(--accent) font-bold">$${product.price.toLocaleString()}</span>
+          </div>
+        </div>
+        <button
+          class="add-to-cart font-serif absolute bottom-5 left-5 right-5 bg-(--bg) border border-(--text) text-(--text) py-[14px] cursor-pointer"
+          data-id="${product.id}"
+          data-name="${product.name}"
+          data-price="${product.price}"
+        >
+          AÑADIR AL CARRITO
+        </button>
+        <button
+          class="add-to-favorites absolute top-5 right-5 bg-transparent border-none cursor-pointer"
+          data-id="${product.id}"
+          data-name="${product.name}"
+          data-price="${product.price}"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+            stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M11.48 3.499a5.373 5.373 0 0 0-7.61 0 5.373 5.373 0 0 0 0 7.61L12 19.24l8.13-8.13a5.373 5.373 0 0 0 0-7.61 5.373 5.373 0 0 0-7.61 0l-.02.02Z"/>
+          </svg>
+        </button>
+      `;
+
+      grid.appendChild(card);
+    });
+
+    // Conectar botones de carrito
+    grid.querySelectorAll(".add-to-cart").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          alert("Inicia sesión para añadir productos al carrito");
+          return;
+        }
+        try {
+          await cartApi.addItem(parseInt(btn.dataset.id), 1);
+          window.dispatchEvent(new CustomEvent("sync-cart"));
+          document.getElementById("cart-drawer")?.classList.remove("translate-x-full");
+          document.getElementById("cart-drawer")?.classList.add("translate-x-0");
+        } catch (err) {
+          alert(err.message);
+        }
+      });
+    });
+
+    // Conectar botones de wishlist con toggle
     grid.querySelectorAll(".add-to-favorites").forEach((btn) => {
       btn.addEventListener("click", async (e) => {
         e.preventDefault();
@@ -371,26 +441,15 @@ async function loadRelated(id) {
         const svg = btn.querySelector("svg");
 
         try {
-          // Comprobar si ya está en wishlist
           const wishlist = await wishlistApi.getWishlist();
-          const existing = wishlist.find(
-            (item) => item.product_id === productId,
-          );
+          const existing = wishlist.find(item => item.product_id === productId);
 
           if (existing) {
-            // Ya está — quitar
             await wishlistApi.removeItem(existing.id);
-            if (svg) {
-              svg.style.fill = "none";
-              svg.style.stroke = "currentColor";
-            }
+            if (svg) { svg.style.fill = "none"; svg.style.stroke = "currentColor"; }
           } else {
-            // No está — añadir
             await wishlistApi.addItem(productId);
-            if (svg) {
-              svg.style.fill = "var(--accent)";
-              svg.style.stroke = "var(--accent)";
-            }
+            if (svg) { svg.style.fill = "var(--accent)"; svg.style.stroke = "var(--accent)"; }
           }
 
           window.dispatchEvent(new CustomEvent("sync-wishlist"));
@@ -400,9 +459,6 @@ async function loadRelated(id) {
       });
     });
 
-    if (previousGrid) {
-      previousGrid.id = "products-grid";
-    }
   } catch (err) {
     section.classList.add("hidden");
     console.error("Error al cargar relacionados:", err);
