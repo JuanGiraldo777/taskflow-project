@@ -352,87 +352,12 @@
         <label class="block text-sm text-(--text) font-serif mb-3 font-bold">
           Marca
         </label>
-        <div class="space-y-2">
-          <label
-            class="flex items-center gap-2 cursor-pointer text-sm max-sm:text-base max-sm:py-2 text-(--text)"
-          >
-            <input
-              type="checkbox"
-              class="filter-brand-checkbox w-4 h-4 max-sm:w-5 max-sm:h-5 bg-(--bg) border border-(--text) rounded accent-(--accent) cursor-pointer"
-              value="bharara"
-            />
-            BHARARA
-          </label>
-          <label
-            class="flex items-center gap-2 cursor-pointer text-sm max-sm:text-base max-sm:py-2 text-(--text)"
-          >
-            <input
-              type="checkbox"
-              class="filter-brand-checkbox w-4 h-4 max-sm:w-5 max-sm:h-5 bg-(--bg) border border-(--text) rounded accent-(--accent) cursor-pointer"
-              value="afnan"
-            />
-            AFNAN
-          </label>
-          <label
-            class="flex items-center gap-2 cursor-pointer text-sm max-sm:text-base max-sm:py-2 text-(--text)"
-          >
-            <input
-              type="checkbox"
-              class="filter-brand-checkbox w-4 h-4 max-sm:w-5 max-sm:h-5 bg-(--bg) border border-(--text) rounded accent-(--accent) cursor-pointer"
-              value="lattafa"
-            />
-            LATTAFA
-          </label>
-          <label
-            class="flex items-center gap-2 cursor-pointer text-sm max-sm:text-base max-sm:py-2 text-(--text)"
-          >
-            <input
-              type="checkbox"
-              class="filter-brand-checkbox w-4 h-4 max-sm:w-5 max-sm:h-5 bg-(--bg) border border-(--text) rounded accent-(--accent) cursor-pointer"
-              value="dior"
-            />
-            DIOR
-          </label>
-          <label
-            class="flex items-center gap-2 cursor-pointer text-sm max-sm:text-base max-sm:py-2 text-(--text)"
-          >
-            <input
-              type="checkbox"
-              class="filter-brand-checkbox w-4 h-4 max-sm:w-5 max-sm:h-5 bg-(--bg) border border-(--text) rounded accent-(--accent) cursor-pointer"
-              value="versace"
-            />
-            VERSACE
-          </label>
-          <label
-            class="flex items-center gap-2 cursor-pointer text-sm max-sm:text-base max-sm:py-2 text-(--text)"
-          >
-            <input
-              type="checkbox"
-              class="filter-brand-checkbox w-4 h-4 max-sm:w-5 max-sm:h-5 bg-(--bg) border border-(--text) rounded accent-(--accent) cursor-pointer"
-              value="creed"
-            />
-            CREED
-          </label>
-          <label
-            class="flex items-center gap-2 cursor-pointer text-sm max-sm:text-base max-sm:py-2 text-(--text)"
-          >
-            <input
-              type="checkbox"
-              class="filter-brand-checkbox w-4 h-4 max-sm:w-5 max-sm:h-5 bg-(--bg) border border-(--text) rounded accent-(--accent) cursor-pointer"
-              value="ariana grande"
-            />
-            ARIANA GRANDE
-          </label>
-          <label
-            class="flex items-center gap-2 cursor-pointer text-sm max-sm:text-base max-sm:py-2 text-(--text)"
-          >
-            <input
-              type="checkbox"
-              class="filter-brand-checkbox w-4 h-4 max-sm:w-5 max-sm:h-5 bg-(--bg) border border-(--text) rounded accent-(--accent) cursor-pointer"
-              value="odyssey"
-            />
-            ODYSSEY
-          </label>
+        <div
+          id="brand-filter-list"
+          class="space-y-2"
+          style="max-height: 12rem; overflow-y: auto; padding-right: 4px"
+        >
+          <!-- Se llena dinámicamente con las marcas reales (filters.js) -->
         </div>
       </div>
 
@@ -555,25 +480,31 @@
           class="flex justify-center gap-4 max-sm:gap-2 md:gap-6 max-sm:flex-wrap md:flex-nowrap max-sm:overflow-x-auto max-sm:pb-2 max-sm:max-w-full max-sm:flex-row mb-16 max-sm:mb-8 md:mb-12 text-sm max-sm:text-xs md:text-sm category-buttons"
         >
           <button
-            class="active text-(--text) bg-transparent border-none cursor-pointer font-serif font-bold"
+            class="category-filter-btn active text-(--text) bg-transparent border-none cursor-pointer font-serif font-bold"
+            data-sort="trending"
           >
             Perfumes en tendencia
           </button>
           <span>/</span>
           <button
-            class="text-(--text) bg-transparent border-none cursor-pointer font-serif"
+            class="category-filter-btn text-(--text) bg-transparent border-none cursor-pointer font-serif"
+            data-sort="newest"
           >
             Nuevos
           </button>
           <span>/</span>
           <button
-            class="text-(--text) bg-transparent border-none cursor-pointer font-serif"
+            class="category-filter-btn text-(--text) bg-transparent border-none cursor-pointer font-serif"
+            data-sort="trending"
+            data-gender="dama"
           >
             Top ventas mujer
           </button>
           <span>/</span>
           <button
-            class="text-(--text) bg-transparent border-none cursor-pointer font-serif"
+            class="category-filter-btn text-(--text) bg-transparent border-none cursor-pointer font-serif"
+            data-sort="trending"
+            data-gender="caballero"
           >
             Top ventas hombres
           </button>

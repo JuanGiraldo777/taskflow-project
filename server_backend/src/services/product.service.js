@@ -19,11 +19,20 @@ const PRICE_EXPR = `
   END
 `;
 
+// "Trending"/"top ventas": todavía no hay un módulo de pedidos que dé un
+// conteo de ventas real, así que se usa como referencia viewed_products
+// (vistas de producto reales, de cualquier usuario) — mejora sola a medida
+// que el sitio recibe tráfico real, en vez de ser un orden inventado.
+const TRENDING_EXPR = `(
+  SELECT COUNT(*) FROM viewed_products vprod WHERE vprod.product_id = p.id
+)`;
+
 const getAll = async ({
   search,
   category,
   brand,
   type,
+  gender,
   minPrice,
   maxPrice,
   sortBy,
@@ -41,6 +50,11 @@ const getAll = async ({
   if (type === "original" || type === "preparado") {
     conditions.push("p.type = ?");
     params.push(type);
+  }
+
+  if (gender) {
+    conditions.push("g.slug = ?");
+    params.push(gender);
   }
 
   if (category) {
@@ -73,6 +87,8 @@ const getAll = async ({
     "price-desc": `${PRICE_EXPR} DESC`,
     "name-asc": "p.name ASC",
     "name-desc": "p.name DESC",
+    newest: "p.created_at DESC",
+    trending: `${TRENDING_EXPR} DESC, p.created_at DESC`,
   };
   const orderClause = `ORDER BY ${sortOptions[sortBy] || "p.created_at DESC"}`;
 
@@ -106,7 +122,8 @@ const getAll = async ({
   const countQuery = `
     SELECT COUNT(*) AS total
     FROM products p
-    LEFT JOIN brands b ON p.brand_id = b.id
+    LEFT JOIN brands  b ON p.brand_id  = b.id
+    LEFT JOIN genders g ON p.gender_id = g.id
     ${whereClause}
   `;
 

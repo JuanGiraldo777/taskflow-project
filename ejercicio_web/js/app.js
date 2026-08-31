@@ -23,7 +23,9 @@ initThemeToggle();
 initWishlist();
 renderReviews();
 
-fetchProducts();
+// "trending" para que coincida con el botón "Perfumes en tendencia", que
+// arranca marcado como activo en el HTML.
+fetchProducts({ sortBy: "trending" });
 fetchSection("originales-grid", { type: "original", sortBy: "name-asc" });
 fetchSection("preparados-grid", { type: "preparado", sortBy: "name-asc" });
 

@@ -8,6 +8,7 @@ import { trackProductView } from "./user.js";
 export const currentFilters = {
   search: "",
   brands: [],
+  gender: "",
   minPrice: "",
   maxPrice: "",
   sortBy: "",

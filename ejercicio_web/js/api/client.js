@@ -55,6 +55,7 @@ export const productsApi = {
     if (params.search) query.append("search", params.search);
     if (params.category) query.append("category", params.category);
     if (params.type) query.append("type", params.type);
+    if (params.gender) query.append("gender", params.gender);
     if (params.minPrice) query.append("minPrice", params.minPrice);
     if (params.maxPrice) query.append("maxPrice", params.maxPrice);
     if (params.sortBy) query.append("sortBy", params.sortBy);
