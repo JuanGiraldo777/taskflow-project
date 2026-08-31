@@ -12,6 +12,7 @@ import { initCart } from "./cart.js";
 import { initThemeToggle } from "./theme.js";
 import { initAdvancedFilters } from "./filters.js";
 import { renderReviews } from "./reviews.js";
+import { initCarousels } from "./carousel.js";
 
 initUser();
 initAdvancedFilters();
@@ -21,13 +22,14 @@ initSearch();
 initCart();
 initThemeToggle();
 initWishlist();
+initCarousels();
 renderReviews();
 
 // "trending" para que coincida con el botón "Perfumes en tendencia", que
 // arranca marcado como activo en el HTML.
 fetchProducts({ sortBy: "trending" });
-fetchSection("originales-grid", { type: "original", sortBy: "name-asc" });
-fetchSection("preparados-grid", { type: "preparado", sortBy: "name-asc" });
+fetchSection("originales-grid", { type: "original", sortBy: "name-asc", limit: 12 });
+fetchSection("preparados-grid", { type: "preparado", sortBy: "name-asc", limit: 12 });
 
 window.addEventListener("user-logged-in", () => {
   // cart y wishlist se sincronizan con sus propios listeners.
