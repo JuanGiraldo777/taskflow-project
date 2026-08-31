@@ -2,8 +2,14 @@
  * @file server_backend/src/config/env.js
  * @description Carga y valida variables de entorno críticas del backend.
  */
+const path = require("path");
+
 // Fail Fast — si falta una variable crítica, el servidor se niega a arrancar.
-require("dotenv").config();
+// dotenv sin `path` siempre busca ".env" a secas; aquí elegimos el archivo
+// según NODE_ENV para poder mantener .env.local y .env.production separados.
+const envFile =
+  process.env.NODE_ENV === "production" ? ".env.production" : ".env.local";
+require("dotenv").config({ path: path.resolve(__dirname, "../../", envFile) });
 
 const requiredVars = [
   "PORT",
