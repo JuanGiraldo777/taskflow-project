@@ -256,7 +256,6 @@ export function initCart() {
   const cartIcon = document.querySelector(".cart-icon");
   const closeCartBtn = document.getElementById("close-cart-btn");
   const cartOverlay = document.getElementById("cart-overlay");
-  const productsGrid = document.getElementById("products-grid");
 
   if (
     !cartDrawer ||
@@ -266,14 +265,15 @@ export function initCart() {
   )
     return;
 
-  if (productsGrid) {
-    productsGrid.addEventListener("click", (e) => {
-      const button = e.target.closest(".add-to-cart");
-      if (button) {
-        handleAddToCartClick(button);
-      }
-    });
-  }
+  // Delegado desde document (no un grid específico) para que funcione en
+  // cualquier sección de tarjetas de producto del home, no solo el
+  // catálogo principal.
+  document.addEventListener("click", (e) => {
+    const button = e.target.closest(".add-to-cart");
+    if (button) {
+      handleAddToCartClick(button);
+    }
+  });
 
   // Click en icono carrito: abre el drawer
   cartIcon?.addEventListener("click", openCartDrawer);

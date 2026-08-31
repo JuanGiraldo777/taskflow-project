@@ -58,7 +58,7 @@ async function renderProductDetail() {
     const mainImage =
       images.find((img) => img.is_main)?.url ||
       images[0]?.url ||
-      "assets/imgs/placeholder.png";
+      "assets/imgs/placeholder.svg";
 
     section.innerHTML = `
       <div class="grid grid-cols-2 gap-16 max-lg:grid-cols-1 max-lg:gap-8">
@@ -368,60 +368,6 @@ async function renderProductDetail() {
   }
 }
 
-async function bindRelatedActions() {
-  const relatedSection = document.getElementById("related-grid");
-  if (!relatedSection) return;
-
-  relatedSection.addEventListener("click", async (event) => {
-    const cartButton = event.target.closest(".add-to-cart");
-    if (cartButton) {
-      const id = Number(cartButton.dataset.id);
-      if (!id || Number.isNaN(id)) return;
-
-      // Un preparado necesita elegir presentación primero — eso solo se
-      // puede hacer en su propia página de detalle.
-      if (cartButton.dataset.type === "preparado") {
-        window.location.href = `producto.html?id=${id}`;
-        return;
-      }
-
-      const token = localStorage.getItem("token");
-      if (!token) {
-        alert("Inicia sesion para anadir productos al carrito");
-        return;
-      }
-
-      try {
-        await cartApi.addItem(id, 1);
-        openCartDrawer();
-      } catch (err) {
-        alert(err.message);
-      }
-      return;
-    }
-
-    const wishlistButton = event.target.closest(".add-to-favorites");
-    if (wishlistButton) {
-      event.preventDefault();
-      const token = localStorage.getItem("token");
-      if (!token) {
-        alert("Inicia sesion para anadir a favoritos");
-        return;
-      }
-
-      const id = Number(wishlistButton.dataset.id);
-      if (!id || Number.isNaN(id)) return;
-
-      try {
-        await wishlistApi.addItem(id);
-        window.dispatchEvent(new CustomEvent("products-rendered"));
-      } catch (err) {
-        alert(err.message);
-      }
-    }
-  });
-}
-
 async function loadRelated(id) {
   const grid = document.getElementById("related-grid");
   const section = document.getElementById("related-products");
@@ -454,7 +400,7 @@ async function loadRelated(id) {
           : ''}
         <a href="producto.html?id=${product.id}" class="block product-link">
           <img
-            src="${product.image || 'assets/imgs/placeholder.png'}"
+            src="${product.image || 'assets/imgs/placeholder.svg'}"
             alt="${product.name}"
             class="w-[90%] h-[280px] object-contain transition-transform duration-300"
           />
@@ -496,59 +442,9 @@ async function loadRelated(id) {
       grid.appendChild(card);
     });
 
-    // Conectar botones de carrito
-    grid.querySelectorAll(".add-to-cart").forEach((btn) => {
-      btn.addEventListener("click", async () => {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          alert("Inicia sesión para añadir productos al carrito");
-          return;
-        }
-        try {
-          await cartApi.addItem(parseInt(btn.dataset.id), 1);
-          window.dispatchEvent(new CustomEvent("sync-cart"));
-          document.getElementById("cart-drawer")?.classList.remove("translate-x-full");
-          document.getElementById("cart-drawer")?.classList.add("translate-x-0");
-        } catch (err) {
-          alert(err.message);
-        }
-      });
-    });
-
-    // Conectar botones de wishlist con toggle
-    grid.querySelectorAll(".add-to-favorites").forEach((btn) => {
-      btn.addEventListener("click", async (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        const token = localStorage.getItem("token");
-        if (!token) {
-          alert("Inicia sesión para añadir a favoritos");
-          return;
-        }
-
-        const productId = parseInt(btn.dataset.id);
-        const svg = btn.querySelector("svg");
-
-        try {
-          const wishlist = await wishlistApi.getWishlist();
-          const existing = wishlist.find(item => item.product_id === productId);
-
-          if (existing) {
-            await wishlistApi.removeItem(existing.id);
-            if (svg) { svg.style.fill = "none"; svg.style.stroke = "currentColor"; }
-          } else {
-            await wishlistApi.addItem(productId);
-            if (svg) { svg.style.fill = "var(--accent)"; svg.style.stroke = "var(--accent)"; }
-          }
-
-          window.dispatchEvent(new CustomEvent("sync-wishlist"));
-        } catch (err) {
-          console.error(err);
-        }
-      });
-    });
-
+    // El click de "añadir al carrito"/"a favoritos" en estas tarjetas ya lo
+    // maneja la delegación global de cart.js/wishlist.js (initCart/initWishlist,
+    // llamados más abajo en DOMContentLoaded) — no hace falta conectarlos aquí.
   } catch (err) {
     section.classList.add("hidden");
     console.error("Error al cargar relacionados:", err);
@@ -564,7 +460,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   initWishlist();
   initUser();
 
-  await bindRelatedActions();
   await renderProductDetail();
   renderReviews();
 

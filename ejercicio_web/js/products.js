@@ -15,8 +15,8 @@ export const currentFilters = {
   limit: 10,
 };
 
-function showLoadingState() {
-  const grid = document.getElementById("products-grid");
+function showLoadingState(gridId = "products-grid") {
+  const grid = document.getElementById(gridId);
   if (!grid) return;
 
   grid.innerHTML = `
@@ -26,8 +26,8 @@ function showLoadingState() {
   `;
 }
 
-function showErrorState(message) {
-  const grid = document.getElementById("products-grid");
+function showErrorState(message, gridId = "products-grid") {
+  const grid = document.getElementById(gridId);
   if (!grid) return;
 
   grid.innerHTML = `
@@ -37,14 +37,20 @@ function showErrorState(message) {
   `;
 }
 
-export function renderProducts(products) {
-  const grid = document.getElementById("products-grid");
+/**
+ * Renderiza tarjetas de producto dentro de cualquier grid, no solo el del
+ * catálogo principal — usado también por las secciones de Originales y
+ * Preparados en el home.
+ * @param {Array} products
+ * @param {string} gridId
+ */
+export function renderProductsInto(products, gridId) {
+  const grid = document.getElementById(gridId);
   if (!grid) return;
 
   grid.innerHTML = "";
 
   if (!products || products.length === 0) {
-    showErrorState("No se encontraron productos con esos filtros.");
     return;
   }
 
@@ -66,7 +72,7 @@ export function renderProducts(products) {
       }
       <a href="producto.html?id=${product.id}" class="block product-link">
         <img
-          src="${product.image || "assets/imgs/placeholder.png"}"
+          src="${product.image || "assets/imgs/placeholder.svg"}"
           alt="${product.name}"
           class="w-[90%] h-[280px] object-contain transition-transform duration-300"
         />
@@ -126,9 +132,37 @@ export async function fetchProducts(filters = {}) {
 
   try {
     const result = await productsApi.getAll(currentFilters);
-    renderProducts(result.data || []);
+    const products = result.data || [];
+
+    if (products.length === 0) {
+      showErrorState("No se encontraron productos con esos filtros.");
+      return;
+    }
+
+    renderProductsInto(products, "products-grid");
+    window.dispatchEvent(new CustomEvent("products-rendered"));
   } catch (err) {
     showErrorState("Error al cargar los productos. Intenta de nuevo.");
+    console.error(err);
+  }
+}
+
+/**
+ * Trae y renderiza un grupo pequeño de productos en cualquier grid del
+ * home (ej. las secciones de Originales / Preparados) — independiente
+ * de los filtros del catálogo principal.
+ * @param {string} gridId
+ * @param {object} filters
+ */
+export async function fetchSection(gridId, filters = {}) {
+  showLoadingState(gridId);
+
+  try {
+    const result = await productsApi.getAll({ limit: 4, ...filters });
+    renderProductsInto(result.data || [], gridId);
+    window.dispatchEvent(new CustomEvent("products-rendered"));
+  } catch (err) {
+    showErrorState("No se pudo cargar esta sección.", gridId);
     console.error(err);
   }
 }

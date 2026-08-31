@@ -6,8 +6,17 @@ const productService = require("../services/product.service");
 
 const getAll = async (req, res, next) => {
   try {
-    const { search, category, brand, minPrice, maxPrice, sortBy, page, limit } =
-      req.query;
+    const {
+      search,
+      category,
+      brand,
+      type,
+      minPrice,
+      maxPrice,
+      sortBy,
+      page,
+      limit,
+    } = req.query;
 
     if (minPrice && isNaN(parseFloat(minPrice))) {
       return res.status(400).json({ error: "minPrice debe ser un número" });
@@ -20,11 +29,17 @@ const getAll = async (req, res, next) => {
         .status(400)
         .json({ error: "minPrice no puede ser mayor que maxPrice" });
     }
+    if (type && type !== "original" && type !== "preparado") {
+      return res
+        .status(400)
+        .json({ error: "type debe ser 'original' o 'preparado'" });
+    }
 
     const result = await productService.getAll({
       search,
       category,
       brand,
+      type,
       minPrice,
       maxPrice,
       sortBy,

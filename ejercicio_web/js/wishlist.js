@@ -197,29 +197,28 @@ export function initWishlist() {
   renderWishlistPanel();
   initializeFavoriteIcons();
 
-  const productsGrid = document.getElementById("products-grid");
-  if (productsGrid) {
-    productsGrid.addEventListener("click", (e) => {
-      const btn = e.target.closest(".add-to-favorites");
-      if (btn) {
-        e.preventDefault();
-        e.stopPropagation();
+  // Delegado desde document, no un grid específico, para que funcione en
+  // cualquier sección de tarjetas del home (Destacados, Originales, Preparados).
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest(".add-to-favorites");
+    if (btn) {
+      e.preventDefault();
+      e.stopPropagation();
 
-        const productId = Number(btn.getAttribute("data-id"));
-        if (Number.isNaN(productId)) return;
+      const productId = Number(btn.getAttribute("data-id"));
+      if (Number.isNaN(productId)) return;
 
-        const existingItem = wishlistState.find(
-          (item) => item.product_id === productId,
-        );
+      const existingItem = wishlistState.find(
+        (item) => item.product_id === productId,
+      );
 
-        if (existingItem) {
-          removeFromWishlist(existingItem.id);
-        } else {
-          addToWishlist(productId);
-        }
+      if (existingItem) {
+        removeFromWishlist(existingItem.id);
+      } else {
+        addToWishlist(productId);
       }
-    });
-  }
+    }
+  });
 
   const wishlistIcon = document.querySelector(".wishlist-icon");
   if (wishlistIcon) {

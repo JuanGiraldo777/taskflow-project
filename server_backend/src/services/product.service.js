@@ -23,6 +23,7 @@ const getAll = async ({
   search,
   category,
   brand,
+  type,
   minPrice,
   maxPrice,
   sortBy,
@@ -35,6 +36,11 @@ const getAll = async ({
   if (search) {
     conditions.push("(p.name LIKE ? OR b.name LIKE ?)");
     params.push(`%${search}%`, `%${search}%`);
+  }
+
+  if (type === "original" || type === "preparado") {
+    conditions.push("p.type = ?");
+    params.push(type);
   }
 
   if (category) {
