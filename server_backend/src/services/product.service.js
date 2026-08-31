@@ -4,6 +4,21 @@
  */
 const pool = require("../config/db");
 
+// Precio a mostrar: para un original es su propio precio (con descuento si
+// aplica); para un preparado no hay un precio único en `products`, así que
+// se usa el más barato de sus presentaciones ("Desde $X").
+const PRICE_EXPR = `
+  CASE
+    WHEN p.type = 'original' THEN COALESCE(p.discounted_price, p.original_price)
+    ELSE (
+      SELECT MIN(pr.price)
+      FROM product_variants pv
+      JOIN presentations pr ON pr.id = pv.presentation_id
+      WHERE pv.product_id = p.id
+    )
+  END
+`;
+
 const getAll = async ({
   search,
   category,
@@ -35,12 +50,12 @@ const getAll = async ({
   }
 
   if (minPrice) {
-    conditions.push("COALESCE(p.discounted_price, p.original_price) >= ?");
+    conditions.push(`${PRICE_EXPR} >= ?`);
     params.push(parseFloat(minPrice));
   }
 
   if (maxPrice) {
-    conditions.push("COALESCE(p.discounted_price, p.original_price) <= ?");
+    conditions.push(`${PRICE_EXPR} <= ?`);
     params.push(parseFloat(maxPrice));
   }
 
@@ -48,8 +63,8 @@ const getAll = async ({
     conditions.length > 0 ? "WHERE " + conditions.join(" AND ") : "";
 
   const sortOptions = {
-    "price-asc": "COALESCE(p.discounted_price, p.original_price) ASC",
-    "price-desc": "COALESCE(p.discounted_price, p.original_price) DESC",
+    "price-asc": `${PRICE_EXPR} ASC`,
+    "price-desc": `${PRICE_EXPR} DESC`,
     "name-asc": "p.name ASC",
     "name-desc": "p.name DESC",
   };
@@ -63,16 +78,19 @@ const getAll = async ({
     SELECT
       p.id,
       p.name,
-      b.name                                        AS brand,
+      p.type,
+      b.name           AS brand,
       p.original_price,
       p.discounted_price,
-      COALESCE(p.discounted_price, p.original_price) AS price,
+      ${PRICE_EXPR}    AS price,
       p.stock,
-      c.name                                        AS category,
-      pi.url                                        AS image
+      c.name           AS category,
+      g.name           AS gender,
+      pi.url           AS image
     FROM products p
     LEFT JOIN categories     c  ON p.category_id = c.id
     LEFT JOIN brands         b  ON p.brand_id    = b.id
+    LEFT JOIN genders        g  ON p.gender_id   = g.id
     LEFT JOIN product_images pi ON pi.product_id = p.id AND pi.is_main = TRUE
     ${whereClause}
     ${orderClause}
@@ -109,18 +127,21 @@ const getById = async (id) => {
       p.id,
       p.brand_id,
       p.category_id,
+      p.gender_id,
+      p.type,
       p.name,
       p.description,
       p.original_price,
       p.discounted_price,
-      COALESCE(p.discounted_price, p.original_price) AS price,
       p.stock,
       p.created_at,
       b.name AS brand,
-      c.name AS category
+      c.name AS category,
+      g.name AS gender
     FROM products p
     LEFT JOIN categories c ON p.category_id = c.id
     LEFT JOIN brands     b ON p.brand_id    = b.id
+    LEFT JOIN genders    g ON p.gender_id   = g.id
     WHERE p.id = ?
   `,
     [id],
@@ -130,12 +151,37 @@ const getById = async (id) => {
     throw new Error("NOT_FOUND");
   }
 
+  const product = rows[0];
+
   const [images] = await pool.execute(
     "SELECT url, is_main FROM product_images WHERE product_id = ? ORDER BY is_main DESC",
     [id],
   );
 
-  return { ...rows[0], images };
+  if (product.type === "preparado") {
+    const [variants] = await pool.execute(
+      `SELECT
+        pv.id      AS variant_id,
+        pv.stock,
+        pr.id      AS presentation_id,
+        pr.label,
+        pr.price
+      FROM product_variants pv
+      JOIN presentations pr ON pr.id = pv.presentation_id
+      WHERE pv.product_id = ?
+      ORDER BY pr.price ASC`,
+      [id],
+    );
+
+    const price = variants.length
+      ? Math.min(...variants.map((v) => Number(v.price)))
+      : null;
+
+    return { ...product, images, variants, price };
+  }
+
+  const price = product.discounted_price ?? product.original_price;
+  return { ...product, images, variants: [], price };
 };
 
 const getAllCategories = async () => {
@@ -150,6 +196,20 @@ const getAllBrands = async () => {
   return rows;
 };
 
+const getAllGenders = async () => {
+  const [rows] = await pool.execute(
+    "SELECT id, name, slug FROM genders ORDER BY id ASC",
+  );
+  return rows;
+};
+
+const getAllPresentations = async () => {
+  const [rows] = await pool.execute(
+    "SELECT id, label, price FROM presentations ORDER BY price ASC",
+  );
+  return rows;
+};
+
 // Productos relacionados
 // Prioriza misma marca (excluyendo el producto actual) y completa con categoría.
 const getRelated = async (productId, brandId, categoryId) => {
@@ -157,9 +217,10 @@ const getRelated = async (productId, brandId, categoryId) => {
     `SELECT
       p.id,
       p.name,
+      p.type,
       p.original_price,
       p.discounted_price,
-      COALESCE(p.discounted_price, p.original_price) AS price,
+      ${PRICE_EXPR} AS price,
       b.name  AS brand,
       pi.url  AS image
     FROM products p
@@ -182,9 +243,10 @@ const getRelated = async (productId, brandId, categoryId) => {
     `SELECT
       p.id,
       p.name,
+      p.type,
       p.original_price,
       p.discounted_price,
-      COALESCE(p.discounted_price, p.original_price) AS price,
+      ${PRICE_EXPR} AS price,
       b.name  AS brand,
       pi.url  AS image
     FROM products p
@@ -198,53 +260,120 @@ const getRelated = async (productId, brandId, categoryId) => {
   return [...byBrand, ...byCategory];
 };
 
+// Qué sexos son válidos para cada combinación type+categoría. Vive aquí (no
+// en la BD, sin CHECK constraint) porque el catálogo real todavía puede
+// cambiar esta regla — así se ajusta editando este objeto, sin migración.
+// Los preparados no tienen subcategoría real — solo existe la categoría
+// "Preparados", y el sexo (dama/caballero/unisex) hace las veces de
+// clasificación. Los originales sí distinguen árabe/nicho/diseñador, cada
+// uno con sus sexos válidos.
+const VALID_GENDERS_BY_TYPE_CATEGORY = {
+  preparado: {
+    preparados: ["dama", "caballero", "unisex"],
+  },
+  original: {
+    arabe: ["dama", "caballero", "unisex"],
+    nicho: ["dama", "caballero", "unisex"],
+    disenador: ["dama", "caballero"],
+  },
+};
+
+const validateGenderForCategory = async (type, categoryId, genderId) => {
+  const [[category]] = await pool.execute(
+    "SELECT slug FROM categories WHERE id = ?",
+    [categoryId],
+  );
+  const [[gender]] = await pool.execute(
+    "SELECT slug FROM genders WHERE id = ?",
+    [genderId],
+  );
+
+  if (!category) throw new Error("INVALID_CATEGORY");
+  if (!gender) throw new Error("INVALID_GENDER");
+
+  const allowed = VALID_GENDERS_BY_TYPE_CATEGORY[type]?.[category.slug] || [];
+  if (!allowed.includes(gender.slug)) {
+    throw new Error("INVALID_GENDER_FOR_CATEGORY");
+  }
+};
+
 const create = async ({
+  type,
   categoryId,
   brandId,
+  genderId,
   name,
   description,
   originalPrice,
   discountedPrice,
   stock,
   imageUrl,
+  variants,
 }) => {
-  const [result] = await pool.execute(
-    `INSERT INTO products
-      (category_id, brand_id, name, description, original_price, discounted_price, stock)
-     VALUES (?, ?, ?, ?, ?, ?, ?)`,
-    [
-      categoryId,
-      brandId,
-      name,
-      description || null,
-      originalPrice,
-      discountedPrice || null,
-      stock || 0,
-    ],
-  );
+  await validateGenderForCategory(type, categoryId, genderId);
 
-  const productId = result.insertId;
+  const connection = await pool.getConnection();
+  try {
+    await connection.beginTransaction();
 
-  if (imageUrl) {
-    await pool.execute(
-      "INSERT INTO product_images (product_id, url, is_main) VALUES (?, ?, TRUE)",
-      [productId, imageUrl],
+    const [result] = await connection.execute(
+      `INSERT INTO products
+        (category_id, brand_id, gender_id, type, name, description, original_price, discounted_price, stock)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        categoryId,
+        brandId,
+        genderId,
+        type,
+        name,
+        description || null,
+        type === "original" ? originalPrice : null,
+        type === "original" ? discountedPrice || null : null,
+        type === "original" ? stock || 0 : 0,
+      ],
     );
-  }
 
-  return getById(productId);
+    const productId = result.insertId;
+
+    if (type === "preparado") {
+      for (const variant of variants) {
+        await connection.execute(
+          "INSERT INTO product_variants (product_id, presentation_id, stock) VALUES (?, ?, ?)",
+          [productId, variant.presentationId, variant.stock || 0],
+        );
+      }
+    }
+
+    if (imageUrl) {
+      await connection.execute(
+        "INSERT INTO product_images (product_id, url, is_main) VALUES (?, ?, TRUE)",
+        [productId, imageUrl],
+      );
+    }
+
+    await connection.commit();
+    return getById(productId);
+  } catch (err) {
+    await connection.rollback();
+    throw err;
+  } finally {
+    connection.release();
+  }
 };
 
 const update = async (
   id,
   {
+    type,
     categoryId,
     brandId,
+    genderId,
     name,
     description,
     originalPrice,
     discountedPrice,
     stock,
+    variants,
   },
 ) => {
   const [existing] = await pool.execute(
@@ -255,24 +384,55 @@ const update = async (
     throw new Error("NOT_FOUND");
   }
 
-  await pool.execute(
-    `UPDATE products
-     SET category_id = ?, brand_id = ?, name = ?, description = ?,
-         original_price = ?, discounted_price = ?, stock = ?
-     WHERE id = ?`,
-    [
-      categoryId,
-      brandId,
-      name,
-      description || null,
-      originalPrice,
-      discountedPrice || null,
-      stock,
-      id,
-    ],
-  );
+  await validateGenderForCategory(type, categoryId, genderId);
 
-  return getById(id);
+  const connection = await pool.getConnection();
+  try {
+    await connection.beginTransaction();
+
+    await connection.execute(
+      `UPDATE products
+       SET category_id = ?, brand_id = ?, gender_id = ?, type = ?, name = ?, description = ?,
+           original_price = ?, discounted_price = ?, stock = ?
+       WHERE id = ?`,
+      [
+        categoryId,
+        brandId,
+        genderId,
+        type,
+        name,
+        description || null,
+        type === "original" ? originalPrice : null,
+        type === "original" ? discountedPrice || null : null,
+        type === "original" ? stock || 0 : 0,
+        id,
+      ],
+    );
+
+    if (type === "preparado") {
+      // Se reemplazan todas las variantes: más simple que calcular un diff
+      // entre las presentaciones viejas y nuevas, y el admin siempre manda
+      // la lista completa de presentaciones vigentes.
+      await connection.execute(
+        "DELETE FROM product_variants WHERE product_id = ?",
+        [id],
+      );
+      for (const variant of variants || []) {
+        await connection.execute(
+          "INSERT INTO product_variants (product_id, presentation_id, stock) VALUES (?, ?, ?)",
+          [id, variant.presentationId, variant.stock || 0],
+        );
+      }
+    }
+
+    await connection.commit();
+    return getById(id);
+  } catch (err) {
+    await connection.rollback();
+    throw err;
+  } finally {
+    connection.release();
+  }
 };
 
 const remove = async (id) => {
@@ -289,6 +449,8 @@ module.exports = {
   getById,
   getAllCategories,
   getAllBrands,
+  getAllGenders,
+  getAllPresentations,
   getRelated,
   create,
   update,

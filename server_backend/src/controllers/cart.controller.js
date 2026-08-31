@@ -15,19 +15,28 @@ const getCart = async (req, res, next) => {
 
 const addItem = async (req, res, next) => {
   try {
-    const { productId, quantity } = req.body;
+    const { productId, variantId, quantity } = req.body;
     if (!productId)
       return res.status(400).json({ error: "productId es obligatorio" });
 
     const cart = await cartService.addItem(
       req.user.id,
       productId,
+      variantId || null,
       quantity || 1,
     );
     res.status(201).json(cart);
   } catch (err) {
     if (err.message === "OUT_OF_STOCK")
       return res.status(400).json({ error: "Stock insuficiente" });
+    if (err.message === "VARIANT_REQUIRED")
+      return res.status(400).json({
+        error: "Este producto requiere elegir una presentación (variantId)",
+      });
+    if (err.message === "INVALID_VARIANT")
+      return res.status(400).json({
+        error: "La presentación indicada no corresponde a este producto",
+      });
     next(err);
   }
 };

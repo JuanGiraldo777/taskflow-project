@@ -11,6 +11,8 @@ const errorHandler = require("./middlewares/errorHandler");
 const productRoutes = require("./routes/product.routes");
 const categoryRoutes = require("./routes/category.routes");
 const brandRoutes = require("./routes/brand.routes");
+const genderRoutes = require("./routes/gender.routes");
+const presentationRoutes = require("./routes/presentation.routes");
 const authRoutes = require("./routes/auth.routes");
 const userRoutes = require("./routes/user.routes");
 const cartRoutes = require("./routes/cart.routes");
@@ -33,6 +35,8 @@ app.get("/health", (req, res) => {
 app.use("/api/v1/products", productRoutes);
 app.use("/api/v1/categories", categoryRoutes);
 app.use("/api/v1/brands", brandRoutes);
+app.use("/api/v1/genders", genderRoutes);
+app.use("/api/v1/presentations", presentationRoutes);
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/cart", cartRoutes);

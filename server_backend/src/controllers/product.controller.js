@@ -94,51 +94,121 @@ const getAllBrands = async (req, res, next) => {
   }
 };
 
+const getAllGenders = async (req, res, next) => {
+  try {
+    const genders = await productService.getAllGenders();
+    res.status(200).json(genders);
+  } catch (err) {
+    next(err);
+  }
+};
+
+const getAllPresentations = async (req, res, next) => {
+  try {
+    const presentations = await productService.getAllPresentations();
+    res.status(200).json(presentations);
+  } catch (err) {
+    next(err);
+  }
+};
+
+// Valida las reglas comunes a create/update: type, ids obligatorios, y según
+// el type, o bien originalPrice (original) o bien variants (preparado).
+// Devuelve un mensaje de error, o null si todo está bien.
+const validateProductPayload = ({
+  type,
+  categoryId,
+  brandId,
+  genderId,
+  name,
+  originalPrice,
+  discountedPrice,
+  variants,
+}) => {
+  if (!type || !["original", "preparado"].includes(type)) {
+    return "type debe ser 'original' o 'preparado'";
+  }
+
+  if (!categoryId || !brandId || !genderId || !name) {
+    return "categoryId, brandId, genderId y name son obligatorios";
+  }
+
+  if (type === "original") {
+    if (!originalPrice || originalPrice <= 0) {
+      return "originalPrice debe ser mayor que 0";
+    }
+    if (discountedPrice && discountedPrice >= originalPrice) {
+      return "discountedPrice debe ser menor que originalPrice";
+    }
+  }
+
+  if (type === "preparado") {
+    if (!Array.isArray(variants) || variants.length === 0) {
+      return "preparado necesita al menos una presentación en 'variants'";
+    }
+    const invalid = variants.some(
+      (v) => !v.presentationId || v.stock == null || v.stock < 0,
+    );
+    if (invalid) {
+      return "cada variante necesita presentationId y stock (>= 0)";
+    }
+  }
+
+  return null;
+};
+
+// Traduce los errores de negocio que lanza product.service.js (la matriz
+// sexo-subcategoría) a una respuesta 400 legible en vez de un 500 genérico.
+const handleProductServiceError = (err, res, next) => {
+  if (err.message === "INVALID_CATEGORY" || err.message === "INVALID_GENDER") {
+    return res.status(400).json({ error: "categoryId o genderId inválido" });
+  }
+  if (err.message === "INVALID_GENDER_FOR_CATEGORY") {
+    return res.status(400).json({
+      error: "Ese sexo no es válido para la subcategoría elegida",
+    });
+  }
+  next(err);
+};
+
 const createProduct = async (req, res, next) => {
   try {
     const {
+      type,
       categoryId,
       brandId,
+      genderId,
       name,
       description,
       originalPrice,
       discountedPrice,
       stock,
       imageUrl,
+      variants,
     } = req.body;
 
-    if (!categoryId || !brandId || !name || !originalPrice) {
-      return res.status(400).json({
-        error: "categoryId, brandId, name y originalPrice son obligatorios",
-      });
-    }
-
-    if (originalPrice <= 0) {
-      return res
-        .status(400)
-        .json({ error: "originalPrice debe ser mayor que 0" });
-    }
-
-    if (discountedPrice && discountedPrice >= originalPrice) {
-      return res.status(400).json({
-        error: "discountedPrice debe ser menor que originalPrice",
-      });
+    const validationError = validateProductPayload(req.body);
+    if (validationError) {
+      return res.status(400).json({ error: validationError });
     }
 
     const product = await productService.create({
+      type,
       categoryId,
       brandId,
+      genderId,
       name,
       description,
       originalPrice,
       discountedPrice,
       stock,
       imageUrl,
+      variants,
     });
 
     res.status(201).json(product);
   } catch (err) {
-    next(err);
+    handleProductServiceError(err, res, next);
   }
 };
 
@@ -150,40 +220,42 @@ const updateProduct = async (req, res, next) => {
     }
 
     const {
+      type,
       categoryId,
       brandId,
+      genderId,
       name,
       description,
       originalPrice,
       discountedPrice,
       stock,
+      variants,
     } = req.body;
 
-    if (!categoryId || !brandId || !name || !originalPrice) {
-      return res.status(400).json({
-        error: "categoryId, brandId, name y originalPrice son obligatorios",
-      });
-    }
-
-    if (discountedPrice && discountedPrice >= originalPrice) {
-      return res.status(400).json({
-        error: "discountedPrice debe ser menor que originalPrice",
-      });
+    const validationError = validateProductPayload(req.body);
+    if (validationError) {
+      return res.status(400).json({ error: validationError });
     }
 
     const product = await productService.update(id, {
+      type,
       categoryId,
       brandId,
+      genderId,
       name,
       description,
       originalPrice,
       discountedPrice,
       stock,
+      variants,
     });
 
     res.status(200).json(product);
   } catch (err) {
-    next(err);
+    if (err.message === "NOT_FOUND") {
+      return res.status(404).json({ error: "Producto no encontrado" });
+    }
+    handleProductServiceError(err, res, next);
   }
 };
 
@@ -207,6 +279,8 @@ module.exports = {
   getRelated,
   getAllCategories,
   getAllBrands,
+  getAllGenders,
+  getAllPresentations,
   createProduct,
   updateProduct,
   deleteProduct,
