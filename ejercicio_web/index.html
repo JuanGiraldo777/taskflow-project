@@ -108,8 +108,8 @@
         align-items: center;
         justify-content: center;
         gap: 0.75rem;
-        margin-top: 0.5rem;
-        margin-bottom: 1.75rem;
+        margin-top: 1.5rem;
+        margin-bottom: 3rem;
       }
       .carousel-eyebrow span {
         font-size: 11px;
@@ -163,7 +163,13 @@
 
       /* Preparados usa un acento cobre/rosado en vez del dorado de
          Originales — misma estructura, identidad propia. */
+      /* Sin esto, el padding-top propio de Preparados se SUMA al
+         padding-bottom de Originales en su borde compartido — el espacio
+         queda el doble que el de arriba de Originales (que solo recibe
+         el de un lado, porque el Hero no tiene padding inferior). Con
+         padding-top: 0 aquí, el hueco queda igual de ambos lados. */
       .section-preparados {
+        padding-top: 0;
         --carousel-accent: #cd8b5c;
         --carousel-glow: rgba(205, 139, 92, 0.28);
         --carousel-glow-line: rgba(205, 139, 92, 0.4);
@@ -585,7 +591,7 @@
 
       <!-- ORIGINALES -->
       <section
-        class="bg-(--bg) py-[80px] max-sm:py-10 md:py-14 px-20 max-sm:px-4 sm:px-8 md:px-12 section-originales"
+        class="bg-(--bg) py-[100px] max-sm:py-12 md:py-16 px-20 max-sm:px-4 sm:px-8 md:px-12 section-originales"
       >
         <div class="max-w-[1400px] mx-auto">
           <div class="mb-8 max-sm:mb-6 text-center">
@@ -634,7 +640,7 @@
 
       <!-- PREPARADOS -->
       <section
-        class="bg-(--card-bg) py-[80px] max-sm:py-10 md:py-14 px-20 max-sm:px-4 sm:px-8 md:px-12 section-preparados"
+        class="bg-(--card-bg) py-[100px] max-sm:py-12 md:py-16 px-20 max-sm:px-4 sm:px-8 md:px-12 section-preparados"
       >
         <div class="max-w-[1400px] mx-auto">
           <div class="mb-8 max-sm:mb-6 text-center">
