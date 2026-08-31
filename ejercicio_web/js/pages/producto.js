@@ -45,6 +45,14 @@ async function renderProductDetail() {
     document.title = `Maison - ${product.name}`;
 
     const hasDiscount = product.discounted_price !== null;
+    const isPreparado = product.type === "preparado";
+    const variants = product.variants || [];
+    // Las variantes ya vienen ordenadas por precio ascendente desde el backend —
+    // se pre-selecciona la más barata (primera disponible con stock si hay alguna).
+    const initialVariant = isPreparado
+      ? variants.find((v) => Number(v.stock) > 0) || variants[0] || null
+      : null;
+    const displayPrice = initialVariant ? initialVariant.price : product.price;
 
     const images = product.images || [];
     const mainImage =
@@ -111,8 +119,8 @@ async function renderProductDetail() {
             `
                 : ""
             }
-            <span class="text-(--accent) font-serif text-3xl font-bold">
-              $${Number(product.price || 0).toLocaleString()}
+            <span id="detail-price" class="text-(--accent) font-serif text-3xl font-bold">
+              $${Number(displayPrice || 0).toLocaleString()}
             </span>
             ${
               hasDiscount
@@ -125,16 +133,39 @@ async function renderProductDetail() {
             }
           </div>
 
-          <div class="flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full ${Number(product.stock) > 0 ? "bg-green-500" : "bg-red-500"}"></span>
-            <span class="text-sm text-(--text) opacity-70 font-sans">
-              ${
-                Number(product.stock) > 0
-                  ? `${product.stock} unidades disponibles`
-                  : "Sin stock"
-              }
-            </span>
-          </div>
+          ${
+            isPreparado
+              ? `
+            <div class="flex flex-col gap-3">
+              <span class="text-sm text-(--text) font-sans font-semibold">Presentación</span>
+              <div class="flex flex-wrap gap-2" id="variant-selector">
+                ${variants
+                  .map((v) => {
+                    const outOfStock = Number(v.stock) === 0;
+                    const isSelected = v.variant_id === initialVariant?.variant_id;
+                    return `
+                  <button
+                    type="button"
+                    class="variant-btn px-4 py-2 border rounded font-sans text-sm transition-all duration-200 ${
+                      isSelected
+                        ? "border-(--accent) text-(--accent)"
+                        : "border-(--text) border-opacity-40 text-(--text)"
+                    } ${outOfStock ? "opacity-40 cursor-not-allowed" : "hover:border-(--accent) hover:text-(--accent)"}"
+                    data-variant-id="${v.variant_id}"
+                    data-price="${v.price}"
+                    data-stock="${v.stock}"
+                    ${outOfStock ? "disabled" : ""}
+                  >
+                    ${v.label}${outOfStock ? " (agotado)" : ""}
+                  </button>
+                `;
+                  })
+                  .join("")}
+              </div>
+            </div>
+          `
+              : ""
+          }
 
           ${
             product.description
@@ -155,10 +186,27 @@ async function renderProductDetail() {
               class="w-full py-4 bg-(--bg) border border-(--text) text-(--text) font-serif text-lg hover:border-(--accent) hover:text-(--accent) transition-all duration-200 active:scale-95"
               data-id="${product.id}"
               data-name="${product.name}"
-              data-price="${product.price}"
-              ${Number(product.stock) === 0 ? "disabled" : ""}
+              data-price="${displayPrice}"
+              data-variant-id="${initialVariant?.variant_id || ""}"
+              ${
+                isPreparado
+                  ? !initialVariant || Number(initialVariant.stock) === 0
+                    ? "disabled"
+                    : ""
+                  : Number(product.stock) === 0
+                    ? "disabled"
+                    : ""
+              }
             >
-              ${Number(product.stock) === 0 ? "SIN STOCK" : "ANADIR AL CARRITO"}
+              ${
+                isPreparado
+                  ? !initialVariant || Number(initialVariant.stock) === 0
+                    ? "SIN STOCK"
+                    : "ANADIR AL CARRITO"
+                  : Number(product.stock) === 0
+                    ? "SIN STOCK"
+                    : "ANADIR AL CARRITO"
+              }
             </button>
             <button
               id="detail-add-to-wishlist"
@@ -208,6 +256,42 @@ async function renderProductDetail() {
       });
     });
 
+    // Selector de presentación (solo preparados): al elegir una, se
+    // actualiza el precio mostrado y qué variantId se manda al carrito.
+    section.querySelectorAll(".variant-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        if (btn.disabled) return;
+
+        section.querySelectorAll(".variant-btn").forEach((b) => {
+          b.classList.remove("border-(--accent)", "text-(--accent)");
+          b.classList.add(
+            "border-(--text)",
+            "border-opacity-40",
+            "text-(--text)",
+          );
+        });
+        btn.classList.remove(
+          "border-(--text)",
+          "border-opacity-40",
+          "text-(--text)",
+        );
+        btn.classList.add("border-(--accent)", "text-(--accent)");
+
+        const priceEl = document.getElementById("detail-price");
+        if (priceEl) {
+          priceEl.textContent = `$${Number(btn.dataset.price).toLocaleString()}`;
+        }
+
+        const addBtn = document.getElementById("detail-add-to-cart");
+        if (addBtn) {
+          addBtn.dataset.variantId = btn.dataset.variantId;
+          addBtn.dataset.price = btn.dataset.price;
+          addBtn.disabled = false;
+          addBtn.textContent = "ANADIR AL CARRITO";
+        }
+      });
+    });
+
     document
       .getElementById("detail-add-to-cart")
       ?.addEventListener("click", async () => {
@@ -217,7 +301,11 @@ async function renderProductDetail() {
           return;
         }
         try {
-          await cartApi.addItem(product.id, 1);
+          const addBtn = document.getElementById("detail-add-to-cart");
+          const variantId = addBtn?.dataset.variantId
+            ? Number(addBtn.dataset.variantId)
+            : null;
+          await cartApi.addItem(product.id, 1, variantId);
           // Disparar evento para que cart.js sincronice su estado
           window.dispatchEvent(new CustomEvent("sync-cart"));
           // Abrir drawer
@@ -287,14 +375,21 @@ async function bindRelatedActions() {
   relatedSection.addEventListener("click", async (event) => {
     const cartButton = event.target.closest(".add-to-cart");
     if (cartButton) {
+      const id = Number(cartButton.dataset.id);
+      if (!id || Number.isNaN(id)) return;
+
+      // Un preparado necesita elegir presentación primero — eso solo se
+      // puede hacer en su propia página de detalle.
+      if (cartButton.dataset.type === "preparado") {
+        window.location.href = `producto.html?id=${id}`;
+        return;
+      }
+
       const token = localStorage.getItem("token");
       if (!token) {
         alert("Inicia sesion para anadir productos al carrito");
         return;
       }
-
-      const id = Number(cartButton.dataset.id);
-      if (!id || Number.isNaN(id)) return;
 
       try {
         await cartApi.addItem(id, 1);
@@ -380,8 +475,9 @@ async function loadRelated(id) {
           data-id="${product.id}"
           data-name="${product.name}"
           data-price="${product.price}"
+          data-type="${product.type || "original"}"
         >
-          AÑADIR AL CARRITO
+          ${product.type === "preparado" ? "VER PRESENTACIONES" : "AÑADIR AL CARRITO"}
         </button>
         <button
           class="add-to-favorites absolute top-5 right-5 bg-transparent border-none cursor-pointer"

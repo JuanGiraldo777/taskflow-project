@@ -23,7 +23,9 @@ function createCartItemElement(item) {
     "cart-item border-b border-gray-700 py-4 px-4 hover:bg-gray-800/50 transition-colors";
   itemElement.innerHTML = `
     <div class="flex justify-between items-start mb-3">
-      <h3 class="font-serif text-[15px] text-(--text) flex-1">${item.name}</h3>
+      <h3 class="font-serif text-[15px] text-(--text) flex-1">
+        ${item.name}${item.variant_label ? ` <span class="text-(--accent) text-xs font-sans">(${item.variant_label})</span>` : ""}
+      </h3>
       <button class="remove-item text-gray-400 hover:text-(--accent) transition-colors" data-id="${item.id}" aria-label="Eliminar producto" title="Eliminar">
         <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
           <path d="M3 6h18M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2m-2 0H9M5 6l1 14a2 2 0 002 2h8a2 2 0 002-2l1-14M10 11v6M14 11v6"/>
@@ -189,6 +191,13 @@ function handleAddToCartClick(button) {
   const id = Number(button.dataset.id);
 
   if (!id || Number.isNaN(id)) return;
+
+  // Un preparado necesita elegir presentación antes de poder añadirse — eso
+  // solo se puede hacer en la página de detalle, no desde la tarjeta.
+  if (button.dataset.type === "preparado") {
+    window.location.href = `producto.html?id=${id}`;
+    return;
+  }
 
   addItemToCart(id);
 }

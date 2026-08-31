@@ -89,9 +89,10 @@ export function renderProducts(products) {
         data-id="${product.id}"
         data-name="${product.name}"
         data-price="${product.price}"
-        aria-label="Añadir producto al Carrito"
+        data-type="${product.type || "original"}"
+        aria-label="${product.type === "preparado" ? "Ver presentaciones" : "Añadir producto al Carrito"}"
       >
-        AÑADIR AL CARRITO
+        ${product.type === "preparado" ? "VER PRESENTACIONES" : "AÑADIR AL CARRITO"}
       </button>
       <button
         class="add-to-favorites absolute top-5 right-5 bg-transparent border-none cursor-pointer"
