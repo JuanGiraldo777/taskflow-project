@@ -163,13 +163,14 @@
 
       /* Preparados usa un acento cobre/rosado en vez del dorado de
          Originales — misma estructura, identidad propia. */
-      /* Sin esto, el padding-top propio de Preparados se SUMA al
-         padding-bottom de Originales en su borde compartido — el espacio
-         queda el doble que el de arriba de Originales (que solo recibe
-         el de un lado, porque el Hero no tiene padding inferior). Con
-         padding-top: 0 aquí, el hueco queda igual de ambos lados. */
+      /* (Se probó poner padding-top: 0 aquí para igualar el hueco TOTAL
+         con el de arriba de Originales, pero visualmente quedaba peor:
+         justo donde cambia el color de fondo, Preparados no tenía nada
+         de aire propio y se veía pegado. Lo que importa no es el hueco
+         total sumado con la sección anterior, es que Preparados tenga
+         su propio padding igual que cualquier otra sección — por eso
+         se volvió a quitar ese override, queda igual que Originales.) */
       .section-preparados {
-        padding-top: 0;
         --carousel-accent: #cd8b5c;
         --carousel-glow: rgba(205, 139, 92, 0.28);
         --carousel-glow-line: rgba(205, 139, 92, 0.4);
