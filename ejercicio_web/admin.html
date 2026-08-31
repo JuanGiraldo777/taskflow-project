@@ -1,0 +1,285 @@
+<!--
+  @file ejercicio_web/admin.html
+  @description Panel de administración — alta de productos (originales y preparados).
+-->
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Maison - Panel de administración</title>
+
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="assets/imgs/M_DORADA.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="assets/imgs/M_DORADA.png"
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&family=Playfair+Display:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="src/output.css" />
+  </head>
+
+  <body>
+    <header
+      class="top-bar relative w-full h-[120px] max-sm:h-[70px] z-10 bg-(--bg)"
+    >
+      <div
+        class="max-w-[900px] mx-auto h-full grid grid-cols-[1fr_auto_1fr] items-center px-8 max-sm:px-4 text-(--primary-text)"
+      >
+        <div class="justify-self-start">
+          <button
+            id="darkModeToggle"
+            class="mode-toggle flex items-center justify-center gap-2 text-[10px] px-[18px] py-[10px] bg-(--card-bg) text-(--accent) border-none rounded-[30px] cursor-pointer transition-all duration-200 hover:scale-105"
+            aria-label="Cambiar modo"
+          >
+            🌙 | ☀️
+          </button>
+        </div>
+
+        <div class="justify-self-center">
+          <a href="index.html">
+            <img
+              id="main-logo"
+              src="assets/imgs/LOGO_PRINCIPAL_NEGRO.png"
+              alt="Logo Perfumeria"
+              class="h-[90px] max-sm:h-[50px] block"
+            />
+          </a>
+        </div>
+
+        <div class="justify-self-end">
+          <button
+            id="user-profile-btn"
+            class="bg-transparent border-none cursor-pointer p-0 min-w-8 min-h-8"
+            aria-label="Abrir perfil de usuario"
+          >
+            <svg
+              class="stroke-(--bg) cursor-pointer opacity-85 hover:opacity-100 transition-all duration-200 w-7 h-7"
+              width="30"
+              height="30"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="min-h-screen bg-(--bg) pb-24">
+      <div class="max-w-[900px] mx-auto px-8 max-sm:px-4 pt-8">
+        <a
+          href="index.html"
+          class="flex items-center gap-2 text-(--text) opacity-70 hover:opacity-100 hover:text-(--accent) transition-all font-sans text-sm w-fit"
+        >
+          ← Volver al catálogo
+        </a>
+
+        <h1 class="font-serif text-3xl text-(--text) mt-6 mb-1">
+          Nuevo producto
+        </h1>
+        <p class="text-(--text) opacity-60 font-sans text-sm mb-8">
+          Crea un producto original (precio único) o preparado (varias
+          presentaciones).
+        </p>
+
+        <div
+          id="admin-feedback"
+          class="hidden mb-6 px-4 py-3 rounded font-sans text-sm"
+        ></div>
+
+        <form id="admin-product-form" class="space-y-8">
+          <!-- ── Datos generales ─────────────────────────────────────── -->
+          <fieldset class="space-y-4">
+            <legend class="font-serif text-lg text-(--text) mb-2">
+              Datos generales
+            </legend>
+
+            <div>
+              <label class="block text-sm text-(--text) font-sans font-semibold mb-2">
+                Tipo de producto
+              </label>
+              <div class="flex gap-6 font-sans text-sm text-(--text)">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="type" value="original" checked />
+                  Original (100ml, precio único)
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="type" value="preparado" />
+                  Preparado (varias presentaciones)
+                </label>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-3 max-sm:grid-cols-1 gap-4">
+              <div>
+                <label class="block text-sm text-(--text) font-sans font-semibold mb-2">
+                  Subcategoría
+                </label>
+                <select
+                  id="field-category"
+                  class="w-full px-3 py-2 bg-(--bg) text-(--text) border border-(--text) border-opacity-50 rounded text-sm focus:outline-none focus:border-(--accent)"
+                  required
+                ></select>
+              </div>
+
+              <div>
+                <label class="block text-sm text-(--text) font-sans font-semibold mb-2">
+                  Marca
+                </label>
+                <select
+                  id="field-brand"
+                  class="w-full px-3 py-2 bg-(--bg) text-(--text) border border-(--text) border-opacity-50 rounded text-sm focus:outline-none focus:border-(--accent)"
+                  required
+                ></select>
+              </div>
+
+              <div>
+                <label class="block text-sm text-(--text) font-sans font-semibold mb-2">
+                  Sexo
+                </label>
+                <select
+                  id="field-gender"
+                  class="w-full px-3 py-2 bg-(--bg) text-(--text) border border-(--text) border-opacity-50 rounded text-sm focus:outline-none focus:border-(--accent)"
+                  required
+                ></select>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm text-(--text) font-sans font-semibold mb-2">
+                Nombre del producto
+              </label>
+              <input
+                type="text"
+                id="field-name"
+                placeholder="Ej. Yun Yun Afnan Daman"
+                class="w-full px-3 py-2 bg-(--bg) text-(--text) border border-(--text) border-opacity-50 rounded text-sm focus:outline-none focus:border-(--accent)"
+                required
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm text-(--text) font-sans font-semibold mb-2">
+                Descripción
+              </label>
+              <textarea
+                id="field-description"
+                rows="3"
+                placeholder="Notas, familia olfativa, ocasión de uso..."
+                class="w-full px-3 py-2 bg-(--bg) text-(--text) border border-(--text) border-opacity-50 rounded text-sm focus:outline-none focus:border-(--accent) resize-none"
+              ></textarea>
+            </div>
+
+            <div>
+              <label class="block text-sm text-(--text) font-sans font-semibold mb-2">
+                URL de imagen principal
+              </label>
+              <input
+                type="url"
+                id="field-image"
+                placeholder="https://res.cloudinary.com/..."
+                class="w-full px-3 py-2 bg-(--bg) text-(--text) border border-(--text) border-opacity-50 rounded text-sm focus:outline-none focus:border-(--accent)"
+              />
+            </div>
+          </fieldset>
+
+          <!-- ── Original: precio y stock ────────────────────────────── -->
+          <fieldset id="fields-original" class="space-y-4">
+            <legend class="font-serif text-lg text-(--text) mb-2">
+              Precio y stock
+            </legend>
+
+            <div class="grid grid-cols-3 max-sm:grid-cols-1 gap-4">
+              <div>
+                <label class="block text-sm text-(--text) font-sans font-semibold mb-2">
+                  Precio
+                </label>
+                <input
+                  type="number"
+                  id="field-original-price"
+                  min="1"
+                  step="0.01"
+                  class="w-full px-3 py-2 bg-(--bg) text-(--text) border border-(--text) border-opacity-50 rounded text-sm focus:outline-none focus:border-(--accent)"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm text-(--text) font-sans font-semibold mb-2">
+                  Precio con descuento (opcional)
+                </label>
+                <input
+                  type="number"
+                  id="field-discounted-price"
+                  min="0"
+                  step="0.01"
+                  class="w-full px-3 py-2 bg-(--bg) text-(--text) border border-(--text) border-opacity-50 rounded text-sm focus:outline-none focus:border-(--accent)"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm text-(--text) font-sans font-semibold mb-2">
+                  Stock
+                </label>
+                <input
+                  type="number"
+                  id="field-stock"
+                  min="0"
+                  step="1"
+                  value="0"
+                  class="w-full px-3 py-2 bg-(--bg) text-(--text) border border-(--text) border-opacity-50 rounded text-sm focus:outline-none focus:border-(--accent)"
+                />
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- ── Preparado: presentaciones ────────────────────────────── -->
+          <fieldset id="fields-preparado" class="space-y-4 hidden">
+            <legend class="font-serif text-lg text-(--text) mb-2">
+              Presentaciones
+            </legend>
+            <p class="text-(--text) opacity-60 font-sans text-xs -mt-2 mb-2">
+              Marca las presentaciones que ofrece este producto y su stock.
+              El precio de cada una es fijo para todo el catálogo de preparados.
+            </p>
+
+            <div
+              id="variants-fields"
+              class="space-y-3 font-sans text-sm text-(--text)"
+            ></div>
+          </fieldset>
+
+          <button
+            type="submit"
+            id="admin-submit-btn"
+            class="w-full py-3 bg-(--accent) text-black font-serif font-bold rounded hover:opacity-90 active:scale-95 transition-all"
+          >
+            Crear producto
+          </button>
+        </form>
+      </div>
+    </main>
+
+    <script type="module" src="js/pages/admin.js"></script>
+  </body>
+</html>

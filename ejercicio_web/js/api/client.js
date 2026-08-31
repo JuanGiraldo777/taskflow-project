@@ -69,6 +69,11 @@ export const productsApi = {
   },
   getById: (id) => request(`/products/${id}`),
   getRelated: (id) => request(`/products/${id}/related`),
+  create: (data) =>
+    request("/products", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
 };
 
 export const categoriesApi = {
@@ -77,6 +82,14 @@ export const categoriesApi = {
 
 export const brandsApi = {
   getAll: () => request("/brands"),
+};
+
+export const gendersApi = {
+  getAll: () => request("/genders"),
+};
+
+export const presentationsApi = {
+  getAll: () => request("/presentations"),
 };
 
 export const authApi = {
@@ -110,10 +123,10 @@ export const userApi = {
 
 export const cartApi = {
   getCart: () => request("/cart"),
-  addItem: (productId, quantity) =>
+  addItem: (productId, quantity, variantId = null) =>
     request("/cart/items", {
       method: "POST",
-      body: JSON.stringify({ productId, quantity }),
+      body: JSON.stringify({ productId, quantity, variantId }),
     }),
   updateQuantity: (itemId, quantity) =>
     request(`/cart/items/${itemId}`, {
