@@ -169,6 +169,12 @@ if (brandSlugs.length > 0) {
   );
 }
 
+// Esta página es "ver TODO lo que coincide", no un listado paginado — el
+// default de 10 (pensado para Destacados/Originales/Preparados en el home,
+// que son vidrieras chicas a propósito) dejaba categorías enteras
+// cortadas a la mitad (ej. Diseñador tiene 21 productos reales, Ver Todos
+// 169, y solo se veían los primeros 10 de cada una). 500 da margen de
+// sobra para el catálogo actual y el crecimiento cercano sin paginar.
 fetchProducts({
   search: query,
   minPrice,
@@ -179,4 +185,5 @@ fetchProducts({
   gender: genderSlug,
   type: productType,
   page: 1,
+  limit: 500,
 });
