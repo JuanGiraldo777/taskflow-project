@@ -111,6 +111,26 @@ const getAllBrands = async (req, res, next) => {
   }
 };
 
+const createBrand = async (req, res, next) => {
+  try {
+    const { name } = req.body;
+    if (!name || !name.trim()) {
+      return res.status(400).json({ error: "El nombre de la marca es obligatorio" });
+    }
+
+    const brand = await productService.createBrand(name);
+    res.status(201).json(brand);
+  } catch (err) {
+    if (err.message === "BRAND_EXISTS") {
+      return res.status(409).json({ error: "Ya existe una marca con ese nombre" });
+    }
+    if (err.message === "INVALID_BRAND_NAME") {
+      return res.status(400).json({ error: "Nombre de marca inválido" });
+    }
+    next(err);
+  }
+};
+
 const getAllGenders = async (req, res, next) => {
   try {
     const genders = await productService.getAllGenders();
@@ -252,6 +272,7 @@ const updateProduct = async (req, res, next) => {
       discountedPrice,
       stock,
       variants,
+      imageUrls,
     } = req.body;
 
     const validationError = validateProductPayload(req.body);
@@ -270,6 +291,7 @@ const updateProduct = async (req, res, next) => {
       discountedPrice,
       stock,
       variants,
+      imageUrls,
     });
 
     res.status(200).json(product);
@@ -306,4 +328,5 @@ module.exports = {
   createProduct,
   updateProduct,
   deleteProduct,
+  createBrand,
 };

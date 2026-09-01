@@ -224,6 +224,35 @@ const getAllBrands = async () => {
   return rows;
 };
 
+// Mismo criterio que scripts/importCatalog.js (no se comparte código entre
+// scripts/ y src/, así que se repite la lógica, no la duplicación de un
+// import): minúsculas, sin acentos, espacios/símbolos → guiones.
+const slugify = (text) =>
+  text
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+
+const createBrand = async (name) => {
+  const slug = slugify(name);
+  if (!slug) throw new Error("INVALID_BRAND_NAME");
+
+  const [existing] = await pool.execute(
+    "SELECT id FROM brands WHERE slug = ?",
+    [slug],
+  );
+  if (existing.length > 0) throw new Error("BRAND_EXISTS");
+
+  const [result] = await pool.execute(
+    "INSERT INTO brands (name, slug) VALUES (?, ?)",
+    [name.trim(), slug],
+  );
+  return { id: result.insertId, name: name.trim(), slug };
+};
+
 const getAllGenders = async () => {
   const [rows] = await pool.execute(
     "SELECT id, name, slug FROM genders ORDER BY id ASC",
@@ -417,6 +446,7 @@ const update = async (
     discountedPrice,
     stock,
     variants,
+    imageUrls,
   },
 ) => {
   const [existing] = await pool.execute(
@@ -468,6 +498,28 @@ const update = async (
       }
     }
 
+    // Igual que las variantes: se reemplazan todas. Pero a diferencia de
+    // variants (que el form de preparados siempre manda completo),
+    // imageUrls es opcional acá — si el caller ni lo manda (undefined), no
+    // se tocan las imágenes existentes; solo un array explícito (aunque
+    // sea vacío) las reemplaza. Evita que un PUT que no sepa de imágenes
+    // las borre por accidente.
+    if (imageUrls !== undefined) {
+      await connection.execute(
+        "DELETE FROM product_images WHERE product_id = ?",
+        [id],
+      );
+      const cleanImageUrls = imageUrls
+        .map((url) => (typeof url === "string" ? url.trim() : ""))
+        .filter(Boolean);
+      for (const [index, url] of cleanImageUrls.entries()) {
+        await connection.execute(
+          "INSERT INTO product_images (product_id, url, is_main) VALUES (?, ?, ?)",
+          [id, url, index === 0],
+        );
+      }
+    }
+
     await connection.commit();
     return getById(id);
   } catch (err) {
@@ -498,4 +550,5 @@ module.exports = {
   create,
   update,
   remove,
+  createBrand,
 };

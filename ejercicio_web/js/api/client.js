@@ -76,6 +76,12 @@ export const productsApi = {
       method: "POST",
       body: JSON.stringify(data),
     }),
+  update: (id, data) =>
+    request(`/products/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    }),
+  remove: (id) => request(`/products/${id}`, { method: "DELETE" }),
 };
 
 export const categoriesApi = {
@@ -84,6 +90,11 @@ export const categoriesApi = {
 
 export const brandsApi = {
   getAll: () => request("/brands"),
+  create: (name) =>
+    request("/brands", {
+      method: "POST",
+      body: JSON.stringify({ name }),
+    }),
 };
 
 export const gendersApi = {

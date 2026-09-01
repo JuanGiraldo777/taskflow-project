@@ -4,9 +4,12 @@
  */
 const { Router } = require('express');
 const productController = require('../controllers/product.controller');
+const verifyToken = require('../middlewares/verifyToken');
+const verifyAdmin = require('../middlewares/verifyAdmin');
 
 const router = Router();
 
 router.get('/', productController.getAllBrands);
+router.post('/', verifyToken, verifyAdmin, productController.createBrand);
 
 module.exports = router;
