@@ -53,6 +53,23 @@
           padding-top: 100px;
         }
       }
+
+      /*
+        El panel de filtros no tenía tope de alto en desktop (solo en
+        max-sm, y esa clase tampoco estaba compilada — mismo problema de
+        arriba) así que en pantallas bajas se salía del viewport sin
+        ningún margen. Con esto el panel nunca mide más que el alto
+        disponible: si el contenido no entra, hace scroll interno.
+      */
+      .filter-panel-scroll {
+        max-height: calc(100vh - 180px);
+        overflow-y: auto;
+      }
+      @media (max-width: 639px) {
+        .filter-panel-scroll {
+          max-height: calc(100vh - 150px);
+        }
+      }
     </style>
   </head>
 
@@ -339,7 +356,7 @@
     <!-- PANEL DE FILTROS -->
     <div
       id="filter-panel"
-      class="hidden fixed top-[150px] max-sm:top-[120px] left-[80px] max-sm:left-0 max-sm:right-0 max-sm:w-screen max-sm:max-h-[80vh] max-sm:overflow-y-auto max-sm:max-w-[280px] max-sm:mx-auto bg-(--card-bg) border border-(--accent) rounded-lg max-sm:rounded-none shadow-lg z-[200] p-6 max-sm:p-4 w-[280px]"
+      class="filter-panel-scroll hidden fixed top-[150px] max-sm:top-[120px] left-[80px] max-sm:left-0 max-sm:right-0 max-sm:w-screen max-sm:max-w-[280px] max-sm:mx-auto bg-(--card-bg) border border-(--accent) rounded-lg max-sm:rounded-none shadow-lg z-[200] p-6 max-sm:p-4 w-[280px]"
     >
       <h3 class="font-serif text-lg text-(--text) mb-6 tracking-wide">
         FILTROS
@@ -395,9 +412,18 @@
         </select>
       </div>
 
+      <!-- Botón Ver Resultados: navega a buscar.html con estos filtros
+           aplicados, igual que la barra de búsqueda navega con ?q= -->
+      <button
+        id="apply-filters-btn"
+        class="w-full mb-3 px-4 py-2 max-sm:py-3 bg-(--accent) text-black font-serif font-bold text-sm max-sm:text-base rounded transition-all duration-200 hover:opacity-90 active:scale-95"
+      >
+        Ver Resultados
+      </button>
+
       <button
         id="clear-filters"
-        class="w-full px-4 py-2 max-sm:py-3 bg-(--accent) text-black font-serif font-bold text-sm max-sm:text-base rounded transition-all duration-200 hover:opacity-90 active:scale-95"
+        class="w-full px-4 py-2 max-sm:py-3 bg-transparent border border-(--accent) text-(--accent) font-serif font-bold text-sm max-sm:text-base rounded transition-all duration-200 hover:bg-(--accent) hover:text-black active:scale-95"
       >
         Limpiar Filtros
       </button>

@@ -26,6 +26,13 @@ async function populateBrandFilters() {
     `,
       )
       .join("");
+
+    // buscar.js escucha esto para marcar los checkboxes que vengan de la
+    // URL (?brands=slug1,slug2) una vez que existen en el DOM — se llenan
+    // async, así que antes de este evento no hay nada que marcar todavía.
+    document.dispatchEvent(
+      new CustomEvent("brand-filters-populated", { detail: brands }),
+    );
   } catch (err) {
     console.error("Error al cargar marcas para filtros:", err);
   }
@@ -40,6 +47,7 @@ export function initAdvancedFilters() {
   const maxPriceInput = document.getElementById("max-price");
   const sortSelect = document.getElementById("sort-select");
   const clearFiltersBtn = document.getElementById("clear-filters");
+  const applyFiltersBtn = document.getElementById("apply-filters-btn");
   const categoryButtons = document.querySelectorAll(".category-filter-btn");
 
   populateBrandFilters();
@@ -95,6 +103,28 @@ export function initAdvancedFilters() {
       }
     });
 
+  // "Ver Resultados": lleva estos filtros a buscar.html como parámetros de
+  // URL, igual que la barra de búsqueda navega con ?q= — así la página de
+  // resultados muestra SOLO lo que coincide con marca/precio/orden
+  // elegidos, en vez de filtrar in-place la sección que esté activa.
+  // Si ya había un término de búsqueda en la URL (?q=), se conserva: los
+  // filtros refinan la búsqueda actual en vez de reemplazarla.
+  applyFiltersBtn?.addEventListener("click", () => {
+    const { minPrice, maxPrice, brands, sortBy } = getSelectedFilterValues();
+    const currentQuery = new URLSearchParams(window.location.search).get(
+      "q",
+    );
+
+    const params = new URLSearchParams();
+    if (currentQuery) params.set("q", currentQuery);
+    if (minPrice) params.set("minPrice", minPrice);
+    if (maxPrice) params.set("maxPrice", maxPrice);
+    if (brands.length > 0) params.set("brands", brands.join(","));
+    if (sortBy) params.set("sortBy", sortBy);
+
+    window.location.href = `buscar.html?${params.toString()}`;
+  });
+
   // Limpiar filtros
   clearFiltersBtn?.addEventListener("click", () => {
     minPriceInput.value = "";
@@ -118,7 +148,7 @@ export function initAdvancedFilters() {
     });
   });
 
-  function applyFilters() {
+  function getSelectedFilterValues() {
     const minPrice = minPriceInput?.value || "";
     const maxPrice = maxPriceInput?.value || "";
 
@@ -130,10 +160,16 @@ export function initAdvancedFilters() {
 
     const sortBy = sortSelect?.value || "";
 
+    return { minPrice, maxPrice, brands: selectedBrands, sortBy };
+  }
+
+  function applyFilters() {
+    const { minPrice, maxPrice, brands, sortBy } = getSelectedFilterValues();
+
     fetchProducts({
       minPrice,
       maxPrice,
-      brands: selectedBrands,
+      brands,
       sortBy,
       page: 1,
     });
