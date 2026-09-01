@@ -263,6 +263,16 @@ function buildProfileHtml(user, history) {
         <p class="text-sm text-gray-400">${user.email}</p>
       </div>
 
+      ${
+        user.role === "admin"
+          ? `
+        <button id="go-to-admin-btn" class="w-full px-4 py-3 bg-(--accent) text-black font-serif font-bold rounded hover:opacity-90 active:scale-95 transition-all">
+          Panel de Admin
+        </button>
+      `
+          : ""
+      }
+
       <div class="space-y-4">
         <div>
           <label class="block text-sm text-(--text) font-sans font-semibold mb-2">Nombre Completo</label>
@@ -399,6 +409,11 @@ function attachProfileModalListeners() {
   const saveBtn = document.getElementById("save-profile-btn");
   const deleteBtn = document.getElementById("delete-profile-btn");
   const logoutBtn = document.getElementById("logout-btn");
+  const goToAdminBtn = document.getElementById("go-to-admin-btn");
+
+  goToAdminBtn?.addEventListener("click", () => {
+    window.location.href = "admin.html";
+  });
 
   if (userIcon) {
     userIcon.onclick = () => {
