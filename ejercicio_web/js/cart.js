@@ -3,6 +3,11 @@
  * @description Módulo UI e integración API para carrito de compras.
  */
 import { cartApi } from "./api/client.js";
+import { getCurrentUser } from "./user.js";
+
+// Número real de la perfumería, sin "+" ni espacios (formato que exige
+// el link de wa.me): +57 315 9758805.
+const WHATSAPP_NUMBER = "573159758805";
 
 let cartState = { items: [], total: 0 };
 
@@ -33,7 +38,7 @@ function createCartItemElement(item) {
       </button>
     </div>
     <div class="flex justify-between items-center mb-3">
-      <span class="text-(--text) text-[13px]">$${Number(item.price || 0).toFixed(2)}</span>
+      <span class="text-(--text) text-[13px]">$${Number(item.price || 0).toLocaleString()}</span>
       <span class="text-gray-400 text-[12px]">x${item.quantity}</span>
     </div>
     <div class="flex items-center justify-between">
@@ -44,7 +49,7 @@ function createCartItemElement(item) {
       </div>
       <div class="text-right">
         <span class="text-gray-400 text-[11px] block">Subtotal</span>
-        <span class="font-serif text-(--accent) text-[14px] font-semibold">$${subtotal.toFixed(2)}</span>
+        <span class="font-serif text-(--accent) text-[14px] font-semibold">$${subtotal.toLocaleString()}</span>
       </div>
     </div>
   `;
@@ -93,7 +98,7 @@ function renderCartDrawer() {
     <div class="border-t border-gray-700 p-4 space-y-4">
       <div class="flex justify-between items-center">
         <span class="text-(--text) font-sans">Total:</span>
-        <span class="font-serif text-(--accent) text-xl font-semibold">$${total.toFixed(2)}</span>
+        <span class="font-serif text-(--accent) text-xl font-semibold">$${total.toLocaleString()}</span>
       </div>
       <button class="checkout-btn w-full py-3 bg-(--accent) text-black font-bold rounded-lg hover:shadow-lg hover:shadow-(--accent)/50 transition-all duration-200 active:scale-95 font-sans tracking-wide">
         Finalizar Compra
@@ -233,6 +238,50 @@ async function handleCartDrawerClick(event) {
 }
 
 /**
+ * Arma el mensaje de pedido para WhatsApp: un renglón por producto (con
+ * presentación si es preparado, cantidad, precio unitario y subtotal) más
+ * el total — todo con el mismo formato de moneda que el resto del sitio.
+ * @returns {string}
+ */
+function buildWhatsAppOrderMessage() {
+  const user = getCurrentUser();
+  const greeting = user?.fullName
+    ? `¡Hola! Soy ${user.fullName} y quiero hacer este pedido en Maison de L'Eternel:`
+    : "¡Hola! Quiero hacer este pedido en Maison de L'Eternel:";
+
+  const productLines = cartState.items.map((item, i) => {
+    const price = Number(item.price || 0);
+    const subtotal = price * Number(item.quantity || 0);
+    const variant = item.variant_label ? ` (${item.variant_label})` : "";
+    return `${i + 1}. ${item.name}${variant}\n   Cantidad: ${item.quantity} x $${price.toLocaleString()} = $${subtotal.toLocaleString()}`;
+  });
+
+  return [
+    greeting,
+    "",
+    ...productLines,
+    "",
+    `Total: $${Number(cartState.total || 0).toLocaleString()}`,
+    "",
+    "Quedo atento/a a la confirmación. ¡Gracias!",
+  ].join("\n");
+}
+
+/**
+ * "Finalizar Compra": abre WhatsApp con el pedido completo pre-armado en
+ * el mensaje, en vez de un checkout propio — el negocio confirma y cobra
+ * por chat. El carrito NO se vacía acá: el pedido recién queda en firme
+ * cuando el negocio lo confirma del otro lado, no al abrir WhatsApp.
+ */
+function goToWhatsAppCheckout() {
+  if (cartState.items.length === 0) return;
+
+  const message = buildWhatsAppOrderMessage();
+  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+  window.open(url, "_blank", "noopener,noreferrer");
+}
+
+/**
  * Vacía completamente el carrito.
  */
 async function clearCart() {
@@ -293,8 +342,7 @@ export function initCart() {
     if (target.classList.contains("clear-cart-btn")) {
       clearCart();
     } else if (target.classList.contains("checkout-btn")) {
-      // Aquí iría la lógica de checkout
-      alert("Procesando pago... (funcionalidad a implementar)");
+      goToWhatsAppCheckout();
     }
   });
 
