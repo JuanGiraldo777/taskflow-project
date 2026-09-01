@@ -12,6 +12,7 @@ import { initWishlist } from "../wishlist.js";
 import { initUser } from "../user.js";
 import { initNav } from "../nav.js";
 import { initThemeToggle } from "../theme.js";
+import { getProductMetaParts } from "../productMeta.js";
 
 const params = new URLSearchParams(window.location.search);
 const productId = params.get("id");
@@ -46,6 +47,7 @@ async function renderProductDetail() {
 
     const hasDiscount = product.discounted_price !== null;
     const isPreparado = product.type === "preparado";
+    const productMeta = getProductMetaParts(product);
     const variants = product.variants || [];
     // Las variantes ya vienen ordenadas por precio ascendente desde el backend —
     // se pre-selecciona la más barata (primera disponible con stock si hay alguna).
@@ -94,13 +96,13 @@ async function renderProductDetail() {
         </div>
 
         <div class="flex flex-col gap-6 py-4">
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-3 flex-wrap">
             <span class="text-sm text-(--accent) font-sans tracking-widest uppercase">
-              ${product.brand}
+              ${productMeta.brand}
             </span>
             <span class="text-(--text) opacity-30">·</span>
             <span class="text-sm text-(--text) opacity-60 font-sans">
-              ${product.category}
+              ${productMeta.rest}
             </span>
           </div>
 
@@ -387,6 +389,7 @@ async function loadRelated(id) {
 
     related.forEach((product) => {
       const hasDiscount = product.discounted_price !== null;
+      const meta = getProductMetaParts(product);
 
       const card = document.createElement("article");
       card.className = "product-card relative bg-(--card-bg) p-8 rounded-xl overflow-hidden text-(--text)";
@@ -406,7 +409,7 @@ async function loadRelated(id) {
           />
         </a>
         <div class="mt-1">
-          <span class="text-xs text-[#999]">${product.brand}</span>
+          <span class="text-xs text-[#999]">${meta.brand}${meta.rest ? ` · ${meta.rest}` : ""}</span>
           <h3 class="font-serif text-lg my-2">${product.name}</h3>
           <div class="flex gap-2 items-center">
             ${hasDiscount

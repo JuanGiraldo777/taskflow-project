@@ -245,9 +245,13 @@ const getRelated = async (productId, brandId, categoryId) => {
       p.discounted_price,
       ${PRICE_EXPR} AS price,
       b.name  AS brand,
+      c.name  AS category,
+      g.name  AS gender,
       pi.url  AS image
     FROM products p
     LEFT JOIN brands         b  ON p.brand_id    = b.id
+    LEFT JOIN categories     c  ON p.category_id = c.id
+    LEFT JOIN genders        g  ON p.gender_id   = g.id
     LEFT JOIN product_images pi ON pi.product_id = p.id AND pi.is_main = TRUE
     WHERE p.brand_id = ? AND p.id != ?
     LIMIT 4`,
@@ -271,9 +275,13 @@ const getRelated = async (productId, brandId, categoryId) => {
       p.discounted_price,
       ${PRICE_EXPR} AS price,
       b.name  AS brand,
+      c.name  AS category,
+      g.name  AS gender,
       pi.url  AS image
     FROM products p
     LEFT JOIN brands         b  ON p.brand_id    = b.id
+    LEFT JOIN categories     c  ON p.category_id = c.id
+    LEFT JOIN genders        g  ON p.gender_id   = g.id
     LEFT JOIN product_images pi ON pi.product_id = p.id AND pi.is_main = TRUE
     WHERE p.category_id = ? AND p.id NOT IN (${placeholders})
     LIMIT ?`,

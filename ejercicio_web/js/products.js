@@ -4,6 +4,7 @@
  */
 import { productsApi } from "./api/client.js";
 import { trackProductView } from "./user.js";
+import { getProductMetaParts } from "./productMeta.js";
 
 export const currentFilters = {
   search: "",
@@ -57,6 +58,7 @@ export function renderProductsInto(products, gridId) {
 
   products.forEach((product) => {
     const hasDiscount = product.discounted_price !== null;
+    const meta = getProductMetaParts(product);
 
     const card = document.createElement("article");
     card.className =
@@ -79,7 +81,7 @@ export function renderProductsInto(products, gridId) {
         />
       </a>
       <div class="mt-1">
-        <span class="text-xs text-[#999]">${product.brand || "SIN MARCA"}</span>
+        <span class="text-xs text-[#999]">${meta.brand || "SIN MARCA"}${meta.rest ? ` · ${meta.rest}` : ""}</span>
         <h3 class="font-serif text-lg my-2">${product.name}</h3>
         <div class="flex gap-2 items-center">
           ${
