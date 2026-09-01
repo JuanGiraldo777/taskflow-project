@@ -58,7 +58,11 @@ const getAll = async ({
   }
 
   if (category) {
-    conditions.push("p.category_id = ?");
+    // "category" llega como slug desde el filtro (igual que "gender" y
+    // "brand"), no como id — comparar contra p.category_id directo nunca
+    // hubiera dado match. Bug real, encontrado al probar por primera vez
+    // el filtro de categoría end-to-end (Fase 3, navegación por menú).
+    conditions.push("c.slug = ?");
     params.push(category);
   }
 
@@ -122,8 +126,9 @@ const getAll = async ({
   const countQuery = `
     SELECT COUNT(*) AS total
     FROM products p
-    LEFT JOIN brands  b ON p.brand_id  = b.id
-    LEFT JOIN genders g ON p.gender_id = g.id
+    LEFT JOIN categories c ON p.category_id = c.id
+    LEFT JOIN brands      b ON p.brand_id    = b.id
+    LEFT JOIN genders     g ON p.gender_id   = g.id
     ${whereClause}
   `;
 

@@ -27,7 +27,7 @@ async function populateBrandFilters() {
       )
       .join("");
 
-    // buscar.js escucha esto para marcar los checkboxes que vengan de la
+    // catalogo.js escucha esto para marcar los checkboxes que vengan de la
     // URL (?brands=slug1,slug2) una vez que existen en el DOM — se llenan
     // async, así que antes de este evento no hay nada que marcar todavía.
     document.dispatchEvent(
@@ -103,26 +103,29 @@ export function initAdvancedFilters() {
       }
     });
 
-  // "Ver Resultados": lleva estos filtros a buscar.html como parámetros de
-  // URL, igual que la barra de búsqueda navega con ?q= — así la página de
-  // resultados muestra SOLO lo que coincide con marca/precio/orden
-  // elegidos, en vez de filtrar in-place la sección que esté activa.
-  // Si ya había un término de búsqueda en la URL (?q=), se conserva: los
-  // filtros refinan la búsqueda actual en vez de reemplazarla.
+  // "Ver Resultados": lleva estos filtros a catalogo.html como parámetros
+  // de URL, igual que la barra de búsqueda navega con ?q= — así la página
+  // muestra SOLO lo que coincide con marca/precio/orden elegidos, en vez
+  // de filtrar in-place la sección que esté activa. Si ya había un
+  // término de búsqueda o una categoría/sexo activos en la URL (llegaste
+  // desde el menú lateral y ahora afinás con el panel), se conservan: los
+  // filtros refinan la vista actual en vez de reemplazarla.
   applyFiltersBtn?.addEventListener("click", () => {
     const { minPrice, maxPrice, brands, sortBy } = getSelectedFilterValues();
-    const currentQuery = new URLSearchParams(window.location.search).get(
-      "q",
-    );
+    const currentParams = new URLSearchParams(window.location.search);
 
     const params = new URLSearchParams();
-    if (currentQuery) params.set("q", currentQuery);
+    if (currentParams.get("q")) params.set("q", currentParams.get("q"));
+    if (currentParams.get("category"))
+      params.set("category", currentParams.get("category"));
+    if (currentParams.get("gender"))
+      params.set("gender", currentParams.get("gender"));
     if (minPrice) params.set("minPrice", minPrice);
     if (maxPrice) params.set("maxPrice", maxPrice);
     if (brands.length > 0) params.set("brands", brands.join(","));
     if (sortBy) params.set("sortBy", sortBy);
 
-    window.location.href = `buscar.html?${params.toString()}`;
+    window.location.href = `catalogo.html?${params.toString()}`;
   });
 
   // Limpiar filtros

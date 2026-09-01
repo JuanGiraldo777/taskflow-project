@@ -2,9 +2,9 @@
  * @file ejercicio_web/js/search.js
  * @description Barra de búsqueda del header. El dropdown de tendencias es
  * solo sugerencias — buscar de verdad (Enter, click en la lupa, o elegir
- * una tendencia) navega a buscar.html con el término, en vez de filtrar la
- * sección Destacados en el sitio. La búsqueda real corre ahí, contra todo
- * el catálogo, tenga o no resultados.
+ * una tendencia) navega a catalogo.html con el término, en vez de filtrar
+ * la sección Destacados en el sitio. La búsqueda real corre ahí, contra
+ * todo el catálogo, tenga o no resultados.
  */
 const TRENDING_SEARCHES = [
   "Creed",
@@ -30,7 +30,7 @@ export function initSearch() {
   function goToResults(term) {
     const trimmed = (term || "").trim();
     if (!trimmed) return;
-    window.location.href = `buscar.html?q=${encodeURIComponent(trimmed)}`;
+    window.location.href = `catalogo.html?q=${encodeURIComponent(trimmed)}`;
   }
 
   function bindChipClicks() {
@@ -64,7 +64,7 @@ export function initSearch() {
 
   /**
    * Sugerencias mientras se escribe — solo tendencias que hacen match, no
-   * resultados reales (esos se ven en buscar.html al confirmar la búsqueda).
+   * resultados reales (esos se ven en catalogo.html al confirmar la búsqueda).
    */
   function renderSuggestions(searchText) {
     const matchingTrends = TRENDING_SEARCHES.filter((trend) =>
