@@ -118,15 +118,6 @@ function collectImages(values) {
   return values.filter((v) => typeof v === "string" && v.trim().length > 0);
 }
 
-async function addGalleryImages(productId, urls) {
-  for (const url of urls) {
-    await pool.execute(
-      "INSERT INTO product_images (product_id, url, is_main) VALUES (?, ?, FALSE)",
-      [productId, url],
-    );
-  }
-}
-
 // ── ORIGINALES ───────────────────────────────────────────────────────────
 // Columnas (verificadas con xlsx): [categoria, sexo, marca, nombre, mayor, ventaPublico, foto1..foto5]
 const CATEGORY_SLUG_BY_LABEL = {
@@ -190,10 +181,8 @@ async function importOriginales() {
         originalPrice: Number(ventaPublico),
         discountedPrice: null,
         stock: DEFAULT_STOCK,
-        imageUrl: images[0] || null,
+        imageUrls: images,
       });
-
-      await addGalleryImages(product.id, images.slice(1));
 
       created += 1;
       console.log(`  OK  original | ${nombreTrim}`);
@@ -347,11 +336,9 @@ async function importPreparados() {
         genderId,
         name: baseName,
         description: descripcion ? descripcion.toString().trim() : "",
-        imageUrl: images[0] || null,
+        imageUrls: images,
         variants,
       });
-
-      await addGalleryImages(product.id, images.slice(1));
 
       created += 1;
       console.log(`  OK  preparado | ${baseName}`);

@@ -338,7 +338,7 @@ const create = async ({
   originalPrice,
   discountedPrice,
   stock,
-  imageUrl,
+  imageUrls,
   variants,
 }) => {
   await validateGenderForCategory(type, categoryId, genderId);
@@ -375,10 +375,17 @@ const create = async ({
       }
     }
 
-    if (imageUrl) {
+    // La primera URL es la imagen principal (is_main, la que se ve en las
+    // tarjetas); el resto arma la galería de la página de detalle. Ninguna
+    // es obligatoria — hay productos sin foto todavía (import real, ver
+    // importCatalog.js) y el frontend ya tiene placeholder para ese caso.
+    const cleanImageUrls = (imageUrls || [])
+      .map((url) => (typeof url === "string" ? url.trim() : ""))
+      .filter(Boolean);
+    for (const [index, url] of cleanImageUrls.entries()) {
       await connection.execute(
-        "INSERT INTO product_images (product_id, url, is_main) VALUES (?, ?, TRUE)",
-        [productId, imageUrl],
+        "INSERT INTO product_images (product_id, url, is_main) VALUES (?, ?, ?)",
+        [productId, url, index === 0],
       );
     }
 

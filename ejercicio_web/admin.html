@@ -193,14 +193,23 @@
 
             <div>
               <label class="block text-sm text-(--text) font-sans font-semibold mb-2">
-                URL de imagen principal
+                Imágenes
               </label>
-              <input
-                type="url"
-                id="field-image"
-                placeholder="https://res.cloudinary.com/..."
-                class="w-full px-3 py-2 bg-(--bg) text-(--text) border border-(--text) border-opacity-50 rounded text-sm focus:outline-none focus:border-(--accent)"
-              />
+              <p class="text-xs text-(--text) opacity-60 mb-2">
+                La primera es la imagen principal (la que se ve en las
+                tarjetas del catálogo); el resto arma la galería de la
+                página de detalle.
+              </p>
+              <div id="image-fields" class="space-y-2">
+                <!-- Filas generadas por admin.js (renderImageFields) -->
+              </div>
+              <button
+                type="button"
+                id="add-image-btn"
+                class="mt-2 text-sm text-(--accent) font-sans font-semibold cursor-pointer bg-transparent border-none p-0 hover:opacity-90"
+              >
+                + Agregar otra imagen
+              </button>
             </div>
           </fieldset>
 

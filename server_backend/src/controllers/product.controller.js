@@ -141,6 +141,7 @@ const validateProductPayload = ({
   originalPrice,
   discountedPrice,
   variants,
+  imageUrls,
 }) => {
   if (!type || !["original", "preparado"].includes(type)) {
     return "type debe ser 'original' o 'preparado'";
@@ -148,6 +149,10 @@ const validateProductPayload = ({
 
   if (!categoryId || !brandId || !genderId || !name) {
     return "categoryId, brandId, genderId y name son obligatorios";
+  }
+
+  if (imageUrls !== undefined && !Array.isArray(imageUrls)) {
+    return "imageUrls debe ser un arreglo de URLs";
   }
 
   if (type === "original") {
@@ -200,7 +205,7 @@ const createProduct = async (req, res, next) => {
       originalPrice,
       discountedPrice,
       stock,
-      imageUrl,
+      imageUrls,
       variants,
     } = req.body;
 
@@ -219,7 +224,7 @@ const createProduct = async (req, res, next) => {
       originalPrice,
       discountedPrice,
       stock,
-      imageUrl,
+      imageUrls,
       variants,
     });
 

@@ -109,6 +109,47 @@ function renderVariantFields(presentations) {
   });
 }
 
+// La galería de imágenes es una lista repetible: se arranca con una fila
+// vacía y "+ Agregar otra imagen" va sumando más. Ninguna es obligatoria
+// (hay productos sin foto todavía, el frontend ya tiene placeholder) — la
+// primera fila con URL se manda como imagen principal, el resto como
+// galería (mismo criterio que usa importCatalog.js con las fotos reales).
+function createImageRow() {
+  const row = document.createElement("div");
+  row.className = "flex gap-2 image-field-row";
+  row.innerHTML = `
+    <input
+      type="url"
+      class="image-url-input flex-1 px-3 py-2 bg-(--bg) text-(--text) border border-(--text) border-opacity-50 rounded text-sm focus:outline-none focus:border-(--accent)"
+      placeholder="https://res.cloudinary.com/..."
+    />
+    <button
+      type="button"
+      class="remove-image-btn px-3 text-(--text) opacity-60 hover:opacity-100 hover:text-(--accent) bg-transparent border-none cursor-pointer text-lg"
+      aria-label="Quitar esta imagen"
+    >
+      ×
+    </button>
+  `;
+  row
+    .querySelector(".remove-image-btn")
+    ?.addEventListener("click", () => row.remove());
+  return row;
+}
+
+function renderImageFields() {
+  const container = document.getElementById("image-fields");
+  if (!container) return;
+  container.innerHTML = "";
+  container.appendChild(createImageRow());
+}
+
+function collectImageUrls() {
+  return Array.from(document.querySelectorAll(".image-url-input"))
+    .map((input) => input.value.trim())
+    .filter(Boolean);
+}
+
 function toggleTypeFields(type) {
   document
     .getElementById("fields-original")
@@ -164,7 +205,7 @@ function buildPayload() {
     name: document.getElementById("field-name")?.value?.trim() || "",
     description:
       document.getElementById("field-description")?.value?.trim() || "",
-    imageUrl: document.getElementById("field-image")?.value?.trim() || "",
+    imageUrls: collectImageUrls(),
   };
 
   if (type === "original") {
@@ -218,6 +259,7 @@ function validatePayload(payload) {
 function resetForm() {
   document.getElementById("admin-product-form")?.reset();
   toggleTypeFields("original");
+  renderImageFields();
   document
     .querySelectorAll("#variants-fields .variant-stock")
     .forEach((input) => {
@@ -253,6 +295,7 @@ async function loadReferenceData() {
 document.addEventListener("DOMContentLoaded", async () => {
   initThemeToggle();
   initUser();
+  renderImageFields();
 
   try {
     await loadReferenceData();
@@ -265,6 +308,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   document.querySelectorAll('input[name="type"]').forEach((radio) => {
     radio.addEventListener("change", () => toggleTypeFields(radio.value));
+  });
+
+  document.getElementById("add-image-btn")?.addEventListener("click", () => {
+    document.getElementById("image-fields")?.appendChild(createImageRow());
   });
 
   document
