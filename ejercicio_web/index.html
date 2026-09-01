@@ -223,6 +223,159 @@
           max-height: calc(100vh - 150px);
         }
       }
+
+      /*
+        Sección de contacto/redes: layout de dos columnas y tarjetas a
+        medida en CSS plano en vez de adivinar más clases de Tailwind
+        (grid-cols-2 sí está compilado, pero el resto de este bloque —
+        tarjetas, iconos circulares, botón "Seguir" — no tiene un
+        equivalente ya probado en el sitio).
+      */
+      .social-icon-row {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+      .social-icon-link {
+        width: 52px;
+        height: 52px;
+        border-radius: 9999px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--card-bg);
+        border: 1px solid var(--accent);
+        color: var(--accent);
+        transition:
+          transform 0.2s ease,
+          background 0.2s ease,
+          color 0.2s ease;
+      }
+      .social-icon-link:hover {
+        background: var(--accent);
+        color: #000;
+        transform: translateY(-3px);
+      }
+      .social-icon-link svg {
+        width: 24px;
+        height: 24px;
+      }
+
+      .social-columns {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        max-width: 1000px;
+        margin: 0 auto;
+        text-align: left;
+      }
+      @media (max-width: 900px) {
+        .social-columns {
+          grid-template-columns: 1fr;
+          gap: 28px;
+        }
+      }
+
+      .social-card {
+        background: var(--card-bg);
+        border-radius: 16px;
+        padding: 28px;
+        display: flex;
+        flex-direction: column;
+      }
+      .social-card-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 10px;
+      }
+      .social-card-header svg {
+        width: 26px;
+        height: 26px;
+        color: var(--accent);
+        flex-shrink: 0;
+      }
+      .social-card p {
+        opacity: 0.65;
+        font-size: 13px;
+        margin-bottom: 18px;
+      }
+      .social-card-img-wrap {
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 20px;
+      }
+      .social-card-img-wrap img {
+        width: 100%;
+        display: block;
+      }
+      .social-follow-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 24px;
+        border-radius: 9999px;
+        background: var(--accent);
+        color: #000;
+        font-weight: bold;
+        text-decoration: none;
+        margin-top: auto;
+        align-self: flex-start;
+        transition:
+          opacity 0.2s ease,
+          transform 0.2s ease;
+      }
+      .social-follow-btn:hover {
+        opacity: 0.9;
+        transform: translateY(-2px);
+      }
+
+      /* Botón flotante de WhatsApp — mismo en index/catalogo/producto.html */
+      .whatsapp-float-btn {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        width: 60px;
+        height: 60px;
+        border-radius: 9999px;
+        background: #25d366;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+        z-index: 340;
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+      .whatsapp-float-btn:hover {
+        transform: scale(1.08);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+      }
+      .whatsapp-float-btn svg {
+        width: 32px;
+        height: 32px;
+      }
+      @media (max-width: 639px) {
+        .whatsapp-float-btn {
+          width: 52px;
+          height: 52px;
+          bottom: 16px;
+          right: 16px;
+        }
+        .whatsapp-float-btn svg {
+          width: 28px;
+          height: 28px;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .whatsapp-float-btn {
+          transition: none;
+        }
+      }
     </style>
   </head>
 
@@ -794,7 +947,170 @@
           <div class="reviews-list-container mt-16"></div>
         </div>
       </section>
+
+      <!-- CONTACTO / REDES SOCIALES -->
+      <section
+        id="contacto"
+        class="bg-(--bg) py-[100px] max-sm:py-12 md:py-16 px-20 max-sm:px-4 sm:px-8 md:px-12 text-center"
+      >
+        <div class="max-w-[1400px] mx-auto">
+          <!-- Eslogan + logo -->
+          <div class="mb-16 max-sm:mb-10">
+            <img
+              src="assets/imgs/LOGO_PRINCIPAL_DORADO.png"
+              alt="Maison Eternelle Perfumería"
+              class="h-20 max-sm:h-16 mx-auto mb-6 max-sm:mb-4"
+            />
+            <p
+              class="font-serif text-(--accent) text-xl max-sm:text-lg tracking-wide mb-3"
+            >
+              ✨ Donde el aroma nunca muere ✨
+            </p>
+            <p
+              class="text-(--text) opacity-70 font-sans text-sm max-w-lg mx-auto"
+            >
+              Perfumería de extractos y premium 1.1 de la más alta calidad 🔥
+            </p>
+          </div>
+
+          <div class="carousel-eyebrow">
+            <span class="line"></span>
+            <span>SÍGUENOS</span>
+            <span class="line"></span>
+          </div>
+          <h2
+            class="font-serif tracking-[4px] text-[30px] max-sm:text-xl max-sm:tracking-[2px] md:text-2xl md:tracking-[3px] text-(--text) mb-3"
+          >
+            CONTÁCTANOS
+          </h2>
+          <p
+            class="text-(--text) opacity-60 font-sans text-sm max-w-lg mx-auto mb-10"
+          >
+            Encontranos en nuestras redes y resolvé cualquier duda al
+            instante.
+          </p>
+
+          <!-- Links directos: Instagram, TikTok, Facebook -->
+          <div class="social-icon-row mb-16 max-sm:mb-10">
+            <a
+              href="https://www.instagram.com/maisoneternelle_co/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="social-icon-link"
+              aria-label="Instagram de Maison Eternelle"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.332.014 7.052.072 2.695.272.273 2.69.073 7.052.014 8.332 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.332 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"
+                />
+              </svg>
+            </a>
+            <a
+              href="https://www.tiktok.com/@maisoneternelle_co?lang=es"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="social-icon-link"
+              aria-label="TikTok de Maison Eternelle"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M16.6 5.82a4.278 4.278 0 0 1-1.06-2.82h-3.09v12.4a2.592 2.592 0 1 1-2.59-2.6c.15 0 .3.01.44.03V9.66a5.85 5.85 0 1 0 5.45 5.83V9.4a7.72 7.72 0 0 0 4.51 1.44V7.68a4.278 4.278 0 0 1-3.66-1.86z"
+                />
+              </svg>
+            </a>
+            <a
+              href="https://www.facebook.com/692880320577326?ref=PROFILE_EDIT_xav_ig_profile_page_web"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="social-icon-link"
+              aria-label="Facebook de Maison Eternelle"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M22 12.06C22 6.505 17.523 2 12 2S2 6.505 2 12.06c0 5.022 3.657 9.184 8.438 9.94v-7.03H7.898v-2.91h2.54V9.845c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.459h-1.26c-1.242 0-1.63.771-1.63 1.562v1.877h2.773l-.443 2.91h-2.33V22c4.78-.756 8.437-4.918 8.437-9.94z"
+                />
+              </svg>
+            </a>
+          </div>
+
+          <!-- Doble columna: Instagram y TikTok -->
+          <div class="social-columns">
+            <div class="social-card">
+              <div class="social-card-header">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.332.014 7.052.072 2.695.272.273 2.69.073 7.052.014 8.332 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.332 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"
+                  />
+                </svg>
+                <h3 class="font-serif text-(--text) text-lg">Instagram</h3>
+              </div>
+              <p>
+                Lanzamientos, promociones y el detrás de cámaras de la
+                perfumería, todos los días.
+              </p>
+              <div class="social-card-img-wrap">
+                <img
+                  src="assets/screens_redes/instagram.png"
+                  alt="Perfil de Instagram @maisoneternelle_co"
+                />
+              </div>
+              <a
+                href="https://www.instagram.com/maisoneternelle_co/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="social-follow-btn"
+              >
+                Seguir en Instagram
+              </a>
+            </div>
+
+            <div class="social-card">
+              <div class="social-card-header">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M16.6 5.82a4.278 4.278 0 0 1-1.06-2.82h-3.09v12.4a2.592 2.592 0 1 1-2.59-2.6c.15 0 .3.01.44.03V9.66a5.85 5.85 0 1 0 5.45 5.83V9.4a7.72 7.72 0 0 0 4.51 1.44V7.68a4.278 4.278 0 0 1-3.66-1.86z"
+                  />
+                </svg>
+                <h3 class="font-serif text-(--text) text-lg">TikTok</h3>
+              </div>
+              <p>
+                Videos cortos, unboxings y reseñas de nuestras fragancias en
+                formato TikTok.
+              </p>
+              <div class="social-card-img-wrap">
+                <img
+                  src="assets/screens_redes/tiktok.png"
+                  alt="Perfil de TikTok @maisoneternelle_co"
+                />
+              </div>
+              <a
+                href="https://www.tiktok.com/@maisoneternelle_co?lang=es"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="social-follow-btn"
+              >
+                Seguir en TikTok
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
+
+    <!-- BOTÓN FLOTANTE DE WHATSAPP -->
+    <a
+      href="https://wa.me/573159758805?text=%C2%A1Hola!%20Tengo%20una%20consulta%20sobre%20sus%20perfumes."
+      target="_blank"
+      rel="noopener noreferrer"
+      class="whatsapp-float-btn"
+      aria-label="Chatea con nosotros por WhatsApp"
+    >
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <path
+          d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.46 1.32 4.96L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm5.83 14.09c-.24.68-1.4 1.32-1.93 1.4-.5.08-1.13.11-1.83-.11-.42-.13-.96-.31-1.65-.61-2.9-1.25-4.79-4.17-4.94-4.36-.14-.19-1.19-1.58-1.19-3.02 0-1.44.75-2.14 1.02-2.44.27-.29.58-.36.78-.36h.56c.18.01.42-.07.66.5.24.58.82 2 .89 2.15.07.15.12.32.02.51-.09.19-.14.31-.28.48-.14.17-.29.37-.42.5-.14.14-.28.29-.12.57.16.28.71 1.17 1.53 1.9 1.05.94 1.94 1.23 2.22 1.37.28.14.44.12.6-.07.16-.19.68-.79.86-1.06.18-.27.36-.22.6-.13.24.09 1.53.72 1.79.85.26.13.43.19.5.3.07.11.07.63-.17 1.31z"
+        />
+      </svg>
+    </a>
 
     <!-- SCRIPT -->
     <script type="module" src="js/app.js"></script>
