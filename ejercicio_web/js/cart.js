@@ -246,8 +246,8 @@ async function handleCartDrawerClick(event) {
 function buildWhatsAppOrderMessage() {
   const user = getCurrentUser();
   const greeting = user?.fullName
-    ? `¡Hola! Soy ${user.fullName} y quiero hacer este pedido en Maison de L'Eternel:`
-    : "¡Hola! Quiero hacer este pedido en Maison de L'Eternel:";
+    ? `¡Hola! Soy ${user.fullName} y quiero hacer este pedido en Maison Eternelle Perfumería:`
+    : "¡Hola! Quiero hacer este pedido en Maison Eternelle Perfumería:";
 
   const productLines = cartState.items.map((item, i) => {
     const price = Number(item.price || 0);
