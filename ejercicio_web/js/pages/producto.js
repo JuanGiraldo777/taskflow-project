@@ -20,6 +20,146 @@ if (!productId) {
   window.location.href = "index.html";
 }
 
+// Estado de la galería de imágenes del detalle. El lightbox es un único
+// elemento estático en producto.html (no se recrea en cada render, a
+// diferencia de las miniaturas) — sus controles se conectan UNA sola vez
+// en initLightboxControls() y leen/escriben este objeto compartido, en
+// vez de que cada renderProductDetail() vuelva a atarles listeners
+// encima (esa duplicación fue justo la causa del bug de favoritos
+// arreglado antes en esta misma página).
+const galleryState = {
+  images: [],
+  currentIndex: 0,
+};
+
+function renderThumbnailActiveState() {
+  document.querySelectorAll(".thumbnail-btn").forEach((thumb) => {
+    const isActive = Number(thumb.dataset.index) === galleryState.currentIndex;
+    thumb.classList.toggle("border-(--accent)", isActive);
+    thumb.classList.toggle("border-transparent", !isActive);
+  });
+}
+
+// fade=false para navegación por teclado/flechas del lightbox (se siente
+// mejor instantáneo ahí); fade=true para clicks en miniaturas, que es
+// donde de verdad se nota y se ve premium.
+function setMainImage(index, { fade = true } = {}) {
+  const image = galleryState.images[index];
+  if (!image) return;
+  galleryState.currentIndex = index;
+
+  const mainImg = document.getElementById("main-product-image");
+  if (mainImg) {
+    if (fade) {
+      mainImg.style.opacity = "0";
+      window.setTimeout(() => {
+        mainImg.src = image.url;
+        mainImg.style.opacity = "1";
+      }, 150);
+    } else {
+      mainImg.src = image.url;
+    }
+  }
+
+  const lightboxImg = document.getElementById("lightbox-image");
+  if (lightboxImg) lightboxImg.src = image.url;
+
+  renderThumbnailActiveState();
+}
+
+function openLightbox(index) {
+  const lightbox = document.getElementById("gallery-lightbox");
+  if (!lightbox || galleryState.images.length === 0) return;
+  setMainImage(index, { fade: false });
+  lightbox.hidden = false;
+}
+
+function closeLightbox() {
+  const lightbox = document.getElementById("gallery-lightbox");
+  if (lightbox) lightbox.hidden = true;
+}
+
+function showNextImage() {
+  if (galleryState.images.length === 0) return;
+  setMainImage((galleryState.currentIndex + 1) % galleryState.images.length, {
+    fade: false,
+  });
+}
+
+function showPrevImage() {
+  if (galleryState.images.length === 0) return;
+  setMainImage(
+    (galleryState.currentIndex - 1 + galleryState.images.length) %
+      galleryState.images.length,
+    { fade: false },
+  );
+}
+
+// Flechas del lightbox: no tiene sentido navegar si hay una sola foto (o
+// ninguna real, solo el placeholder).
+function updateLightboxArrowsVisibility() {
+  const multiple = galleryState.images.length > 1;
+  document.getElementById("lightbox-prev")?.toggleAttribute("hidden", !multiple);
+  document.getElementById("lightbox-next")?.toggleAttribute("hidden", !multiple);
+}
+
+// Controles del lightbox: se conectan una sola vez (el elemento es
+// estático), no en cada render de producto.
+function initLightboxControls() {
+  document
+    .getElementById("lightbox-close")
+    ?.addEventListener("click", closeLightbox);
+  document
+    .getElementById("lightbox-prev")
+    ?.addEventListener("click", showPrevImage);
+  document
+    .getElementById("lightbox-next")
+    ?.addEventListener("click", showNextImage);
+
+  // Clic en el fondo oscuro (no en la imagen ni en los botones) cierra.
+  document.getElementById("gallery-lightbox")?.addEventListener("click", (e) => {
+    if (e.target.id === "gallery-lightbox") closeLightbox();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    const lightbox = document.getElementById("gallery-lightbox");
+    if (!lightbox || lightbox.hidden) return;
+    if (e.key === "Escape") closeLightbox();
+    if (e.key === "ArrowLeft") showPrevImage();
+    if (e.key === "ArrowRight") showNextImage();
+  });
+}
+
+// Zoom con seguimiento del cursor sobre la imagen principal — se vuelve a
+// conectar en cada render porque el frame/la imagen se recrean con
+// section.innerHTML. En touch (sin mouse real) no aplica: el toque abre
+// directo el lightbox, que es donde de verdad se puede inspeccionar
+// el detalle a pantalla completa.
+function setupImageZoom() {
+  const frame = document.getElementById("gallery-main-frame");
+  const img = document.getElementById("main-product-image");
+  if (!frame || !img) return;
+
+  const supportsHoverZoom = window.matchMedia(
+    "(hover: hover) and (pointer: fine)",
+  ).matches;
+  if (!supportsHoverZoom) return;
+
+  const ZOOM_SCALE = 2.2;
+
+  frame.addEventListener("mousemove", (e) => {
+    const rect = frame.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    img.style.transformOrigin = `${x}% ${y}%`;
+    img.style.transform = `scale(${ZOOM_SCALE})`;
+  });
+
+  frame.addEventListener("mouseleave", () => {
+    img.style.transform = "scale(1)";
+  });
+}
+
 function closeCartDrawer() {
   const drawer = document.getElementById("cart-drawer");
   drawer?.classList.remove("translate-x-0");
@@ -55,16 +195,23 @@ async function renderProductDetail() {
       : null;
     const displayPrice = initialVariant ? initialVariant.price : product.price;
 
-    const images = product.images || [];
-    const mainImage =
-      images.find((img) => img.is_main)?.url ||
-      images[0]?.url ||
-      "assets/imgs/placeholder.svg";
+    const hasRealImages = (product.images || []).length > 0;
+    // Sin fotos reales, la galería es solo el placeholder — sin zoom ni
+    // lightbox, no hay nada que ampliar (ver setupImageZoom/click más abajo).
+    galleryState.images = hasRealImages
+      ? product.images
+      : [{ url: "assets/imgs/placeholder.svg", is_main: true }];
+    galleryState.currentIndex = 0;
+    const images = galleryState.images;
+    const mainImage = images[0].url;
 
     section.innerHTML = `
       <div class="grid grid-cols-2 gap-16 max-lg:grid-cols-1 max-lg:gap-8">
         <div class="flex flex-col gap-4">
-          <div class="bg-(--card-bg) rounded-xl overflow-hidden flex items-center justify-center p-8 min-h-112.5">
+          <div
+            id="gallery-main-frame"
+            class="bg-(--card-bg) rounded-xl overflow-hidden flex items-center justify-center p-8 min-h-112.5"
+          >
             <img
               id="main-product-image"
               src="${mainImage}"
@@ -81,7 +228,7 @@ async function renderProductDetail() {
                   (img, i) => `
                 <button
                   class="thumbnail-btn shrink-0 w-20 h-20 bg-(--card-bg) rounded-lg overflow-hidden border-2 ${i === 0 ? "border-(--accent)" : "border-transparent"} hover:border-(--accent) transition-colors"
-                  data-src="${img.url}"
+                  data-index="${i}"
                 >
                   <img src="${img.url}" alt="Vista ${i + 1}" class="w-full h-full object-contain p-1" />
                 </button>
@@ -231,20 +378,23 @@ async function renderProductDetail() {
 
     section.querySelectorAll(".thumbnail-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
-        const mainImageElement = document.getElementById("main-product-image");
-        if (mainImageElement) {
-          mainImageElement.src = btn.dataset.src;
-        }
-
-        section.querySelectorAll(".thumbnail-btn").forEach((thumb) => {
-          thumb.classList.remove("border-(--accent)");
-          thumb.classList.add("border-transparent");
-        });
-
-        btn.classList.remove("border-transparent");
-        btn.classList.add("border-(--accent)");
+        const index = Number(btn.dataset.index);
+        if (!Number.isNaN(index)) setMainImage(index);
       });
     });
+
+    updateLightboxArrowsVisibility();
+    setupImageZoom();
+
+    const mainFrame = document.getElementById("gallery-main-frame");
+    if (mainFrame) {
+      mainFrame.style.cursor = hasRealImages ? "zoom-in" : "default";
+      if (hasRealImages) {
+        mainFrame.addEventListener("click", () => {
+          openLightbox(galleryState.currentIndex);
+        });
+      }
+    }
 
     // Selector de presentación (solo preparados): al elegir una, se
     // actualiza el precio mostrado y qué variantId se manda al carrito.
@@ -427,6 +577,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   initCart();
   initWishlist();
   initUser();
+  initLightboxControls();
 
   await renderProductDetail();
   renderReviews();
