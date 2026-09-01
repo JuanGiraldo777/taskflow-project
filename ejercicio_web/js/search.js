@@ -1,37 +1,46 @@
 /**
  * @file ejercicio_web/js/search.js
- * @description Módulo de búsqueda con sugerencias y filtrado remoto.
+ * @description Barra de búsqueda del header. El dropdown de tendencias es
+ * solo sugerencias — buscar de verdad (Enter, click en la lupa, o elegir
+ * una tendencia) navega a buscar.html con el término, en vez de filtrar la
+ * sección Destacados en el sitio. La búsqueda real corre ahí, contra todo
+ * el catálogo, tenga o no resultados.
  */
-import { fetchProducts } from "./products.js";
-
 const TRENDING_SEARCHES = [
   "Woody",
   "Floral",
   "Árabe",
   "Caballero",
-  "Mujer",
+  "Dama",
   "Nicho",
   "Oud",
 ];
 
-/**
- * Inicializa el filtro de búsqueda de productos destacados con dropdown.
- * Crea una lista interna de productos y muestra/oculta las cards según el texto buscado.
- * El dropdown muestra tendencias cuando está vacío y resultados al escribir.
- */
 export function initSearch() {
   const searchInputElement = /** @type {HTMLInputElement | null} */ (
     document.getElementById("search")
   );
   const searchDropdownElement = document.getElementById("search-dropdown");
   const searchContainerElement = document.querySelector(".search-container");
+  const searchIconElement = searchContainerElement?.querySelector("svg");
 
   if (!searchInputElement || !searchContainerElement || !searchDropdownElement)
     return;
 
-  /**
-   * Renderiza las tendencias en el dropdown
-   */
+  function goToResults(term) {
+    const trimmed = (term || "").trim();
+    if (!trimmed) return;
+    window.location.href = `buscar.html?q=${encodeURIComponent(trimmed)}`;
+  }
+
+  function bindChipClicks() {
+    searchDropdownElement
+      .querySelectorAll(".search-trend-chip")
+      .forEach((chip) => {
+        chip.addEventListener("click", () => goToResults(chip.dataset.trend));
+      });
+  }
+
   function renderTrending() {
     searchDropdownElement.innerHTML = `
       <div class="px-6 py-4">
@@ -50,72 +59,54 @@ export function initSearch() {
         </div>
       </div>
     `;
-
-    // Añadir listeners a los chips de tendencias
-    searchDropdownElement
-      .querySelectorAll(".search-trend-chip")
-      .forEach((chip) => {
-        chip.addEventListener("click", () => {
-          const trend = chip.dataset.trend;
-          searchInputElement.value = trend;
-          handleSearch();
-        });
-      });
+    bindChipClicks();
   }
 
   /**
-   * Renderiza los resultados en el dropdown
+   * Sugerencias mientras se escribe — solo tendencias que hacen match, no
+   * resultados reales (esos se ven en buscar.html al confirmar la búsqueda).
    */
-  function renderResultsPreview(searchText) {
+  function renderSuggestions(searchText) {
     const matchingTrends = TRENDING_SEARCHES.filter((trend) =>
       trend.toLowerCase().includes(searchText.toLowerCase()),
     );
 
     searchDropdownElement.innerHTML = `
       <div class="px-6 py-4">
-        <h3 class="font-serif text-(--text) text-sm font-bold mb-3 tracking-wide">RESULTADOS</h3>
-        <p class="text-(--text) font-sans text-sm opacity-70 mb-4">Buscando: "${searchText}"</p>
-        <div class="flex flex-wrap gap-2">
-          ${
-            matchingTrends.length > 0
-              ? matchingTrends
-                  .map(
-                    (trend) => `
-            <button
-              class="search-trend-chip px-4 py-2 border border-(--accent) border-opacity-40 text-(--text) font-sans text-sm rounded-full bg-transparent transition-all duration-200 hover:bg-(--accent) hover:text-black hover:border-opacity-100 cursor-pointer"
-              data-trend="${trend}"
-            >
-              ${trend}
-            </button>
-          `,
-                  )
-                  .join("")
-              : `<span class="text-(--text) font-sans text-sm opacity-60">Mostrando resultados del catálogo</span>`
-          }
-        </div>
+        <p class="text-(--text) font-sans text-xs opacity-60 mb-3">Presiona Enter para buscar "${searchText}"</p>
+        ${
+          matchingTrends.length > 0
+            ? `
+          <h3 class="font-serif text-(--text) text-sm font-bold mb-3 tracking-wide">SUGERENCIAS</h3>
+          <div class="flex flex-wrap gap-2">
+            ${matchingTrends
+              .map(
+                (trend) => `
+              <button
+                class="search-trend-chip px-4 py-2 border border-(--accent) border-opacity-40 text-(--text) font-sans text-sm rounded-full bg-transparent transition-all duration-200 hover:bg-(--accent) hover:text-black hover:border-opacity-100 cursor-pointer"
+                data-trend="${trend}"
+              >
+                ${trend}
+              </button>
+            `,
+              )
+              .join("")}
+          </div>
+        `
+            : ""
+        }
       </div>
     `;
-
-    searchDropdownElement
-      .querySelectorAll(".search-trend-chip")
-      .forEach((chip) => {
-        chip.addEventListener("click", () => {
-          const trend = chip.dataset.trend;
-          searchInputElement.value = trend;
-          handleSearch();
-        });
-      });
+    bindChipClicks();
   }
 
-  function handleSearch() {
-    const searchText = searchInputElement.value.toLowerCase().trim();
+  function handleInput() {
+    const searchText = searchInputElement.value.trim();
 
     if (searchText === "") {
       renderTrending();
-      fetchProducts({ search: "", page: 1 });
     } else {
-      renderResultsPreview(searchText);
-      fetchProducts({ search: searchText, page: 1 });
+      renderSuggestions(searchText);
     }
 
     searchDropdownElement.classList.remove("hidden");
@@ -123,22 +114,22 @@ export function initSearch() {
 
   function closeDropdown() {
     searchDropdownElement.classList.add("hidden");
-    searchInputElement.value = "";
-    fetchProducts({ search: "", page: 1 });
-  }
-
-  function openDropdown() {
-    if (searchInputElement.value.toLowerCase().trim() === "") {
-      renderTrending();
-    } else {
-      renderResultsPreview(searchInputElement.value.toLowerCase().trim());
-    }
-    searchDropdownElement.classList.remove("hidden");
   }
 
   // Event listeners
-  searchInputElement.addEventListener("focus", openDropdown);
-  searchInputElement.addEventListener("input", handleSearch);
+  searchInputElement.addEventListener("focus", handleInput);
+  searchInputElement.addEventListener("input", handleInput);
+
+  searchInputElement.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      goToResults(searchInputElement.value);
+    }
+  });
+
+  searchIconElement?.addEventListener("click", () => {
+    goToResults(searchInputElement.value);
+  });
 
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
