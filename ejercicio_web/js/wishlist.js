@@ -77,27 +77,39 @@ function updateWishlistCount() {
 }
 
 function updateFavoriteIcon(productId) {
-  const button = document.querySelector(
+  // querySelectorAll, no querySelector: el mismo producto puede aparecer
+  // más de una vez en la página (ej. en Destacados Y en Originales/
+  // Preparados a la vez) — hay que sincronizar todas las instancias, no
+  // solo la primera que encuentre.
+  const buttons = document.querySelectorAll(
     `.add-to-favorites[data-id="${productId}"]`,
   );
-  if (!button) return;
-
-  const svg = button.querySelector("svg");
-  if (!svg) return;
+  if (buttons.length === 0) return;
 
   const inWishlist = isInWishlist(productId);
 
-  if (inWishlist) {
-    svg.style.fill = "var(--accent)";
-    svg.style.stroke = "var(--accent)";
-    svg.style.color = "var(--accent)";
-    button.classList.add("favorite-active");
-  } else {
-    svg.style.fill = "none";
-    svg.style.stroke = "";
-    svg.style.color = "";
-    button.classList.remove("favorite-active");
-  }
+  buttons.forEach((button) => {
+    const svg = button.querySelector("svg");
+
+    if (svg) {
+      // Tarjetas: ícono de corazón (catálogo, carruseles, relacionados)
+      if (inWishlist) {
+        svg.style.fill = "var(--accent)";
+        svg.style.stroke = "var(--accent)";
+        svg.style.color = "var(--accent)";
+        button.classList.add("favorite-active");
+      } else {
+        svg.style.fill = "none";
+        svg.style.stroke = "";
+        svg.style.color = "";
+        button.classList.remove("favorite-active");
+      }
+    } else {
+      // Página de detalle: botón de texto, sin ícono
+      button.textContent = inWishlist ? "♥ En favoritos" : "♡ Añadir a favoritos";
+      button.classList.toggle("favorite-active", inWishlist);
+    }
+  });
 }
 
 function initializeFavoriteIcons() {

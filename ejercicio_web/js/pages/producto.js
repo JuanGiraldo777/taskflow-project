@@ -4,7 +4,6 @@
  */
 import { productsApi } from "../api/client.js";
 import { cartApi } from "../api/client.js";
-import { wishlistApi } from "../api/client.js";
 import { trackProductView } from "../user.js";
 import { renderReviews } from "../reviews.js";
 import { initCart } from "../cart.js";
@@ -224,22 +223,11 @@ async function renderProductDetail() {
       </div>
     `;
 
-    // Comprobar si el producto ya está en wishlist al cargar
-    const token = localStorage.getItem("token");
-    if (token) {
-      try {
-        const wishlist = await wishlistApi.getWishlist();
-        const isInWishlist = wishlist.some(
-          (item) => item.product_id === product.id,
-        );
-        if (isInWishlist) {
-          const wishlistBtn = document.getElementById("detail-add-to-wishlist");
-          if (wishlistBtn) wishlistBtn.textContent = "♥ En favoritos";
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    }
+    // El estado inicial del botón (¿ya está en favoritos?) y su click ya
+    // los maneja la delegación global de wishlist.js (initWishlist, llamado
+    // más abajo en DOMContentLoaded) — se re-sincroniza solo al escuchar
+    // este evento, igual que hace con las tarjetas de cualquier grid.
+    window.dispatchEvent(new CustomEvent("products-rendered"));
 
     section.querySelectorAll(".thumbnail-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -322,37 +310,13 @@ async function renderProductDetail() {
         }
       });
 
-    document
-      .getElementById("detail-add-to-wishlist")
-      ?.addEventListener("click", async () => {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          alert("Inicia sesión para añadir a favoritos");
-          return;
-        }
-        // Guardar referencia ANTES del await
-        const btn = document.getElementById("detail-add-to-wishlist");
-        try {
-          const wishlist = await wishlistApi.getWishlist();
-          const existing = wishlist.find(
-            (item) => item.product_id === product.id,
-          );
-
-          if (existing) {
-            // Ya está — quitar
-            await wishlistApi.removeItem(existing.id);
-            if (btn) btn.textContent = "♡ Añadir a favoritos";
-          } else {
-            // No está — añadir
-            await wishlistApi.addItem(product.id);
-            if (btn) btn.textContent = "♥ En favoritos";
-          }
-
-          window.dispatchEvent(new CustomEvent("sync-wishlist"));
-        } catch (err) {
-          alert(err.message);
-        }
-      });
+    // "detail-add-to-wishlist" NO se conecta acá — ya tiene la clase
+    // add-to-favorites, así que la delegación global de wishlist.js
+    // (document-level, ver initWishlist) ya lo maneja. Tenerlo conectado acá
+    // TAMBIÉN hacía que cada click disparara las dos veces: se duplicaba al
+    // añadir, y al quitar solo se borraba una de las dos filas duplicadas
+    // (por eso el botón se quedaba en "En favoritos" aunque ya le hubieras
+    // dado para sacarlo).
 
     await trackProductView(product.id);
     await loadRelated(product.id);
@@ -448,6 +412,7 @@ async function loadRelated(id) {
     // El click de "añadir al carrito"/"a favoritos" en estas tarjetas ya lo
     // maneja la delegación global de cart.js/wishlist.js (initCart/initWishlist,
     // llamados más abajo en DOMContentLoaded) — no hace falta conectarlos aquí.
+    window.dispatchEvent(new CustomEvent("products-rendered"));
   } catch (err) {
     section.classList.add("hidden");
     console.error("Error al cargar relacionados:", err);
