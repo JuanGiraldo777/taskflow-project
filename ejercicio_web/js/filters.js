@@ -138,6 +138,11 @@ export function initAdvancedFilters() {
       });
     sortSelect.value = "";
     setActiveCategoryButton(categoryButtons[0]);
+    // El selector de sexo de catalogo.html (solo existe navegando por
+    // Árabe/Nicho/Diseñador) deja de tener sentido si la categoría
+    // también se está limpiando — se oculta en vez de quedar visible
+    // mostrando un filtro que ya no está activo.
+    document.getElementById("category-gender-tabs")?.classList.add("hidden");
 
     fetchProducts({
       search: "",

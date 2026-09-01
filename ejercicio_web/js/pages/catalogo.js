@@ -187,3 +187,43 @@ fetchProducts({
   page: 1,
   limit: 500,
 });
+
+// Selector de sexo, solo para vistas por categoría (Árabe/Nicho/
+// Diseñador): ahí dama/caballero/unisex vienen todos mezclados y no hay
+// otra forma de acotar sin salir de la categoría — a diferencia de "Ver
+// Todos"/"Originales"/"Preparados", donde el usuario no pidió esto.
+// Filtra en vivo (fetchProducts, sin recargar la página) y sincroniza la
+// URL con history.replaceState para que sea compartible/recargable sin
+// perder el resto de filtros activos.
+const categoryGenderTabs = document.getElementById("category-gender-tabs");
+if (categorySlug && categoryGenderTabs) {
+  categoryGenderTabs.classList.remove("hidden");
+
+  const tabButtons = categoryGenderTabs.querySelectorAll(
+    ".category-gender-tab",
+  );
+
+  function setActiveGenderTab(genderValue) {
+    tabButtons.forEach((btn) => {
+      const isActive = btn.dataset.gender === genderValue;
+      btn.classList.toggle("active", isActive);
+      btn.classList.toggle("font-bold", isActive);
+    });
+  }
+  // Refleja el ?gender= inicial si ya venía en la URL (ej. alguien
+  // recargó la página o compartió el link con un sexo elegido).
+  setActiveGenderTab(genderSlug);
+
+  tabButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const newGender = btn.dataset.gender;
+      setActiveGenderTab(newGender);
+      fetchProducts({ gender: newGender, page: 1 });
+
+      const url = new URL(window.location.href);
+      if (newGender) url.searchParams.set("gender", newGender);
+      else url.searchParams.delete("gender");
+      window.history.replaceState({}, "", url);
+    });
+  });
+}

@@ -472,6 +472,43 @@
         >
         </p>
 
+        <!-- Selector de sexo: solo se muestra navegando por categoría
+             (Árabe/Nicho/Diseñador — ahí se mezclan dama/caballero/unisex
+             y conviene poder acotar sin salir de la categoría). Lo arma
+             catalogo.js; en el resto de las vistas queda oculto. -->
+        <div
+          id="category-gender-tabs"
+          class="hidden flex justify-center gap-4 max-sm:gap-2 flex-wrap mb-10 text-sm"
+        >
+          <button
+            class="category-gender-tab active font-bold text-(--text) bg-transparent border-none cursor-pointer font-serif"
+            data-gender=""
+          >
+            Todos
+          </button>
+          <span>/</span>
+          <button
+            class="category-gender-tab text-(--text) bg-transparent border-none cursor-pointer font-serif"
+            data-gender="caballero"
+          >
+            Caballero
+          </button>
+          <span>/</span>
+          <button
+            class="category-gender-tab text-(--text) bg-transparent border-none cursor-pointer font-serif"
+            data-gender="dama"
+          >
+            Dama
+          </button>
+          <span>/</span>
+          <button
+            class="category-gender-tab text-(--text) bg-transparent border-none cursor-pointer font-serif"
+            data-gender="unisex"
+          >
+            Unisex
+          </button>
+        </div>
+
         <!-- GRID — mismo id que Destacados: reutiliza fetchProducts, el
              panel de filtros y el estado vacío tal cual, sin duplicar nada. -->
         <div
