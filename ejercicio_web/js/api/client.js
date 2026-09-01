@@ -2,7 +2,20 @@
  * @file ejercicio_web/js/api/client.js
  * @description Cliente HTTP del frontend para consumir la API REST del backend.
  */
-const BASE_URL = "https://maison-backend-7pq8.onrender.com/api/v1";
+// Se detecta solo según dónde está corriendo el FRONTEND, no hace falta
+// tocar esto a mano nunca más: en localhost/127.0.0.1 (previsualización
+// local) pega contra el backend local; en cualquier otro dominio (el
+// sitio real desplegado) pega contra producción en Render. No hay build
+// step en este proyecto (sin bundler, sin variables de entorno en el
+// frontend), así que la detección en tiempo de ejecución es la forma más
+// simple y confiable de resolver esto sin un paso manual.
+const isLocalPreview =
+  window.location.hostname === "localhost" ||
+  window.location.hostname === "127.0.0.1";
+
+const BASE_URL = isLocalPreview
+  ? "http://localhost:3000/api/v1"
+  : "https://maison-backend-7pq8.onrender.com/api/v1";
 
 function getToken() {
   return localStorage.getItem("token");
