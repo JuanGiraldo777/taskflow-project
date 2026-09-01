@@ -41,9 +41,17 @@ export function initSearch() {
       });
   }
 
-  function renderTrending() {
+  // Las tendencias son siempre las mismas 7, fijas — no se filtran según
+  // lo que se va escribiendo. Mientras haya texto, se agrega arriba el
+  // aviso de que Enter busca ese texto tal cual.
+  function renderTrending(searchText = "") {
     searchDropdownElement.innerHTML = `
       <div class="px-6 py-4">
+        ${
+          searchText
+            ? `<p class="text-(--text) font-sans text-xs opacity-60 mb-3">Presiona Enter para buscar "${searchText}"</p>`
+            : ""
+        }
         <h3 class="font-serif text-(--text) text-sm font-bold mb-4 tracking-wide">TENDENCIAS</h3>
         <div class="flex flex-wrap gap-2">
           ${TRENDING_SEARCHES.map(
@@ -62,53 +70,8 @@ export function initSearch() {
     bindChipClicks();
   }
 
-  /**
-   * Sugerencias mientras se escribe — solo tendencias que hacen match, no
-   * resultados reales (esos se ven en catalogo.html al confirmar la búsqueda).
-   */
-  function renderSuggestions(searchText) {
-    const matchingTrends = TRENDING_SEARCHES.filter((trend) =>
-      trend.toLowerCase().includes(searchText.toLowerCase()),
-    );
-
-    searchDropdownElement.innerHTML = `
-      <div class="px-6 py-4">
-        <p class="text-(--text) font-sans text-xs opacity-60 mb-3">Presiona Enter para buscar "${searchText}"</p>
-        ${
-          matchingTrends.length > 0
-            ? `
-          <h3 class="font-serif text-(--text) text-sm font-bold mb-3 tracking-wide">SUGERENCIAS</h3>
-          <div class="flex flex-wrap gap-2">
-            ${matchingTrends
-              .map(
-                (trend) => `
-              <button
-                class="search-trend-chip px-4 py-2 border border-(--accent) border-opacity-40 text-(--text) font-sans text-sm rounded-full bg-transparent transition-all duration-200 hover:bg-(--accent) hover:text-black hover:border-opacity-100 cursor-pointer"
-                data-trend="${trend}"
-              >
-                ${trend}
-              </button>
-            `,
-              )
-              .join("")}
-          </div>
-        `
-            : ""
-        }
-      </div>
-    `;
-    bindChipClicks();
-  }
-
   function handleInput() {
-    const searchText = searchInputElement.value.trim();
-
-    if (searchText === "") {
-      renderTrending();
-    } else {
-      renderSuggestions(searchText);
-    }
-
+    renderTrending(searchInputElement.value.trim());
     searchDropdownElement.classList.remove("hidden");
   }
 
