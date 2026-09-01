@@ -7,13 +7,13 @@
  * el catálogo, tenga o no resultados.
  */
 const TRENDING_SEARCHES = [
-  "Woody",
-  "Floral",
-  "Árabe",
-  "Caballero",
-  "Dama",
-  "Nicho",
-  "Oud",
+  "Creed",
+  "9Pm",
+  "Ariana Grande",
+  "Versace",
+  "Dior",
+  "Chanel",
+  "Paco Rabanne",
 ];
 
 export function initSearch() {
