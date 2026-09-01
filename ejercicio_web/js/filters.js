@@ -107,19 +107,18 @@ export function initAdvancedFilters() {
   // de URL, igual que la barra de búsqueda navega con ?q= — así la página
   // muestra SOLO lo que coincide con marca/precio/orden elegidos, en vez
   // de filtrar in-place la sección que esté activa. Si ya había un
-  // término de búsqueda o una categoría/sexo activos en la URL (llegaste
-  // desde el menú lateral y ahora afinás con el panel), se conservan: los
-  // filtros refinan la vista actual en vez de reemplazarla.
+  // término de búsqueda, categoría/sexo, o tipo (originales/preparados)
+  // activos en la URL (llegaste desde el menú lateral y ahora afinás con
+  // el panel), se conservan: los filtros refinan la vista actual en vez
+  // de reemplazarla.
   applyFiltersBtn?.addEventListener("click", () => {
     const { minPrice, maxPrice, brands, sortBy } = getSelectedFilterValues();
     const currentParams = new URLSearchParams(window.location.search);
 
     const params = new URLSearchParams();
-    if (currentParams.get("q")) params.set("q", currentParams.get("q"));
-    if (currentParams.get("category"))
-      params.set("category", currentParams.get("category"));
-    if (currentParams.get("gender"))
-      params.set("gender", currentParams.get("gender"));
+    ["q", "category", "gender", "type"].forEach((key) => {
+      if (currentParams.get(key)) params.set(key, currentParams.get(key));
+    });
     if (minPrice) params.set("minPrice", minPrice);
     if (maxPrice) params.set("maxPrice", maxPrice);
     if (brands.length > 0) params.set("brands", brands.join(","));
@@ -147,6 +146,8 @@ export function initAdvancedFilters() {
       brands: [],
       sortBy: "trending",
       gender: "",
+      category: "",
+      type: "",
       page: 1,
     });
   });

@@ -10,6 +10,8 @@ export const currentFilters = {
   search: "",
   brands: [],
   gender: "",
+  category: "",
+  type: "",
   minPrice: "",
   maxPrice: "",
   sortBy: "",

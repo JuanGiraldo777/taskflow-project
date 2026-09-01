@@ -4,9 +4,9 @@
  * bootstrap que index.html (mismos módulos, mismo grid #products-grid)
  * para no duplicar la lógica de filtros/carrito/wishlist. Se llega acá de
  * varias formas, combinables entre sí: búsqueda por texto (?q=),
- * navegación por categoría/sexo desde el menú lateral (?category=/
- * ?gender=), el panel de filtros de precio/marca/orden, o sin ningún
- * parámetro ("Ver Todos" — se muestra el catálogo completo).
+ * navegación por categoría/sexo/tipo desde el menú lateral (?category=/
+ * ?gender=/?type=), el panel de filtros de precio/marca/orden, o sin
+ * ningún parámetro ("Ver Todos" — se muestra el catálogo completo).
  */
 import { fetchProducts } from "../products.js";
 import { initUser } from "../user.js";
@@ -32,6 +32,11 @@ const maxPrice = params.get("maxPrice") || "";
 const sortBy = params.get("sortBy") || "";
 const categorySlug = params.get("category") || "";
 const genderSlug = params.get("gender") || "";
+const rawType = params.get("type") || "";
+// Solo se acepta un valor real — cualquier otra cosa en la URL se ignora
+// en vez de mandarle basura al backend.
+const productType =
+  rawType === "original" || rawType === "preparado" ? rawType : "";
 const brandSlugs = (params.get("brands") || "")
   .split(",")
   .map((slug) => slug.trim())
@@ -135,6 +140,11 @@ async function resolveHeading() {
     }
   }
 
+  // "type" no viene de una tabla propia (es un ENUM en products), así que
+  // no hace falta pedirlo a la API — a diferencia de categoría/sexo/marca.
+  if (productType === "original") return "ORIGINALES";
+  if (productType === "preparado") return "PREPARADOS";
+
   return "CATÁLOGO COMPLETO";
 }
 
@@ -167,5 +177,6 @@ fetchProducts({
   brands: brandSlugs,
   category: categorySlug,
   gender: genderSlug,
+  type: productType,
   page: 1,
 });
