@@ -228,6 +228,70 @@
         width: 20px;
         height: 20px;
       }
+
+      /*
+        Switch de tema oscuro/claro — adaptado de un ícono React (mask +
+        animación SMIL, solo dibuja una vez al aparecer) a un componente
+        CSS con dos estados reales: el thumb se desliza con
+        aria-checked, sin depender de nada de React/JSX. aria-checked
+        "true" = oscuro (thumb a la derecha), "false" = claro (thumb a
+        la izquierda) — mismo criterio que ya usaba theme.js para la
+        clase light-mode del body.
+      */
+      .theme-switch {
+        background: transparent;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        flex-shrink: 0;
+      }
+      .theme-switch-track {
+        display: block;
+        width: 52px;
+        height: 28px;
+        border-radius: 9999px;
+        background: var(--card-bg);
+        border: 1px solid var(--accent);
+        position: relative;
+        transition: background 0.3s ease;
+      }
+      .theme-switch-thumb {
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: var(--accent);
+        transition: transform 0.3s ease;
+      }
+      .theme-switch[aria-checked="true"] .theme-switch-thumb {
+        transform: translateX(24px);
+      }
+      .theme-switch:hover .theme-switch-track {
+        opacity: 0.9;
+      }
+      @media (max-width: 639px) {
+        .theme-switch-track {
+          width: 44px;
+          height: 24px;
+        }
+        .theme-switch-thumb {
+          width: 18px;
+          height: 18px;
+        }
+        .theme-switch[aria-checked="true"] .theme-switch-thumb {
+          transform: translateX(20px);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .theme-switch-thumb,
+        .theme-switch-track {
+          transition: none;
+        }
+      }
     </style>
   </head>
 
@@ -353,10 +417,15 @@
         >
           <button
             id="darkModeToggle"
-            class="mode-toggle flex items-center justify-center gap-2 text-[10px] px-[18px] py-[10px] max-sm:px-3 max-sm:py-2 max-sm:text-[8px] md:px-4 md:py-2 md:text-[9px] bg-(--bg) text-(--accent) border-none rounded-[30px] cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.3)] transition-all duration-200 hover:scale-105 hover:shadow-[0_6px_16px_rgba(0,0,0,0.4)] active:scale-95"
-            aria-label="Cambiar modo"
+            type="button"
+            role="switch"
+            aria-checked="true"
+            class="theme-switch"
+            aria-label="Cambiar entre modo oscuro y claro"
           >
-            🌙 | ☀️
+            <span class="theme-switch-track">
+              <span class="theme-switch-thumb"></span>
+            </span>
           </button>
           <button
             class="threebars w-[26px] h-[18px] flex flex-col justify-between bg-transparent border-none cursor-pointer p-0"
