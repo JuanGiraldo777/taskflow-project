@@ -122,10 +122,15 @@ CREATE TABLE IF NOT EXISTS wishlist_items (
 -- Reseñas
 -- Al insertar una reseña, el servicio genera un discount_code
 -- con formato MAISON-2026-XXXXXX y lo actualiza en users.discount_code
+-- product_id es NULL para las reseñas de TIENDA (index.html, sin producto
+-- asociado) — review.service.js ya distinguía los dos casos por esto
+-- (WHERE product_id IS NULL / INSERT ... VALUES (?, NULL, ...)), pero la
+-- columna había quedado NOT NULL: cualquier reseña de tienda fallaba con
+-- error 500 al insertar. Encontrado y corregido 2026-09-02.
 CREATE TABLE IF NOT EXISTS reviews (
   id         INT AUTO_INCREMENT PRIMARY KEY,
   user_id    INT     NOT NULL,
-  product_id INT     NOT NULL,
+  product_id INT     NULL,
   rating     TINYINT NOT NULL CHECK (rating BETWEEN 1 AND 5),
   comment    TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
