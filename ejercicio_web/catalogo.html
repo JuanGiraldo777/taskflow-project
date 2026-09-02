@@ -48,12 +48,27 @@
       style.css), se fija en CSS plano con margen de sobra.
     -->
     <style>
+      /*
+        pb-[100px]/max-sm:pb-12/md:pb-16 en el HTML nunca se compilaron
+        (solo la forma corta py-[100px], que fija arriba Y abajo, se usa
+        en otro lado del sitio — pb-* solo no aparece en ningún lado más)
+        — el resultado era CERO padding abajo, así que la última fila de
+        tarjetas quedaba pegada al footer. Mismo bug de siempre, esta vez
+        pasó desapercibido porque solo se nota en el borde inferior.
+      */
       .catalog-section {
         padding-top: 230px;
+        padding-bottom: 100px;
       }
       @media (max-width: 639px) {
         .catalog-section {
           padding-top: 100px;
+          padding-bottom: 48px;
+        }
+      }
+      @media (min-width: 768px) {
+        .catalog-section {
+          padding-bottom: 64px;
         }
       }
 
@@ -597,7 +612,7 @@
            catalogo.js según cómo se haya llegado (búsqueda, categoría/
            sexo del menú, filtros, o el catálogo completo). -->
       <section
-        class="catalog-section bg-(--bg) pb-[100px] max-sm:pb-12 md:pb-16 px-20 max-sm:px-4 sm:px-8 md:px-12 text-center min-h-screen"
+        class="catalog-section bg-(--bg) px-20 max-sm:px-4 sm:px-8 md:px-12 text-center min-h-screen"
       >
         <a
           href="index.html"

@@ -38,6 +38,15 @@
       tres. CSS plano en vez de seguir adivinando clases de Tailwind.
     -->
     <style>
+      /*
+        pb-24 en <main> tampoco estaba compilado (mismo problema que
+        pb-[100px] en catalogo.html) — el contenido quedaba pegado al
+        footer nuevo, sin nada de aire abajo.
+      */
+      main {
+        padding-bottom: 96px;
+      }
+
       .admin-form-grid-3 {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -206,7 +215,7 @@
       </div>
     </header>
 
-    <main class="min-h-screen bg-(--bg) pb-24">
+    <main class="min-h-screen bg-(--bg)">
       <!-- ══════════════════ LISTA DE PRODUCTOS (vista por defecto) ══════════════════ -->
       <div
         id="admin-product-list-section"
