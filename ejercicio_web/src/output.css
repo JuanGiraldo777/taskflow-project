@@ -1702,10 +1702,23 @@ h1, h2, h3, h4, h5, h6 {
     rgba(212, 175, 55, 0)
   );
 }
+/* El header (.top-bar) usa este mismo degradado dorado en los dos temas —
+   solo lo que se transparenta debajo cambia (negro en oscuro, crema pálido
+   en claro). Sus íconos/texto usaban var(--bg) o text-white para verse
+   oscuros, pero --bg se invierte en modo claro (#F7F5EF, casi blanco) y
+   quedaban ilegibles contra el degradado ya pálido. Se fijan al valor que
+   ya se veía bien en modo oscuro (#0f0f0f), igual en ambos temas.
+   Encontrado en QA visual 2026-09-04. */
+.top-bar svg[class*="stroke-(--bg)"] {
+  stroke: #0f0f0f;
+}
+.top-bar input#search {
+  color: #0f0f0f;
+}
 .threebars span {
   height: 2px;
   width: 100%;
-  background: var(--bg);
+  background: #0f0f0f;
   transition: 0.3s ease;
 }
 .slider-track {

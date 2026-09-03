@@ -229,6 +229,41 @@
           transition: none;
         }
       }
+
+      /* Botón "Cargar más" del catálogo — QA visual 2026-09-04. Plain CSS
+         en vez de clases de Tailwind: con 169 productos reales el catálogo
+         ya no trae todo de una (ver catalogo.js), así que este botón es
+         nuevo y no hay garantía de que utilidades como mt-8/px-10 estén
+         compiladas en output.css. */
+      .load-more-btn {
+        display: block;
+        margin: 48px auto 0;
+        padding: 14px 40px;
+        background: var(--accent);
+        color: #000;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
+        font-size: 14px;
+        letter-spacing: 0.05em;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: opacity 0.2s ease;
+      }
+      .load-more-btn:hover {
+        opacity: 0.9;
+      }
+      .load-more-btn:disabled {
+        opacity: 0.6;
+        cursor: default;
+      }
+      /* Este <style> carga después de output.css, así que .load-more-btn
+         (display:block) le ganaría a .hidden de Tailwind (display:none) en
+         cascada si solo dependiera del orden — esta regla de dos clases
+         tiene más especificidad y fuerza que sí se esconda. */
+      .load-more-btn.hidden {
+        display: none;
+      }
     </style>
   </head>
 
@@ -678,6 +713,14 @@
         >
           <!-- Las tarjetas de resultados se generan dinámicamente aquí -->
         </div>
+
+        <button
+          id="load-more-btn"
+          type="button"
+          class="load-more-btn hidden"
+        >
+          Cargar más
+        </button>
       </section>
     </main>
 

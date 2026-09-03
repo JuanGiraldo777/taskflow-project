@@ -8,7 +8,7 @@
  * ?gender=/?type=), el panel de filtros de precio/marca/orden, o sin
  * ningún parámetro ("Ver Todos" — se muestra el catálogo completo).
  */
-import { fetchProducts } from "../products.js";
+import { fetchProducts, currentFilters } from "../products.js";
 import { initUser } from "../user.js";
 import { initWishlist } from "../wishlist.js";
 import { initNav } from "../nav.js";
@@ -169,12 +169,14 @@ if (brandSlugs.length > 0) {
   );
 }
 
-// Esta página es "ver TODO lo que coincide", no un listado paginado — el
-// default de 10 (pensado para Destacados/Originales/Preparados en el home,
-// que son vidrieras chicas a propósito) dejaba categorías enteras
-// cortadas a la mitad (ej. Diseñador tiene 21 productos reales, Ver Todos
-// 169, y solo se veían los primeros 10 de cada una). 500 da margen de
-// sobra para el catálogo actual y el crecimiento cercano sin paginar.
+// Antes esta página traía todo de una (limit: 500) para no cortar
+// categorías a la mitad. Con el catálogo real completo (169 productos) eso
+// hacía una página de ~80.000px de alto en mobile — demasiado scroll.
+// Ahora trae de a CATALOG_PAGE_SIZE y el botón "Cargar más" pide el resto
+// de a tandas, sin perder los filtros activos (currentFilters ya los
+// guarda). Encontrado y cambiado en QA visual 2026-09-04.
+const CATALOG_PAGE_SIZE = 24;
+
 fetchProducts({
   search: query,
   minPrice,
@@ -185,8 +187,39 @@ fetchProducts({
   gender: genderSlug,
   type: productType,
   page: 1,
-  limit: 500,
+  limit: CATALOG_PAGE_SIZE,
 });
+
+// ── "Cargar más" ────────────────────────────────────────────────────────
+const loadMoreBtn = document.getElementById("load-more-btn");
+if (loadMoreBtn) {
+  const updateLoadMoreButton = (pagination) => {
+    if (!pagination || pagination.page >= pagination.totalPages) {
+      loadMoreBtn.classList.add("hidden");
+      return;
+    }
+    loadMoreBtn.classList.remove("hidden");
+    loadMoreBtn.disabled = false;
+    loadMoreBtn.textContent = "Cargar más";
+  };
+
+  window.addEventListener("products-rendered", (e) => {
+    // El primer dispatch (desde renderProductsInto) no trae detail —
+    // se ignora, el segundo (desde fetchProducts, con la paginación real)
+    // es el que decide si el botón se muestra.
+    if (!e.detail) return;
+    updateLoadMoreButton(e.detail.pagination);
+  });
+
+  loadMoreBtn.addEventListener("click", async () => {
+    loadMoreBtn.disabled = true;
+    loadMoreBtn.textContent = "Cargando...";
+    await fetchProducts(
+      { page: (currentFilters.page || 1) + 1 },
+      { append: true },
+    );
+  });
+}
 
 // Selector de sexo, solo para vistas por categoría (Árabe/Nicho/
 // Diseñador): ahí dama/caballero/unisex vienen todos mezclados y no hay

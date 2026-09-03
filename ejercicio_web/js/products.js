@@ -41,10 +41,83 @@ function showErrorState(message, gridId = "products-grid") {
   `;
 }
 
+// Arma una tarjeta de producto — usado tanto por renderProductsInto
+// (reemplaza el grid) como por appendProductsInto ("Cargar más", suma al
+// final sin borrar lo que ya estaba).
+function buildProductCard(product) {
+  const hasDiscount = product.discounted_price !== null;
+  const meta = getProductMetaParts(product);
+
+  const card = document.createElement("article");
+  card.className =
+    "product-card relative bg-(--card-bg) p-8 rounded-xl overflow-hidden text-(--text)";
+  card.dataset.name = (product.name || "").toLowerCase();
+  card.dataset.brand = (product.brand || "").toLowerCase();
+  card.dataset.price = String(product.price || 0);
+
+  card.innerHTML = `
+    ${
+      hasDiscount
+        ? '<span class="absolute top-5 left-5 bg-(--accent) text-black text-xs px-[10px] py-[6px] rounded">OFERTA</span>'
+        : ""
+    }
+    <a href="producto.html?id=${product.id}" class="block product-link">
+      <img
+        src="${product.image || "assets/imgs/placeholder.svg"}"
+        alt="${product.name}"
+        class="w-[90%] h-[280px] object-contain transition-transform duration-300"
+      />
+    </a>
+    <div class="mt-1">
+      <span class="text-xs text-[#999]">${meta.brand || "SIN MARCA"}${meta.rest ? ` · ${meta.rest}` : ""}</span>
+      <h3 class="font-serif text-lg my-2">${product.name}</h3>
+      <div class="flex gap-2 items-center">
+        ${
+          hasDiscount
+            ? `<span class="line-through text-[#999]">$${Number(product.original_price || 0).toLocaleString()}</span>
+               <span class="text-xs">Desde</span>`
+            : ""
+        }
+        <span class="text-(--accent) font-bold">$${Number(product.price || 0).toLocaleString()}</span>
+      </div>
+    </div>
+    <button
+      class="add-to-cart font-serif absolute bottom-5 left-5 right-5 bg-(--bg) border border-(--text) text-(--text) py-[14px] cursor-pointer"
+      data-id="${product.id}"
+      data-name="${product.name}"
+      data-price="${product.price}"
+      data-type="${product.type || "original"}"
+      aria-label="${product.type === "preparado" ? "Ver presentaciones" : "Añadir producto al Carrito"}"
+    >
+      ${product.type === "preparado" ? "VER PRESENTACIONES" : "AÑADIR AL CARRITO"}
+    </button>
+    <button
+      class="add-to-favorites absolute top-5 right-5 bg-transparent border-none cursor-pointer"
+      data-id="${product.id}"
+      data-name="${product.name}"
+      data-price="${product.price}"
+      aria-label="Añadir producto a Favoritos"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+        stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M11.48 3.499a5.373 5.373 0 0 0-7.61 0 5.373 5.373 0 0 0 0 7.61L12 19.24l8.13-8.13a5.373 5.373 0 0 0 0-7.61 5.373 5.373 0 0 0-7.61 0l-.02.02Z"/>
+      </svg>
+    </button>
+  `;
+
+  const link = card.querySelector(".product-link");
+  link?.addEventListener("click", () => {
+    trackProductView(product.id);
+  });
+
+  return card;
+}
+
 /**
  * Renderiza tarjetas de producto dentro de cualquier grid, no solo el del
  * catálogo principal — usado también por las secciones de Originales y
- * Preparados en el home.
+ * Preparados en el home. Reemplaza lo que ya había en el grid.
  * @param {Array} products
  * @param {string} gridId
  */
@@ -58,97 +131,68 @@ export function renderProductsInto(products, gridId) {
     return;
   }
 
-  products.forEach((product) => {
-    const hasDiscount = product.discounted_price !== null;
-    const meta = getProductMetaParts(product);
-
-    const card = document.createElement("article");
-    card.className =
-      "product-card relative bg-(--card-bg) p-8 rounded-xl overflow-hidden text-(--text)";
-    card.dataset.name = (product.name || "").toLowerCase();
-    card.dataset.brand = (product.brand || "").toLowerCase();
-    card.dataset.price = String(product.price || 0);
-
-    card.innerHTML = `
-      ${
-        hasDiscount
-          ? '<span class="absolute top-5 left-5 bg-(--accent) text-black text-xs px-[10px] py-[6px] rounded">OFERTA</span>'
-          : ""
-      }
-      <a href="producto.html?id=${product.id}" class="block product-link">
-        <img
-          src="${product.image || "assets/imgs/placeholder.svg"}"
-          alt="${product.name}"
-          class="w-[90%] h-[280px] object-contain transition-transform duration-300"
-        />
-      </a>
-      <div class="mt-1">
-        <span class="text-xs text-[#999]">${meta.brand || "SIN MARCA"}${meta.rest ? ` · ${meta.rest}` : ""}</span>
-        <h3 class="font-serif text-lg my-2">${product.name}</h3>
-        <div class="flex gap-2 items-center">
-          ${
-            hasDiscount
-              ? `<span class="line-through text-[#999]">$${Number(product.original_price || 0).toLocaleString()}</span>
-                 <span class="text-xs">Desde</span>`
-              : ""
-          }
-          <span class="text-(--accent) font-bold">$${Number(product.price || 0).toLocaleString()}</span>
-        </div>
-      </div>
-      <button
-        class="add-to-cart font-serif absolute bottom-5 left-5 right-5 bg-(--bg) border border-(--text) text-(--text) py-[14px] cursor-pointer"
-        data-id="${product.id}"
-        data-name="${product.name}"
-        data-price="${product.price}"
-        data-type="${product.type || "original"}"
-        aria-label="${product.type === "preparado" ? "Ver presentaciones" : "Añadir producto al Carrito"}"
-      >
-        ${product.type === "preparado" ? "VER PRESENTACIONES" : "AÑADIR AL CARRITO"}
-      </button>
-      <button
-        class="add-to-favorites absolute top-5 right-5 bg-transparent border-none cursor-pointer"
-        data-id="${product.id}"
-        data-name="${product.name}"
-        data-price="${product.price}"
-        aria-label="Añadir producto a Favoritos"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-          stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-          <path stroke-linecap="round" stroke-linejoin="round"
-            d="M11.48 3.499a5.373 5.373 0 0 0-7.61 0 5.373 5.373 0 0 0 0 7.61L12 19.24l8.13-8.13a5.373 5.373 0 0 0 0-7.61 5.373 5.373 0 0 0-7.61 0l-.02.02Z"/>
-        </svg>
-      </button>
-    `;
-
-    const link = card.querySelector(".product-link");
-    link?.addEventListener("click", () => {
-      trackProductView(product.id);
-    });
-
-    grid.appendChild(card);
-  });
+  products.forEach((product) => grid.appendChild(buildProductCard(product)));
 
   window.dispatchEvent(new CustomEvent("products-rendered"));
 }
 
-export async function fetchProducts(filters = {}) {
+/**
+ * Igual que renderProductsInto, pero suma tarjetas al final del grid en vez
+ * de reemplazarlo — para el botón "Cargar más" del catálogo.
+ * @param {Array} products
+ * @param {string} gridId
+ */
+export function appendProductsInto(products, gridId) {
+  const grid = document.getElementById(gridId);
+  if (!grid || !products || products.length === 0) return;
+
+  products.forEach((product) => grid.appendChild(buildProductCard(product)));
+
+  window.dispatchEvent(new CustomEvent("products-rendered"));
+}
+
+/**
+ * @param {object} filters
+ * @param {object} [options]
+ * @param {boolean} [options.append] - true = suma esta página al final del
+ *   grid ("Cargar más"), en vez de reemplazarlo. Lo usa solo el botón de
+ *   catalogo.html — cualquier cambio de filtro sigue reemplazando.
+ * @returns {Promise<{products: Array, pagination: object|null}>}
+ */
+export async function fetchProducts(filters = {}, { append = false } = {}) {
   Object.assign(currentFilters, filters);
-  showLoadingState();
+  if (!append) showLoadingState();
 
   try {
     const result = await productsApi.getAll(currentFilters);
     const products = result.data || [];
+    const pagination = result.pagination || null;
 
     if (products.length === 0) {
-      showErrorState("No se encontraron productos con esos filtros.");
-      return;
+      if (!append) {
+        showErrorState("No se encontraron productos con esos filtros.");
+      }
+      window.dispatchEvent(
+        new CustomEvent("products-rendered", { detail: { pagination, append } }),
+      );
+      return { products, pagination };
     }
 
-    renderProductsInto(products, "products-grid");
-    window.dispatchEvent(new CustomEvent("products-rendered"));
+    if (append) {
+      appendProductsInto(products, "products-grid");
+    } else {
+      renderProductsInto(products, "products-grid");
+    }
+    window.dispatchEvent(
+      new CustomEvent("products-rendered", { detail: { pagination, append } }),
+    );
+    return { products, pagination };
   } catch (err) {
-    showErrorState("Error al cargar los productos. Intenta de nuevo.");
+    if (!append) {
+      showErrorState("Error al cargar los productos. Intenta de nuevo.");
+    }
     console.error(err);
+    return { products: [], pagination: null };
   }
 }
 
