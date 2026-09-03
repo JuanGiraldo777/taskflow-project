@@ -12,6 +12,7 @@ import { initUser } from "../user.js";
 import { initNav } from "../nav.js";
 import { initThemeToggle } from "../theme.js";
 import { getProductMetaParts } from "../productMeta.js";
+import { initAnalytics } from "../analytics.js";
 
 const params = new URLSearchParams(window.location.search);
 const productId = params.get("id");
@@ -572,6 +573,7 @@ async function loadRelated(id) {
 document.addEventListener("DOMContentLoaded", async () => {
   if (!productId) return;
 
+  initAnalytics();
   initNav();
   initThemeToggle();
   initCart();

@@ -13,7 +13,9 @@ import { initThemeToggle } from "./theme.js";
 import { initAdvancedFilters } from "./filters.js";
 import { renderReviews } from "./reviews.js";
 import { initCarousels } from "./carousel.js";
+import { initAnalytics } from "./analytics.js";
 
+initAnalytics();
 initUser();
 initAdvancedFilters();
 initNav();

@@ -11,6 +11,7 @@ import {
   gendersApi,
   presentationsApi,
 } from "../api/client.js";
+import { initAnalytics } from "../analytics.js";
 
 // Protección de UX, no de seguridad real — el backend ya rechaza estas
 // rutas con verifyAdmin. Esto solo evita mostrar el formulario a quien
@@ -510,6 +511,7 @@ async function reloadBrands(selectSlugId) {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+  initAnalytics();
   initThemeToggle();
   initUser();
   renderImageFields();

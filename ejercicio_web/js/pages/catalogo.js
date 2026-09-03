@@ -17,6 +17,7 @@ import { initCart } from "../cart.js";
 import { initThemeToggle } from "../theme.js";
 import { initAdvancedFilters } from "../filters.js";
 import { categoriesApi, gendersApi } from "../api/client.js";
+import { initAnalytics } from "../analytics.js";
 
 const SORT_LABELS = {
   "price-asc": "Precio: menor a mayor",
@@ -42,6 +43,7 @@ const brandSlugs = (params.get("brands") || "")
   .map((slug) => slug.trim())
   .filter(Boolean);
 
+initAnalytics();
 initUser();
 initAdvancedFilters();
 initNav();
