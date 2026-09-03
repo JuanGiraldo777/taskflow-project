@@ -24,6 +24,12 @@ const DEFAULT_STOCK = 10;
 
 const COMMIT = process.argv.includes("--commit");
 
+// --only=originales | --only=preparados — corre solo una mitad del import,
+// para reintentar una sola parte sin duplicar filas que ya quedaron bien
+// (ninguna de las dos funciones de import verifica duplicados por nombre).
+const onlyArg = process.argv.find((a) => a.startsWith("--only="));
+const ONLY = onlyArg ? onlyArg.split("=")[1] : null;
+
 // ── Utilidades ──────────────────────────────────────────────────────────────
 function slugify(text) {
   return text
@@ -359,8 +365,8 @@ async function main() {
       : "Modo DRY-RUN — no se escribe nada. Corre con --commit para aplicar de verdad.",
   );
 
-  await importOriginales();
-  await importPreparados();
+  if (!ONLY || ONLY === "originales") await importOriginales();
+  if (!ONLY || ONLY === "preparados") await importPreparados();
 
   await pool.end();
 }
