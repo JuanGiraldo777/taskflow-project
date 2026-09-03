@@ -527,10 +527,10 @@ async function loadRelated(id) {
           <h3 class="font-serif text-lg my-2">${product.name}</h3>
           <div class="flex gap-2 items-center">
             ${hasDiscount
-              ? `<span class="line-through text-[#999]">$${product.original_price.toLocaleString()}</span>
+              ? `<span class="line-through text-[#999]">$${Number(product.original_price).toLocaleString()}</span>
                  <span class="text-xs">Desde</span>`
               : ''}
-            <span class="text-(--accent) font-bold">$${product.price.toLocaleString()}</span>
+            <span class="text-(--accent) font-bold">$${Number(product.price).toLocaleString()}</span>
           </div>
         </div>
         <button
