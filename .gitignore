@@ -22,3 +22,7 @@ npm-debug.log*
 
 # Configuración de VSCode
 .vscode
+
+.claude
+
+.playwright
