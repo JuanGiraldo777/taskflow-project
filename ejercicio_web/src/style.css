@@ -148,6 +148,20 @@ h1, h2, h3, h4, h5, h6 {
    (buildProductCard), que arma TODAS las tarjetas del sitio: Destacados,
    carruseles, catálogo y relacionados. */
 
+/* Alineación de la tarjeta en TODOS los tamaños (2026-09-26): todo
+   centrado, igual que el diseño mobile. En escritorio la imagen quedaba
+   10px corrida a la izquierda (w-[90%] sin centrar), el precio ~70px a la
+   izquierda del nombre, y en los carruseles todo iba a la izquierda. */
+.product-card {
+  text-align: center;
+}
+.product-card-img {
+  margin-inline: auto;
+}
+.product-card-price {
+  justify-content: center;
+}
+
 /* En pantallas táctiles no existe :hover, así que .add-to-cart (opacity:0
    hasta el hover, ver arriba) quedaba invisible pero seguía recibiendo
    toques encima del precio. En táctil se muestra siempre y va debajo del
