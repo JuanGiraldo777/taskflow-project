@@ -53,6 +53,17 @@ const NAME_FIXES = [
   ["ARABIYAT PRESTIEGE UHUD 100ML EDP", "ARABIYAT PRESTIGE UHUD 100ML EDP"],
 ];
 
+// [nombre actual, slug de sexo, nombre corregido] — renombres que dependen
+// del sexo porque el nombre solo no alcanza para distinguir. Al corregir
+// "Light Blue D&C" -> "D&G" (Dama) quedó con el MISMO nombre que el de
+// Caballero, y el carrito / mensaje de WhatsApp solo muestran nombre +
+// presentación: el pedido llegaba ambiguo. Se usan los nombres reales:
+// "Light Blue" (femenino) y "Light Blue Pour Homme" (masculino, igual que
+// su versión original "DOLCE GABBANA LIGHT BLUE POUR HOMME").
+const GENDERED_NAME_FIXES = [
+  ["Light Blue D&G", "caballero", "Light Blue Pour Homme D&G"],
+];
+
 const PRODUCT_TO_RESTORE = "VERSACE EROS POUR HOMME 100ML EDT";
 
 function makePool(envFile, ssl) {
@@ -100,6 +111,26 @@ async function fixNames(conn, log) {
     }
     log(`  "${oldName}" -> "${newName}" (${rows.length} producto(s))`);
     await conn.query("UPDATE products SET name = ? WHERE name = ?", [newName, oldName]);
+  }
+}
+
+async function fixGenderedNames(conn, log) {
+  for (const [oldName, genderSlug, newName] of GENDERED_NAME_FIXES) {
+    const [rows] = await conn.query(
+      `SELECT p.id FROM products p JOIN genders g ON g.id = p.gender_id
+       WHERE p.name = ? AND g.slug = ?`,
+      [oldName, genderSlug],
+    );
+    if (rows.length === 0) {
+      log(`  "${oldName}" (${genderSlug}): no está (ya corregido)`);
+      continue;
+    }
+    log(`  "${oldName}" (${genderSlug}) -> "${newName}" (${rows.length} producto(s))`);
+    await conn.query(
+      `UPDATE products p JOIN genders g ON g.id = p.gender_id
+       SET p.name = ? WHERE p.name = ? AND g.slug = ?`,
+      [newName, oldName, genderSlug],
+    );
   }
 }
 
@@ -203,11 +234,13 @@ async function main() {
   await runOn("LOCAL", localPool, async (conn, log) => {
     await fixBrands(conn, log);
     await fixNames(conn, log);
+    await fixGenderedNames(conn, log);
   });
 
   await runOn("PRODUCCIÓN", prodPool, async (conn, log) => {
     await fixBrands(conn, log);
     await fixNames(conn, log);
+    await fixGenderedNames(conn, log);
     await restoreProduct(localPool, conn, log);
   });
 

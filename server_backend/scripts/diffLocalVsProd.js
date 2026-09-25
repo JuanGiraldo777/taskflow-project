@@ -67,7 +67,14 @@ async function main() {
 
     const byName = new Map();
     for (const p of products) {
-      byName.set(p.name.trim().toLowerCase(), {
+      const key = p.name.trim().toLowerCase();
+      // Dos productos con el mismo nombre se pisarían en el Map y uno
+      // quedaría fuera de la comparación sin que se note (pasó con
+      // "Light Blue D&G" Dama/Caballero, 2026-09-25) — se avisa.
+      if (byName.has(key)) {
+        console.log(`AVISO: nombre repetido "${p.name}" (${p.gender}) — la comparación de ese nombre no es confiable`);
+      }
+      byName.set(key, {
         ...p,
         imageCount: imageCount.get(p.id) || 0,
         variants: (variantsByProduct.get(p.id) || []).sort().join(","),

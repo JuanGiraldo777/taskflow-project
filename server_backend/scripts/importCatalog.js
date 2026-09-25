@@ -67,7 +67,11 @@ const BRAND_DISPLAY_NAMES = {
 // vuelva a traer — los mismos cambios se aplicaron a las bases con
 // fixCatalogData.js.
 const NAME_FIXES = {
+  // Preparados: en el Excel son "Light Blue D&C Dama" y "Light Blue D&G
+  // Caballero". Quitando el sufijo de sexo quedaban con el mismo nombre
+  // (ambiguo en el carrito/WhatsApp) — se usan los nombres reales.
   "Light Blue D&C": "Light Blue D&G",
+  "Light Blue D&G": "Light Blue Pour Homme D&G",
   "ISSEY MIYAKEE LEAU D ISSEY POUR FEMME 100ML EDT":
     "ISSEY MIYAKE L'EAU D'ISSEY POUR FEMME 100ML EDT",
   "ARABIYAT PRESTIEGE MAHD AL DAHAB 100ML EDP":
