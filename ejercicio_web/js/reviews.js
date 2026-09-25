@@ -382,7 +382,7 @@ function showValidationErrors(errors) {
 
       const errorDiv = document.createElement("div");
       errorDiv.className = "field-error";
-      errorDiv.style.color = "var(--accent)";
+      errorDiv.style.color = "var(--accent-text)";
       errorDiv.style.fontSize = "0.75rem";
       errorDiv.style.marginTop = "0.25rem";
       errorDiv.textContent = errors.name;
@@ -404,7 +404,7 @@ function showValidationErrors(errors) {
 
       const errorDiv = document.createElement("div");
       errorDiv.className = "field-error";
-      errorDiv.style.color = "var(--accent)";
+      errorDiv.style.color = "var(--accent-text)";
       errorDiv.style.fontSize = "0.75rem";
       errorDiv.style.marginTop = "0.25rem";
       errorDiv.textContent = errors.rating;
@@ -421,7 +421,7 @@ function showValidationErrors(errors) {
 
       const errorDiv = document.createElement("div");
       errorDiv.className = "field-error";
-      errorDiv.style.color = "var(--accent)";
+      errorDiv.style.color = "var(--accent-text)";
       errorDiv.style.fontSize = "0.75rem";
       errorDiv.style.marginTop = "0.25rem";
       errorDiv.textContent = errors.comment;

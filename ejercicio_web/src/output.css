@@ -1676,6 +1676,7 @@
   --bg: #0f0f0f;
   --text: #F2F2F2;
   --accent: #D4AF37;
+  --accent-text: #D4AF37;
   --card-bg: #1a1a1a;
   --badge-bg: #D4AF37;
 }
@@ -1683,6 +1684,7 @@ body.light-mode {
   --bg: #F7F5EF;
   --text: #4A4A4A;
   --accent: #D4AF37;
+  --accent-text: #80621A;
   --card-bg: #faf7f3;
 }
 body {
@@ -1945,6 +1947,30 @@ h1, h2, h3, h4, h5, h6 {
     left: 8px;
     padding: 3px 6px;
     font-size: 10px;
+  }
+}
+/* ── Dorado como TEXTO (2026-09-25) ─────────────────────────────────────
+   --accent (#D4AF37) sigue siendo el dorado de marca para fondos, bordes y
+   botones en los dos temas. Pero como color de TEXTO/ÍCONO sobre crema
+   daba 1.97:1 de contraste (mínimo recomendado 4.5:1): en modo claro los
+   precios casi no se leían. --accent-text vale lo mismo que --accent en
+   modo oscuro (nada cambia ahí) y un dorado más profundo (#80621A, 5.3:1)
+   en modo claro.
+   Va DENTRO de @layer utilities a propósito: fuera de la capa le ganaría
+   también a hover:text-black en los botones dorados que se rellenan al
+   pasar el mouse (clases text-(--accent) + hover:text-black). */
+@layer utilities {
+  .text-\(--accent\) {
+    color: var(--accent-text);
+  }
+  @media (hover: hover) {
+    .hover\:text-\(--accent\):hover {
+      color: var(--accent-text);
+    }
+  }
+  /* Subtítulo y precio tachado de las tarjetas: gris #999 = 2.67:1 en claro */
+  body.light-mode .text-\[\#999\] {
+    color: #6B6B6B;
   }
 }
 @property --tw-translate-x {

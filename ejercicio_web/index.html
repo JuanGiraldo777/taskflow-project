@@ -114,7 +114,7 @@
       .carousel-eyebrow span {
         font-size: 11px;
         letter-spacing: 3px;
-        color: var(--carousel-accent, var(--accent));
+        color: var(--carousel-accent-text, var(--accent-text));
       }
       .carousel-eyebrow .line {
         width: 32px;
@@ -136,7 +136,7 @@
         border-radius: 9999px;
         background: var(--card-bg);
         border: 1px solid var(--carousel-accent, var(--accent));
-        color: var(--carousel-accent, var(--accent));
+        color: var(--carousel-accent-text, var(--accent-text));
         cursor: pointer;
         opacity: 0.95;
         transition:
@@ -170,8 +170,15 @@
          total sumado con la sección anterior, es que Preparados tenga
          su propio padding igual que cualquier otra sección — por eso
          se volvió a quitar ese override, queda igual que Originales.) */
+      /* --carousel-accent-text: el cobre como TEXTO/ÍCONO. En modo claro el
+         #cd8b5c daba 2.64:1 sobre crema; #955B33 da 5.14:1 y mantiene el
+         tono cobre (ver --accent-text en output.css, mismo criterio). */
+      body.light-mode .section-preparados {
+        --carousel-accent-text: #955b33;
+      }
       .section-preparados {
         --carousel-accent: #cd8b5c;
+        --carousel-accent-text: #cd8b5c;
         --carousel-glow: rgba(205, 139, 92, 0.28);
         --carousel-glow-line: rgba(205, 139, 92, 0.4);
       }
@@ -270,7 +277,7 @@
         justify-content: center;
         background: var(--card-bg);
         border: 1px solid var(--accent);
-        color: var(--accent);
+        color: var(--accent-text);
         transition:
           transform 0.2s ease,
           background 0.2s ease,
@@ -317,7 +324,7 @@
       .social-card-header svg {
         width: 26px;
         height: 26px;
-        color: var(--accent);
+        color: var(--accent-text);
         flex-shrink: 0;
       }
       .social-card p {
@@ -417,7 +424,7 @@
         justify-content: center;
         background: var(--bg);
         border: 1px solid var(--accent);
-        color: var(--accent);
+        color: var(--accent-text);
         transition:
           transform 0.2s ease,
           background 0.2s ease,

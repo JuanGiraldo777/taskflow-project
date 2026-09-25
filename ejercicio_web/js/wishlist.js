@@ -94,9 +94,9 @@ function updateFavoriteIcon(productId) {
     if (svg) {
       // Tarjetas: ícono de corazón (catálogo, carruseles, relacionados)
       if (inWishlist) {
-        svg.style.fill = "var(--accent)";
-        svg.style.stroke = "var(--accent)";
-        svg.style.color = "var(--accent)";
+        svg.style.fill = "var(--accent-text)";
+        svg.style.stroke = "var(--accent-text)";
+        svg.style.color = "var(--accent-text)";
         button.classList.add("favorite-active");
       } else {
         svg.style.fill = "none";

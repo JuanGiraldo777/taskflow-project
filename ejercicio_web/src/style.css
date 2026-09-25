@@ -29,6 +29,7 @@
   --bg: #0f0f0f;
   --text: #F2F2F2;
   --accent: #D4AF37;
+  --accent-text: #D4AF37;
   --card-bg: #1a1a1a;
   --badge-bg: #D4AF37;
 }
@@ -37,6 +38,7 @@ body.light-mode {
   --bg: #F7F5EF;
   --text: #4A4A4A;
   --accent: #D4AF37;
+  --accent-text: #80621A;
   --card-bg: #faf7f3;
 }
 
@@ -64,11 +66,24 @@ h1, h2, h3, h4, h5, h6 {
   );
 }
 
+/* El header (.top-bar) usa este mismo degradado dorado en los dos temas —
+   solo lo que se transparenta debajo cambia (negro en oscuro, crema pálido
+   en claro). Sus íconos/texto usaban var(--bg) o text-white para verse
+   oscuros, pero --bg se invierte en modo claro (#F7F5EF, casi blanco) y
+   quedaban ilegibles contra el degradado ya pálido. Se fijan al valor que
+   ya se veía bien en modo oscuro (#0f0f0f), igual en ambos temas.
+   Encontrado en QA visual 2026-09-04. */
+.top-bar svg[class*="stroke-(--bg)"] {
+  stroke: #0f0f0f;
+}
+.top-bar input#search {
+  color: #0f0f0f;
+}
 /* Hamburger spans */
 .threebars span {
   height: 2px;
   width: 100%;
-  background: var(--bg);
+  background: #0f0f0f;
   transition: 0.3s ease;
 }
 
@@ -122,5 +137,216 @@ h1, h2, h3, h4, h5, h6 {
   #filter-panel {
     max-height: 80vh !important;
     overflow-y: auto !important;
+  }
+}
+
+/* ── Tarjetas de producto en táctil / mobile (2026-09-25) ────────────────
+   Todo esto va FUERA de @layer a propósito: las utilidades de Tailwind
+   viven en @layer utilities, y una regla sin capa les gana en la cascada
+   sin !important. Así se rediseña mobile sin tocar las clases que usa
+   desktop. Las clases .product-card-* las pone products.js
+   (buildProductCard), que arma TODAS las tarjetas del sitio: Destacados,
+   carruseles, catálogo y relacionados. */
+
+/* En pantallas táctiles no existe :hover, así que .add-to-cart (opacity:0
+   hasta el hover, ver arriba) quedaba invisible pero seguía recibiendo
+   toques encima del precio. En táctil se muestra siempre y va debajo del
+   contenido en vez de flotar encima (aplica también a tablets). */
+@media (hover: none) {
+  .product-card .add-to-cart {
+    position: static;
+    opacity: 1;
+    transform: none;
+    width: 100%;
+    margin-top: 16px;
+  }
+}
+
+/* Tablet + mobile (< 1024px, mismo corte que max-lg de Tailwind, donde
+   los grids ya pasan a 2 columnas): estructura de tarjeta ordenada como la
+   referencia (tienda tipo Brasty). Antes, en este rango la imagen quedaba
+   descentrada y el nombre iba centrado pero el precio a la izquierda.
+   Desktop (>= 1024px) no se toca: mantiene su diseño con botón al hover. */
+@media (max-width: 1023px) {
+  .product-card {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    text-align: center;
+  }
+  /* Imagen siempre cuadrada: todas las fotos ocupan el mismo espacio
+     aunque vengan en proporciones distintas. La imagen va en position:
+     absolute porque con una foto muy vertical, aspect-ratio solo no
+     alcanza — el alto intrínseco de la imagen estiraba el cuadrado. */
+  .product-card-media {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+  .product-card-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .product-card-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    margin-top: 10px;
+  }
+  /* Orden de la referencia: nombre → subtítulo (marca · tipo · sexo) →
+     precio. Nombre y subtítulo cortados a 2 líneas y reservando siempre
+     2 líneas cada uno: así TODAS las tarjetas miden lo mismo y el precio y
+     el botón quedan a la misma altura en cualquier fila. */
+  .product-card-name {
+    --name-size: 17px;
+    order: 1;
+    margin: 0;
+    font-size: var(--name-size);
+    line-height: 1.3;
+    min-height: calc(var(--name-size) * 1.3 * 2);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .product-card-meta {
+    --meta-size: 12px;
+    order: 2;
+    margin-top: 4px;
+    font-size: var(--meta-size);
+    line-height: 1.35;
+    min-height: calc(var(--meta-size) * 1.35 * 2);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .product-card-price {
+    order: 3;
+    margin-top: auto;
+    padding-top: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2px 6px;
+    font-size: 18px;
+  }
+  .product-card .add-to-cart {
+    position: static;
+    opacity: 1;
+    transform: none;
+    width: 100%;
+    min-height: 44px;
+    margin-top: 12px;
+    padding: 8px 6px;
+    font-size: 12px;
+    line-height: 1.2;
+    letter-spacing: 0.03em;
+  }
+  /* El corazón queda encima de la foto (casi siempre con fondo blanco):
+     sin este círculo, en modo oscuro era un ícono blanco sobre blanco.
+     40px de zona táctil. */
+  .product-card .add-to-favorites {
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    background: var(--card-bg);
+    background: color-mix(in srgb, var(--card-bg) 85%, transparent);
+    z-index: 1;
+  }
+  .product-card .add-to-favorites svg {
+    width: 22px;
+    height: 22px;
+  }
+  .product-card-badge {
+    top: 12px;
+    left: 12px;
+    z-index: 1;
+  }
+}
+
+/* Mobile (< 640px, mismo corte que max-sm de Tailwind): grid de 2
+   columnas como la referencia, con tarjetas compactas. */
+@media (max-width: 639px) {
+  #products-grid,
+  #related-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  /* "Cargando..." / "Sin resultados" usan col-span-4: en un grid de 2
+     columnas eso crearía columnas implícitas extra. */
+  #products-grid > .col-span-4,
+  #related-grid > .col-span-4 {
+    grid-column: 1 / -1;
+  }
+
+  .product-card {
+    padding: 10px;
+    border-radius: 10px;
+  }
+  .product-card-body {
+    margin-top: 8px;
+  }
+  .product-card-name {
+    --name-size: 14px;
+  }
+  .product-card-meta {
+    --meta-size: 11px;
+  }
+  .product-card-price {
+    padding-top: 8px;
+    font-size: 16px;
+  }
+  .product-card .add-to-cart {
+    margin-top: 10px;
+    font-size: 11px;
+  }
+  .product-card .add-to-favorites {
+    top: 6px;
+    right: 6px;
+  }
+  .product-card .add-to-favorites svg {
+    width: 20px;
+    height: 20px;
+  }
+  .product-card-badge {
+    top: 8px;
+    left: 8px;
+    padding: 3px 6px;
+    font-size: 10px;
+  }
+}
+/* ── Dorado como TEXTO (2026-09-25) ─────────────────────────────────────
+   --accent (#D4AF37) sigue siendo el dorado de marca para fondos, bordes y
+   botones en los dos temas. Pero como color de TEXTO/ÍCONO sobre crema
+   daba 1.97:1 de contraste (mínimo recomendado 4.5:1): en modo claro los
+   precios casi no se leían. --accent-text vale lo mismo que --accent en
+   modo oscuro (nada cambia ahí) y un dorado más profundo (#80621A, 5.3:1)
+   en modo claro.
+   Va DENTRO de @layer utilities a propósito: fuera de la capa le ganaría
+   también a hover:text-black en los botones dorados que se rellenan al
+   pasar el mouse (clases text-(--accent) + hover:text-black). */
+@layer utilities {
+  .text-\(--accent\) {
+    color: var(--accent-text);
+  }
+  @media (hover: hover) {
+    .hover\:text-\(--accent\):hover {
+      color: var(--accent-text);
+    }
+  }
+  /* Subtítulo y precio tachado de las tarjetas: gris #999 = 2.67:1 en claro */
+  body.light-mode .text-\[\#999\] {
+    color: #6B6B6B;
   }
 }
