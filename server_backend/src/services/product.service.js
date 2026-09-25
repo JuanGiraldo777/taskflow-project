@@ -94,7 +94,12 @@ const getAll = async ({
     newest: "p.created_at DESC",
     trending: `${TRENDING_EXPR} DESC, p.created_at DESC`,
   };
-  const orderClause = `ORDER BY ${sortOptions[sortBy] || "p.created_at DESC"}`;
+  // Primero los productos CON foto, en cualquier orden elegido (2026-09-26):
+  // 36 originales todavía no tienen imagen y mezclados con el resto el
+  // catálogo se veía a medio hacer. Dentro de cada grupo se respeta el
+  // orden pedido (precio, nombre, tendencia...). Cuando un producto recibe
+  // su foto, vuelve solo a su lugar — no hay que tocar nada acá.
+  const orderClause = `ORDER BY (pi.url IS NULL) ASC, ${sortOptions[sortBy] || "p.created_at DESC"}`;
 
   const pageNum = Number(parseInt(page) || 1);
   const limitNum = Number(parseInt(limit) || 10);
@@ -269,6 +274,7 @@ const getAllPresentations = async () => {
 
 // Productos relacionados
 // Prioriza misma marca (excluyendo el producto actual) y completa con categoría.
+// Dentro de cada grupo, primero los que tienen foto (antes no había orden).
 const getRelated = async (productId, brandId, categoryId) => {
   const [byBrand] = await pool.query(
     `SELECT
@@ -288,6 +294,7 @@ const getRelated = async (productId, brandId, categoryId) => {
     LEFT JOIN genders        g  ON p.gender_id   = g.id
     LEFT JOIN product_images pi ON pi.product_id = p.id AND pi.is_main = TRUE
     WHERE p.brand_id = ? AND p.id != ?
+    ORDER BY (pi.url IS NULL) ASC
     LIMIT 4`,
     [brandId, productId],
   );
@@ -318,6 +325,7 @@ const getRelated = async (productId, brandId, categoryId) => {
     LEFT JOIN genders        g  ON p.gender_id   = g.id
     LEFT JOIN product_images pi ON pi.product_id = p.id AND pi.is_main = TRUE
     WHERE p.category_id = ? AND p.id NOT IN (${placeholders})
+    ORDER BY (pi.url IS NULL) ASC
     LIMIT ?`,
     [categoryId, ...existingIds, needed],
   );
