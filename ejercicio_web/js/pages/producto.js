@@ -12,6 +12,7 @@ import { initUser } from "../user.js";
 import { initNav } from "../nav.js";
 import { initThemeToggle } from "../theme.js";
 import { getProductMetaParts } from "../productMeta.js";
+import { renderProductsInto } from "../products.js";
 
 const params = new URLSearchParams(window.location.search);
 const productId = params.get("id");
@@ -319,7 +320,7 @@ async function renderProductDetail() {
             product.description
               ? `
             <div class="border-t border-(--text) border-opacity-20 pt-6">
-              <h3 class="font-serif text-lg text-(--text) mb-3">Descripcion</h3>
+              <h3 class="font-serif text-lg text-(--text) mb-3">Descripción</h3>
               <p class="text-(--text) opacity-80 font-sans leading-relaxed">
                 ${product.description}
               </p>
@@ -350,10 +351,10 @@ async function renderProductDetail() {
                 isPreparado
                   ? !initialVariant || Number(initialVariant.stock) === 0
                     ? "SIN STOCK"
-                    : "ANADIR AL CARRITO"
+                    : "AÑADIR AL CARRITO"
                   : Number(product.stock) === 0
                     ? "SIN STOCK"
-                    : "ANADIR AL CARRITO"
+                    : "AÑADIR AL CARRITO"
               }
             </button>
             <button
@@ -363,7 +364,7 @@ async function renderProductDetail() {
               data-name="${product.name}"
               data-price="${product.price}"
             >
-              ♡ Anadir a favoritos
+              ♡ Añadir a favoritos
             </button>
           </div>
         </div>
@@ -427,7 +428,7 @@ async function renderProductDetail() {
           addBtn.dataset.variantId = btn.dataset.variantId;
           addBtn.dataset.price = btn.dataset.price;
           addBtn.disabled = false;
-          addBtn.textContent = "ANADIR AL CARRITO";
+          addBtn.textContent = "AÑADIR AL CARRITO";
         }
       });
     });
@@ -498,71 +499,16 @@ async function loadRelated(id) {
       return;
     }
 
-    // Renderizar directamente en related-grid sin rename
-    grid.innerHTML = '';
-
-    related.forEach((product) => {
-      const hasDiscount = product.discounted_price !== null;
-      const meta = getProductMetaParts(product);
-
-      const card = document.createElement("article");
-      card.className = "product-card relative bg-(--card-bg) p-8 rounded-xl overflow-hidden text-(--text)";
-      card.dataset.name  = product.name.toLowerCase();
-      card.dataset.brand = product.brand.toLowerCase();
-      card.dataset.price = product.price;
-
-      card.innerHTML = `
-        ${hasDiscount
-          ? '<span class="absolute top-5 left-5 bg-(--accent) text-black text-xs px-[10px] py-[6px] rounded">OFERTA</span>'
-          : ''}
-        <a href="producto.html?id=${product.id}" class="block product-link">
-          <img
-            src="${product.image || 'assets/imgs/placeholder.svg'}"
-            alt="${product.name}"
-            class="w-[90%] h-[280px] object-contain transition-transform duration-300"
-          />
-        </a>
-        <div class="mt-1">
-          <span class="text-xs text-[#999]">${meta.brand}${meta.rest ? ` · ${meta.rest}` : ""}</span>
-          <h3 class="font-serif text-lg my-2">${product.name}</h3>
-          <div class="flex gap-2 items-center">
-            ${hasDiscount
-              ? `<span class="line-through text-[#999]">$${Number(product.original_price).toLocaleString()}</span>
-                 <span class="text-xs">Desde</span>`
-              : ''}
-            <span class="text-(--accent) font-bold">$${Number(product.price).toLocaleString()}</span>
-          </div>
-        </div>
-        <button
-          class="add-to-cart font-serif absolute bottom-5 left-5 right-5 bg-(--bg) border border-(--text) text-(--text) py-[14px] cursor-pointer"
-          data-id="${product.id}"
-          data-name="${product.name}"
-          data-price="${product.price}"
-          data-type="${product.type || "original"}"
-        >
-          ${product.type === "preparado" ? "VER PRESENTACIONES" : "AÑADIR AL CARRITO"}
-        </button>
-        <button
-          class="add-to-favorites absolute top-5 right-5 bg-transparent border-none cursor-pointer"
-          data-id="${product.id}"
-          data-name="${product.name}"
-          data-price="${product.price}"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-            stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M11.48 3.499a5.373 5.373 0 0 0-7.61 0 5.373 5.373 0 0 0 0 7.61L12 19.24l8.13-8.13a5.373 5.373 0 0 0 0-7.61 5.373 5.373 0 0 0-7.61 0l-.02.02Z"/>
-          </svg>
-        </button>
-      `;
-
-      grid.appendChild(card);
-    });
+    // Misma tarjeta que el catálogo y el home (renderProductsInto de
+    // products.js) en vez de una copia propia del HTML: esa copia duplicada
+    // ya causó un bug (precios sin formatear, 2026-09-04) y además no
+    // recibía el rediseño mobile de 2 columnas. renderProductsInto ya
+    // dispara "products-rendered" para sincronizar los corazones.
+    renderProductsInto(related, "related-grid");
 
     // El click de "añadir al carrito"/"a favoritos" en estas tarjetas ya lo
     // maneja la delegación global de cart.js/wishlist.js (initCart/initWishlist,
     // llamados más abajo en DOMContentLoaded) — no hace falta conectarlos aquí.
-    window.dispatchEvent(new CustomEvent("products-rendered"));
   } catch (err) {
     section.classList.add("hidden");
     console.error("Error al cargar relacionados:", err);

@@ -83,7 +83,7 @@ function renderCartDrawer() {
     `;
     cartTotalElement.innerHTML = `
       <div class="text-center py-4 border-t border-gray-700">
-        <p class="text-(--text) text-sm">Total: <span class="text-(--accent) font-semibold">$0.00</span></p>
+        <p class="text-(--text) text-sm">Total: <span class="text-(--accent) font-semibold">$0</span></p>
       </div>
     `;
     return;

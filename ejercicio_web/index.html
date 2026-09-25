@@ -180,19 +180,43 @@
         --carousel-glow-line: rgba(212, 175, 55, 0.35);
       }
 
-      @media (max-width: 640px) {
+      /* Mobile (2026-09-25): mismo criterio que el grid de 2 columnas —
+         2 tarjetas completas + un pedazo de la tercera, para que se note
+         que se puede deslizar. Antes eran 200px fijos (1.8 tarjetas,
+         la segunda siempre cortada). 639px = mismo corte que max-sm de
+         Tailwind y el CSS de tarjetas en output.css. */
+      @media (max-width: 639px) {
+        .carousel-track {
+          gap: 12px;
+          -webkit-mask-image: linear-gradient(
+            to right,
+            transparent 0,
+            #000 10px,
+            #000 calc(100% - 10px),
+            transparent 100%
+          );
+          mask-image: linear-gradient(
+            to right,
+            transparent 0,
+            #000 10px,
+            #000 calc(100% - 10px),
+            transparent 100%
+          );
+        }
         .carousel-track > .product-card {
-          width: 200px;
+          width: calc((100% - 24px) / 2.2);
         }
+        /* Tarjetas más angostas que las del grid: el texto del botón a
+           11px partía "AÑADIR AL CARRITO" en 2 líneas. */
+        .carousel-track .product-card .add-to-cart {
+          font-size: 10px;
+          letter-spacing: 0;
+        }
+        /* En mobile las flechas tapaban el nombre/la foto de las
+           tarjetas. En táctil se desliza con el dedo, y la tercera
+           tarjeta asomando ya indica que hay más. */
         .carousel-arrow {
-          width: 36px;
-          height: 36px;
-        }
-        .carousel-arrow-left {
-          left: -6px;
-        }
-        .carousel-arrow-right {
-          right: -6px;
+          display: none;
         }
       }
 
@@ -581,7 +605,7 @@
             <a
               href="catalogo.html?category=arabe"
               class="no-underline text-(--text) font-serif text-[22px] tracking-wide"
-              >Arabe</a
+              >Árabe</a
             >
           </li>
           <li class="mb-7">

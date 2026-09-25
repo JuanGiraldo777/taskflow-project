@@ -58,20 +58,20 @@ function buildProductCard(product) {
   card.innerHTML = `
     ${
       hasDiscount
-        ? '<span class="absolute top-5 left-5 bg-(--accent) text-black text-xs px-[10px] py-[6px] rounded">OFERTA</span>'
+        ? '<span class="product-card-badge absolute top-5 left-5 bg-(--accent) text-black text-xs px-[10px] py-[6px] rounded">OFERTA</span>'
         : ""
     }
-    <a href="producto.html?id=${product.id}" class="block product-link">
+    <a href="producto.html?id=${product.id}" class="product-card-media block product-link">
       <img
         src="${product.image || "assets/imgs/placeholder.svg"}"
         alt="${product.name}"
-        class="w-[90%] h-[280px] object-contain transition-transform duration-300"
+        class="product-card-img w-[90%] h-[280px] object-contain transition-transform duration-300"
       />
     </a>
-    <div class="mt-1">
-      <span class="text-xs text-[#999]">${meta.brand || "SIN MARCA"}${meta.rest ? ` · ${meta.rest}` : ""}</span>
-      <h3 class="font-serif text-lg my-2">${product.name}</h3>
-      <div class="flex gap-2 items-center">
+    <div class="product-card-body mt-1">
+      <span class="product-card-meta text-xs text-[#999]">${meta.brand || "SIN MARCA"}${meta.rest ? ` · ${meta.rest}` : ""}</span>
+      <h3 class="product-card-name font-serif text-lg my-2">${product.name}</h3>
+      <div class="product-card-price flex gap-2 items-center">
         ${
           hasDiscount
             ? `<span class="line-through text-[#999]">$${Number(product.original_price || 0).toLocaleString()}</span>
