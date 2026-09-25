@@ -332,6 +332,11 @@
         font-size: 13px;
         margin-bottom: 18px;
       }
+      /* Modo claro: 0.65 daba ~3.4:1 sobre la tarjeta crema (ver el mismo
+         criterio para text-(--text) + opacity en output.css). */
+      body.light-mode .social-card p {
+        opacity: 0.8;
+      }
       .social-card-img-wrap {
         border-radius: 12px;
         overflow: hidden;

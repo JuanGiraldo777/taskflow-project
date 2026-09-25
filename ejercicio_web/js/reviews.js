@@ -103,7 +103,7 @@ function renderStoreReviewsList(reviews, pagination) {
             <div class="text-2xl text-(--accent)">
               ${"★".repeat(Math.round(averageRating))}${"☆".repeat(5 - Math.round(averageRating))}
             </div>
-            <div class="text-sm opacity-70">
+            <div class="text-(--text) text-sm opacity-70">
               Basado en ${pagination.total} reseña${pagination.total !== 1 ? "s" : ""}
             </div>
           </div>`
@@ -667,7 +667,7 @@ function renderReviewsList(reviews) {
                 <div class="text-2xl text-(--accent)">
                   ${generateStars(Math.round(averageRating))}
                 </div>
-                <div class="text-sm opacity-70">
+                <div class="text-(--text) text-sm opacity-70">
                   Basado en ${reviews.length} reseña${reviews.length !== 1 ? "s" : ""}
                 </div>
               </div>`

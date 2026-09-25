@@ -137,7 +137,7 @@ function renderWishlistPanel() {
           </svg>
         </div>
         <p class="text-(--text) text-sm font-sans">Tu lista de favoritos está vacía</p>
-        <p class="text-gray-500 text-xs mt-1">Añade productos para empezar</p>
+        <p class="text-(--text) opacity-80 text-xs mt-1">Añade productos para empezar</p>
       </div>
     `;
     return;

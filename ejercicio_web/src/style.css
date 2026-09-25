@@ -360,4 +360,17 @@ body.light-mode .product-card-img {
   body.light-mode .text-\[\#999\] {
     color: #6B6B6B;
   }
+
+  /* Texto secundario atenuado (text-(--text) + opacity-50/60/70, ~60 usos):
+     en modo claro, #4A4A4A al 60% sobre crema daba ~3:1. Con 0.8 llega a
+     ~4.7:1 y sigue viéndose más suave que el texto normal. Solo claro (en
+     oscuro, casi-blanco sobre negro aguanta la opacidad). :where() deja la
+     especificidad igual a la de .opacity-60, así hover:opacity-100 sigue
+     ganando al pasar el mouse. No toca opacity-30/40: separadores
+     decorativos y estados deshabilitados/agotados, que deben verse así. */
+  :where(body.light-mode .text-\(--text\)).opacity-50,
+  :where(body.light-mode .text-\(--text\)).opacity-60,
+  :where(body.light-mode .text-\(--text\)).opacity-70 {
+    opacity: 0.8;
+  }
 }
