@@ -212,12 +212,22 @@ if (loadMoreBtn) {
   });
 
   loadMoreBtn.addEventListener("click", async () => {
+    const pageBefore = currentFilters.page || 1;
     loadMoreBtn.disabled = true;
     loadMoreBtn.textContent = "Cargando...";
-    await fetchProducts(
-      { page: (currentFilters.page || 1) + 1 },
+    const { pagination } = await fetchProducts(
+      { page: pageBefore + 1 },
       { append: true },
     );
+    // Si la carga falla (red, servidor), fetchProducts no dispara el evento
+    // que reactiva el botón: quedaba trabado en "Cargando..." para siempre.
+    // Además currentFilters.page ya había avanzado, así que reintentar se
+    // saltaba una página entera — se vuelve a la página anterior.
+    if (!pagination) {
+      currentFilters.page = pageBefore;
+      loadMoreBtn.disabled = false;
+      loadMoreBtn.textContent = "Reintentar";
+    }
   });
 }
 

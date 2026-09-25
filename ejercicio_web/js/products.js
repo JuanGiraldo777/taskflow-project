@@ -5,6 +5,7 @@
 import { productsApi } from "./api/client.js";
 import { trackProductView } from "./user.js";
 import { getProductMetaParts } from "./productMeta.js";
+import { cardImageFor } from "./cardImages.js";
 
 export const currentFilters = {
   search: "",
@@ -47,6 +48,8 @@ function showErrorState(message, gridId = "products-grid") {
 function buildProductCard(product) {
   const hasDiscount = product.discounted_price !== null;
   const meta = getProductMetaParts(product);
+  // Recorte sin fondo SOLO para la tarjeta (el detalle usa la foto original).
+  const cardImage = cardImageFor(product.image) || product.image || "assets/imgs/placeholder.svg";
 
   const card = document.createElement("article");
   card.className =
@@ -63,7 +66,7 @@ function buildProductCard(product) {
     }
     <a href="producto.html?id=${product.id}" class="product-card-media block product-link">
       <img
-        src="${product.image || "assets/imgs/placeholder.svg"}"
+        src="${cardImage}"
         alt="${product.name}"
         class="product-card-img w-[90%] h-[280px] object-contain transition-transform duration-300"
       />
