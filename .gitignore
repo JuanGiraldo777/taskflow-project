@@ -9,8 +9,10 @@ node_modules/
 .env.local
 .env.production
 
-# Tailwind - archivo generado automáticamente, no necesita subirse
-src/output.css
+# OJO: ejercicio_web/src/output.css SÍ se sube a propósito. Vercel no
+# compila nada (buildCommand vacío en vercel.json): sirve ese archivo tal
+# cual. Si se ignora, producción se queda sin estilos. Se regenera con
+# `npm run build` desde ejercicio_web/src/style.css.
 
 # Archivos de sistema operativo
 .DS_Store
