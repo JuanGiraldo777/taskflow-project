@@ -21,8 +21,8 @@ Thumbs.db
 npm-debug.log*
 
 # Configuración de VSCode
-.vscode
-
+.vscode/
+# Configuración de Claude
 .claude
-
+# Configuración de Playwright
 .playwright
