@@ -284,23 +284,26 @@ function renderProductRow(product) {
       : `$${Number(product.price || 0).toLocaleString()}`;
   const stockText = product.type === "preparado" ? "—" : product.stock;
 
+  // data-label + clases admin-cell-*: en celular (admin.html, < 640px)
+  // cada fila se muestra como tarjeta con etiquetas, en vez de una tabla
+  // que obligaba a deslizar para llegar a Editar/Eliminar.
   tr.innerHTML = `
-    <td class="py-3 px-3">
+    <td class="admin-cell-name py-3 px-3">
       <div class="font-serif">${product.name}</div>
       <div class="text-xs opacity-60">${product.category || ""} · ${product.gender || ""}</div>
     </td>
-    <td class="py-3 px-3">${product.brand || ""}</td>
-    <td class="py-3 px-3">${product.type === "preparado" ? "Preparado" : "Original"}</td>
-    <td class="py-3 px-3">${priceText}</td>
-    <td class="py-3 px-3">${stockText}</td>
-    <td class="py-3 px-3 text-right" style="white-space: nowrap">
+    <td class="py-3 px-3" data-label="Marca">${product.brand || ""}</td>
+    <td class="py-3 px-3" data-label="Tipo">${product.type === "preparado" ? "Preparado" : "Original"}</td>
+    <td class="py-3 px-3" data-label="Precio">${priceText}</td>
+    <td class="py-3 px-3" data-label="Stock">${stockText}</td>
+    <td class="admin-cell-actions py-3 px-3 text-right" style="white-space: nowrap">
       <button
         class="admin-edit-btn text-(--accent) bg-transparent border-none cursor-pointer font-sans text-sm hover:opacity-90"
         data-id="${product.id}"
       >
         Editar
       </button>
-      <span class="opacity-30" style="margin: 0 8px">/</span>
+      <span class="admin-actions-sep opacity-30" style="margin: 0 8px">/</span>
       <button
         class="admin-delete-btn bg-transparent border-none cursor-pointer font-sans text-sm hover:opacity-90"
         style="color: var(--color-red-500)"

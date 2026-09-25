@@ -153,6 +153,65 @@
           transition: none;
         }
       }
+      /* Tabla de productos en celular (2026-09-26): cada fila pasa a ser una
+         tarjeta. Antes la tabla medía 632px y había que deslizarla para
+         llegar a Editar/Eliminar. Las etiquetas salen de data-label
+         (admin.js, renderProductRow). En escritorio la tabla no cambia. */
+      @media (max-width: 639px) {
+        .admin-table thead {
+          position: absolute;
+          width: 1px;
+          height: 1px;
+          overflow: hidden;
+          clip: rect(0 0 0 0);
+          white-space: nowrap;
+        }
+        .admin-table,
+        .admin-table tbody {
+          display: block;
+          width: 100%;
+        }
+        .admin-table tr {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 10px 16px;
+          padding: 16px 0;
+        }
+        .admin-table td {
+          display: block;
+          padding: 0;
+        }
+        .admin-table td[colspan] {
+          grid-column: 1 / -1;
+        }
+        .admin-table .admin-cell-name {
+          grid-column: 1 / -1;
+        }
+        .admin-table td[data-label]::before {
+          content: attr(data-label);
+          display: block;
+          font-size: 11px;
+          letter-spacing: 0.06em;
+          text-transform: uppercase;
+          opacity: 0.75;
+          margin-bottom: 2px;
+        }
+        .admin-table .admin-cell-actions {
+          grid-column: 1 / -1;
+          display: flex;
+          gap: 10px;
+          text-align: left;
+        }
+        .admin-table .admin-actions-sep {
+          display: none;
+        }
+        .admin-table .admin-cell-actions button {
+          flex: 1;
+          min-height: 44px;
+          border: 1px solid currentColor !important;
+          border-radius: 6px;
+        }
+      }
     </style>
   </head>
 
@@ -271,7 +330,7 @@
         ></div>
 
         <div class="overflow-x-auto">
-          <table class="w-full text-left font-sans text-sm text-(--text)">
+          <table class="admin-table w-full text-left font-sans text-sm text-(--text)">
             <thead>
               <tr class="border-b border-gray-700 opacity-70">
                 <th class="py-3 px-3 font-semibold">Producto</th>
