@@ -56,7 +56,25 @@ const BRAND_DISPLAY_NAMES = {
   JPG: "Jean Paul Gaultier",
   "D&G": "Dolce & Gabbana",
   MFK: "Maison Francis Kurkdjian",
+  // Errores de tipeo en la columna marca del Excel (revisión 2026-09-25):
+  // "ISSEY MIYAKEE" creaba una segunda marca aparte de "Issey Miyake".
+  "ISSEY MIYAKEE": "Issey Miyake",
+  "ARABIYAT PRESTIEGE": "Arabiyat Prestige",
 };
+
+// Errores de tipeo en los NOMBRES de producto del Excel (revisión
+// 2026-09-25). Se corrigen al importar para que una reimportación no los
+// vuelva a traer — los mismos cambios se aplicaron a las bases con
+// fixCatalogData.js.
+const NAME_FIXES = {
+  "Light Blue D&C": "Light Blue D&G",
+  "ISSEY MIYAKEE LEAU D ISSEY POUR FEMME 100ML EDT":
+    "ISSEY MIYAKE L'EAU D'ISSEY POUR FEMME 100ML EDT",
+  "ARABIYAT PRESTIEGE MAHD AL DAHAB 100ML EDP":
+    "ARABIYAT PRESTIGE MAHD AL DAHAB 100ML EDP",
+  "ARABIYAT PRESTIEGE UHUD 100ML EDP": "ARABIYAT PRESTIGE UHUD 100ML EDP",
+};
+const fixName = (name) => NAME_FIXES[name] || name;
 
 const brandIdCache = new Map();
 async function getOrCreateBrandId(rawName) {
@@ -148,7 +166,7 @@ async function importOriginales() {
     if (categoria) lastCategory = categoria.toString().trim().toUpperCase();
     if (!nombre) continue;
 
-    const nombreTrim = nombre.toString().trim();
+    const nombreTrim = fixName(nombre.toString().trim());
 
     try {
       const categorySlug = CATEGORY_SLUG_BY_LABEL[lastCategory];
@@ -313,7 +331,7 @@ async function importPreparados() {
       if (!COMMIT) {
         await getOrCreateBrandId(brandName);
         console.log(
-          `  [dry-run] preparado | ${baseName} | sexo=${genderSlug} marca=${brandName} imgs=${images.length}`,
+          `  [dry-run] preparado | ${fixName(baseName)} | sexo=${genderSlug} marca=${brandName} imgs=${images.length}`,
         );
         created += 1;
         continue;
@@ -340,14 +358,14 @@ async function importPreparados() {
         categoryId,
         brandId,
         genderId,
-        name: baseName,
+        name: fixName(baseName),
         description: descripcion ? descripcion.toString().trim() : "",
         imageUrls: images,
         variants,
       });
 
       created += 1;
-      console.log(`  OK  preparado | ${baseName}`);
+      console.log(`  OK  preparado | ${fixName(baseName)}`);
     } catch (err) {
       failed += 1;
       console.error(`  ERROR preparado | ${nombreTrim}: ${err.message}`);
