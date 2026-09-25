@@ -326,6 +326,17 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 10px;
   }
 }
+/* ── Fotos del grid sin recuadro blanco (2026-09-26) ───────────────────
+   En modo claro, mix-blend-mode: multiply funde el fondo blanco de la foto
+   con el color de la tarjeta (blanco x crema = crema): el perfume queda
+   flotando. Solo en las tarjetas (.product-card-img, la pone products.js):
+   la página de detalle muestra las fotos tal cual. Solo en modo claro: en
+   oscuro, multiply oscurecería la foto entera. Las fotos ambientadas casi
+   no cambian (multiplicar por un crema casi blanco apenas las toca). */
+body.light-mode .product-card-img {
+  mix-blend-mode: multiply;
+}
+
 /* ── Dorado como TEXTO (2026-09-25) ─────────────────────────────────────
    --accent (#D4AF37) sigue siendo el dorado de marca para fondos, bordes y
    botones en los dos temas. Pero como color de TEXTO/ÍCONO sobre crema
