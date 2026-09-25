@@ -177,6 +177,23 @@ async function main() {
   const localPool = makePool(".env.local", false);
   const prodPool = makePool(".env.production", true);
 
+  // Antes de tocar nada: las DOS bases tienen que responder. Si falta la
+  // local no se puede ni mantener la paridad ni restaurar el producto.
+  for (const [label, pool, hint] of [
+    ["LOCAL", localPool, "MySQL local no está corriendo. En Windows: servicio MySQL267 (services.msc -> Iniciar, o `net start MySQL267` en una terminal como administrador)."],
+    ["PRODUCCIÓN", prodPool, "No se pudo conectar a Aiven — revisa la conexión a internet y .env.production."],
+  ]) {
+    try {
+      await pool.query("SELECT 1");
+    } catch (err) {
+      console.error(`No se pudo conectar a la base ${label} (${err.code || err.message}). ${hint}\nNo se modificó nada.`);
+      process.exitCode = 1;
+      await localPool.end().catch(() => {});
+      await prodPool.end().catch(() => {});
+      return;
+    }
+  }
+
   console.log(
     COMMIT
       ? "Modo COMMIT — se escribe en local y en producción."
