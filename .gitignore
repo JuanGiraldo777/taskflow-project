@@ -28,3 +28,10 @@ npm-debug.log*
 .claude
 # Configuración de Playwright
 .playwright
+
+# Herramienta de recortes (tools/card-cutouts): entorno, modelo de ~214 MB
+# y archivos de trabajo se regeneran solos — solo se versionan el script,
+# el README y decisions.json.
+tools/card-cutouts/.venv/
+tools/card-cutouts/.cache/
+tools/card-cutouts/work/

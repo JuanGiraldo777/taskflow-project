@@ -1,0 +1,199 @@
+{
+  "_info": "Decisiones de revisión de recortes (ver README). approved: url -> {name, variant: main|full}. rejected: url -> {name, reason}: la tarjeta usa la foto original. Clave = URL exacta de la foto principal en Cloudinary.",
+  "approved": {
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1787955281/afnan-9-pm-caballero.png": {
+      "name": "9 PM Afnan",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1786399321/images_2.jpg": {
+      "name": "ARABIYAT PRESTIGE LEMON SORBET 100ML EDP",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1786985198/ARABIYAT-PRESTIGE-MAHD-AL-DAHAB.jpg": {
+      "name": "ARABIYAT PRESTIGE MAHD AL DAHAB 100ML EDP",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1786399513/IMAGEN_1.jpg": {
+      "name": "ARABIYAT PRESTIGE MARASI FOR HER 100ML EDP",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1786474478/him.jpg": {
+      "name": "ARABIYAT PRESTIGE MARASI FOR HIM 100ML EDP",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1786984966/ARABIYAT_PRESTIGE_UHUD.jpg": {
+      "name": "ARABIYAT PRESTIGE UHUD 100ML EDP",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1786984981/ARMAF_ODYSSEY_MONTAGNE3.jpg": {
+      "name": "ARMAF ODYSSEY MONTIAGNE 100ML EDP",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1787957075/Badee-oud-amethyste.png": {
+      "name": "Badee al Oud Amethyste Lattafa",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1787957081/badee-oud-sublime.png": {
+      "name": "Badee al Oud Sublime Lattafa",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1787875085/can-can-paris1.png": {
+      "name": "Can Can Paris Hilton",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1787875098/coconut-passion1.png": {
+      "name": "Coconut Passion VS",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1787955295/creed-silver.png": {
+      "name": "Creed Silver Mountain Water",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1786474651/red1.jpg": {
+      "name": "DUMONT NITRO RED 100ML EDP",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1786474693/intensely1.jpg": {
+      "name": "DUMONT NITRO RED INTENSELY 100ML EXTRAIT DE PARFUM",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1786474742/53_1.jpg": {
+      "name": "EMPER STALLION 53 100ML EDP",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1787955300/hugo-boss.png": {
+      "name": "Hugo Boos Bottled",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1786985642/JO_MILANO_GAME_OF_SPADES_ALL_IN%C3%ADtulo3.jpg": {
+      "name": "JO MILANO GAME OF SPADES ALL IN 100ML PARFUM",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1786985617/JO_MILANO_GAME_OF_SPADES_BLACK_SAPPHIRE3.jpg": {
+      "name": "JO MILANO GAME OF SPADES BLACKSAPPHIRE 90ML PARFUM",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1786398852/arabia-lattafa-asad-edp-922614_large.webp": {
+      "name": "LATTAFA ASAD 100ML EDP",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1786985201/BADEE_AL_OUD_AMETHYSTE_LATAFFA4.png": {
+      "name": "LATTAFA BADEE AL OUD AMETHYST 100ML EDP",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1786984990/LATTAFASUBLIMEEDP2.png": {
+      "name": "LATTAFA BADEE AL OUD SUBLIME 100ML EDP",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1786474913/emeer1.jpg": {
+      "name": "LATTAFA EMEER 100ML EDP",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1786399914/LAT_1.jpg": {
+      "name": "LATTAFA ETERNAL VANILLE 100ML EDP",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1786474966/confession1.jpg": {
+      "name": "LATTAFA HIS CONFESSION 100ML EDP",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1786399211/REF-GF1369-MAYAR-LATTAFA-PARA-MUJER-IMAGEN-4.jpg": {
+      "name": "LATTAFA MAYAR 100ML EDP",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1786475006/rave1.jpg": {
+      "name": "LATTAFA RAVE NOW BLACK 100ML EDP",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1786472333/im.jpg": {
+      "name": "LATTAFA RAVE NOW WOMAN 100MML EDP",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1786399217/Perfume_Yara_Lattafa_EDP_ENVIOAC.png": {
+      "name": "LATTAFA YARA 100ML EDP",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1786472384/ims.jpg": {
+      "name": "LATTAFA YARA CANDY 100ML EDP",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1786399214/lattafa-yara-elixir-100ml-edp-for-women-5b1ddc4f115e9175b217677264060132-480-0.webp": {
+      "name": "LATTAFA YARA ELIXIR 100ML EDP",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1786473304/tous_1.jpg": {
+      "name": "LATTAFA YARA TOUS 100ML EDP",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1787955315/light-blue-caballero.png": {
+      "name": "Light Blue Pour Homme D&G",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1787957772/mandarine-sky.png": {
+      "name": "Mandarine Sky Odyssey",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1786985041/ORIENTICA_LUXURY_COLLECTION_OUD_SAFFRON.jpg": {
+      "name": "ORIENTICA LUXURY COLLECTION OUD SAFFRON 80ML EDP",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1787875035/odyssey-candee1.png": {
+      "name": "Odyssey Candee",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1786475141/atlantis1.jpg": {
+      "name": "RASASI HAWAS ATLANTIS 100ML EDP",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1786475209/exotic1.jpg": {
+      "name": "RASASI HAWAS EXOTIC 100ML EDP",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1786475253/ice.jpg": {
+      "name": "RASASI HAWAS ICE 100ML EDP",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1787957143/santal-33_1.png": {
+      "name": "Santal 33 Le Labo",
+      "variant": "main"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1787955331/versace-eros.png": {
+      "name": "Versace Eros",
+      "variant": "main"
+    }
+  },
+  "rejected": {
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1786400088/LATT_1.jpg": {
+      "name": "LATTAFA FAKHAR WOMAN 100ML EDP",
+      "reason": "rama de flores grande y una tapa flotando"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1786399192/9711bf93706fed17544a14006c29c6a6_960x.webp": {
+      "name": "LATTAFA HAYA 100ML EDP",
+      "reason": "línea suelta del diseño de la caja"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1786399211/D_NQ_NP_917658-CBT82510336358_022025-O.webp": {
+      "name": "LATTAFA VICTORIA 100ML EDP",
+      "reason": "caja con cielo impreso: bordes irregulares"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1786398875/51v-hbrhVHL._AC_UF1000_1000_QL80.png": {
+      "name": "ARMAF CLUB DE NUIT INTENSE 105ML EDT",
+      "reason": "la caja se perdió (la versión completa dejó manchas negras); foto de fondo blanco, el blend de CSS la muestra entera"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1786985186/amber-oud-gold-edition.png": {
+      "name": "AL HARAMAIN AMBER OUD GOLD EDITION 60ML",
+      "reason": "un pedazo de cinta dorada quedó flotando"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1787875073/bon-bon1.png": {
+      "name": "Bon Bon Armaf",
+      "reason": "se perdía la caja; foto de fondo blanco, el blend de CSS la muestra entera"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1787875091/ariana-grande1.png": {
+      "name": "Cloud Ariana Grande",
+      "reason": "se perdía la caja; foto de fondo blanco, el blend de CSS la muestra entera"
+    },
+    "https://res.cloudinary.com/fknoxpjk/image/upload/v1787957117/khamrah-lattafa.png": {
+      "name": "Khamrah Lattafa",
+      "reason": "la caja quedó agujereada"
+    }
+  }
+}
