@@ -36,9 +36,10 @@
 
     <!--
       Carrusel de Originales/Preparados: CSS a mano, no clases de Tailwind.
-      output.css está precompilado y estático (sin build tool en el repo) —
-      cualquier clase nueva de Tailwind que no se haya usado antes en el
-      sitio no genera regla y no hace nada. Esto sí se ve reflejado siempre.
+      Se escribió cuando output.css no se podía recompilar (una clase nueva
+      no generaba regla y no hacía nada). Desde 2026-10-01 `npm run build`
+      lo regenera desde src/style.css, así que las clases nuevas ya
+      funcionan; este bloque sigue siendo válido tal cual.
     -->
     <style>
       .carousel-wrapper {

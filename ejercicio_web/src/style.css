@@ -1,9 +1,20 @@
 /**
  * @file ejercicio_web/src/style.css
  * @description Estilos base y variables visuales de la aplicación frontend.
+ *
+ * ESTE es el archivo que se edita. src/output.css es GENERADO: no se toca a
+ * mano. Después de cambiar este archivo o de usar clases de Tailwind nuevas
+ * en el HTML/JS, desde la raíz del repo:
+ *   npm run build   → regenera output.css una vez
+ *   npm run watch   → lo regenera solo cada vez que guardas (mientras trabajas)
+ * y se commitean los dos archivos: Vercel no compila, sirve el output.css
+ * del repo tal cual.
  */
-/* 1. Importa Tailwind v4 (reemplaza los 3 @tailwind de v3) */
-@import "tailwindcss";
+/* 1. Importa Tailwind v4 (reemplaza los 3 @tailwind de v3).
+   source(none): Tailwind solo busca clases en los @source de abajo (el
+   frontend), no en todo el repo — así el backend, tools/ o un README no
+   pueden meter CSS en el sitio sin que nadie lo note. */
+@import "tailwindcss" source(none);
 
 @source "../**/*.html";      /* ejercicio_web/*.html  → index.html, producto.html, etc */
 @source "../**/*.js";        /* ejercicio_web/*.js    → app.js */
