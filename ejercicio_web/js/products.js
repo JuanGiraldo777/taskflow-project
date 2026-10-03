@@ -8,6 +8,7 @@ import { getProductMetaParts } from "./productMeta.js";
 import { cardImageFor } from "./cardImages.js";
 import { escapeHtml } from "./escape.js";
 import { notFoundHtml } from "./notFound.js";
+import { optimizedImage, IMAGE_WIDTHS } from "./imageUrl.js";
 
 export const currentFilters = {
   search: "",
@@ -59,11 +60,18 @@ function showNoResults(gridId = "products-grid") {
 // Arma una tarjeta de producto — usado tanto por renderProductsInto
 // (reemplaza el grid) como por appendProductsInto ("Cargar más", suma al
 // final sin borrar lo que ya estaba).
-function buildProductCard(product) {
+// eager: las primeras tarjetas de un grid se piden enseguida (pueden estar
+// a la vista al cargar); el resto espera a que el usuario se acerque.
+function buildProductCard(product, { eager = false } = {}) {
   const hasDiscount = product.discounted_price !== null;
   const meta = getProductMetaParts(product);
   // Recorte sin fondo SOLO para la tarjeta (el detalle usa la foto original).
-  const cardImage = cardImageFor(product.image) || product.image || "assets/imgs/placeholder.svg";
+  // Primero el recorte (su mapa usa la URL original), después la versión
+  // optimizada de Cloudinary para las que no tienen recorte.
+  const cardImage =
+    cardImageFor(product.image) ||
+    optimizedImage(product.image, IMAGE_WIDTHS.card) ||
+    "assets/imgs/placeholder.svg";
 
   const card = document.createElement("article");
   card.className =
@@ -82,6 +90,8 @@ function buildProductCard(product) {
       <img
         src="${escapeHtml(cardImage)}"
         alt="${escapeHtml(product.name)}"
+        loading="${eager ? "eager" : "lazy"}"
+        decoding="async"
         class="product-card-img w-[90%] h-[280px] object-contain transition-transform duration-300"
       />
     </a>
@@ -148,7 +158,9 @@ export function renderProductsInto(products, gridId) {
     return;
   }
 
-  products.forEach((product) => grid.appendChild(buildProductCard(product)));
+  products.forEach((product, i) =>
+    grid.appendChild(buildProductCard(product, { eager: i < 4 })),
+  );
 
   window.dispatchEvent(new CustomEvent("products-rendered"));
 }

@@ -20,6 +20,10 @@
     <!-- Optimización fuentes -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Conexión anticipada a la API (Render) y a las fotos (Cloudinary):
+         el navegador la abre mientras todavía lee el HTML. -->
+    <link rel="preconnect" href="https://maison-backend-7pq8.onrender.com" crossorigin />
+    <link rel="preconnect" href="https://res.cloudinary.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&family=Playfair+Display:wght@400;600;700&display=swap"
       rel="stylesheet"
@@ -696,7 +700,7 @@
         <div class="justify-self-center">
           <img
             id="main-logo"
-            src="assets/imgs/LOGO_PRINCIPAL_NEGRO.png"
+            src="assets/imgs/LOGO_PRINCIPAL_NEGRO.webp"
             alt="Maison Eternelle Perfumería"
             class="h-[200px] max-sm:h-[60px] md:h-[140px] block"
           />
@@ -914,21 +918,32 @@
         <div class="slider-track">
           <div class="slide w-full h-full shrink-0">
             <img
-              src="assets/imgs/banner_secundario.png"
+              src="assets/imgs/banner_secundario.webp"
+              width="1920"
+              height="900"
+              fetchpriority="high"
               alt="Marca el arte de dejar huella: fragancias exclusivas para quienes convierten su presencia en una declaración."
               class="w-full h-full object-cover object-top"
             />
           </div>
           <div class="slide w-full h-full shrink-0">
             <img
-              src="assets/imgs/banner_perfumes.png"
+              src="assets/imgs/banner_perfumes.webp"
+              width="1920"
+              height="900"
+              fetchpriority="low"
+              decoding="async"
               alt="Más de 300 referencias diferentes: calidad y distinción olfativa a tu gusto."
               class="w-full h-full object-cover object-top"
             />
           </div>
           <div class="slide w-full h-full shrink-0">
             <img
-              src="assets/imgs/banner_oz_boton.png"
+              src="assets/imgs/banner_oz_boton.webp"
+              width="1920"
+              height="900"
+              fetchpriority="low"
+              decoding="async"
               alt="Magnitud en cada oz: preparados disponibles en tres presentaciones."
               class="w-full h-full object-cover object-top"
             />
@@ -1095,7 +1110,8 @@
           <!-- Eslogan + logo -->
           <div class="mb-16 max-sm:mb-10">
             <img
-              src="assets/imgs/LOGO_PRINCIPAL_DORADO.png"
+              src="assets/imgs/LOGO_PRINCIPAL_DORADO.webp"
+          loading="lazy"
               alt="Maison Eternelle Perfumería"
               class="h-20 max-sm:h-16 mx-auto mb-6 max-sm:mb-4"
             />
@@ -1188,7 +1204,11 @@
               </p>
               <div class="social-card-img-wrap">
                 <img
-                  src="assets/screens_redes/instagram.png"
+                  src="assets/screens_redes/instagram.webp"
+                  width="597"
+                  height="620"
+                  loading="lazy"
+                  decoding="async"
                   alt="Perfil de Instagram @maisoneternelle_co"
                 />
               </div>
@@ -1217,7 +1237,11 @@
               </p>
               <div class="social-card-img-wrap">
                 <img
-                  src="assets/screens_redes/tiktok.png"
+                  src="assets/screens_redes/tiktok.webp"
+                  width="882"
+                  height="850"
+                  loading="lazy"
+                  decoding="async"
                   alt="Perfil de TikTok @maisoneternelle_co"
                 />
               </div>
@@ -1255,7 +1279,8 @@
     >
       <div class="max-w-[1400px] mx-auto">
         <img
-          src="assets/imgs/LOGO_PRINCIPAL_DORADO.png"
+          src="assets/imgs/LOGO_PRINCIPAL_DORADO.webp"
+          loading="lazy"
           alt="Maison Eternelle Perfumería"
           class="h-12 mx-auto mb-4"
         />

@@ -16,6 +16,7 @@ import { renderProductsInto } from "../products.js";
 import { escapeHtml } from "../escape.js";
 import { notFoundHtml } from "../notFound.js";
 import { setPageMeta, productDescription } from "../seo.js";
+import { optimizedImage, IMAGE_WIDTHS } from "../imageUrl.js";
 
 const params = new URLSearchParams(window.location.search);
 const productId = params.get("id");
@@ -95,17 +96,17 @@ function setMainImage(index, { fade = true } = {}) {
     if (fade) {
       mainImg.style.opacity = "0";
       window.setTimeout(() => {
-        mainImg.src = image.url;
+        mainImg.src = optimizedImage(image.url, IMAGE_WIDTHS.detail);
         mainImg.style.opacity = "1";
       }, 150);
     } else {
-      mainImg.src = image.url;
+      mainImg.src = optimizedImage(image.url, IMAGE_WIDTHS.detail);
     }
   }
 
   const lightboxImg = document.getElementById("lightbox-image");
   if (lightboxImg) {
-    lightboxImg.src = image.url;
+    lightboxImg.src = optimizedImage(image.url, IMAGE_WIDTHS.zoom);
     lightboxImg.alt = `${galleryState.productName} — vista ${index + 1}`;
   }
 
@@ -266,7 +267,8 @@ async function renderProductDetail() {
           >
             <img
               id="main-product-image"
-              src="${escapeHtml(mainImage)}"
+              src="${escapeHtml(optimizedImage(mainImage, IMAGE_WIDTHS.detail))}"
+              fetchpriority="high"
               alt="${escapeHtml(product.name)}"
               class="max-h-100 object-contain transition-all duration-300"
             />
@@ -282,7 +284,7 @@ async function renderProductDetail() {
                   class="thumbnail-btn shrink-0 w-20 h-20 bg-(--card-bg) rounded-lg overflow-hidden border-2 ${i === 0 ? "border-(--accent)" : "border-transparent"} hover:border-(--accent) transition-colors"
                   data-index="${i}"
                 >
-                  <img src="${escapeHtml(img.url)}" alt="${escapeHtml(product.name)} — vista ${i + 1}" class="w-full h-full object-contain p-1" />
+                  <img src="${escapeHtml(optimizedImage(img.url, IMAGE_WIDTHS.thumb))}" alt="${escapeHtml(product.name)} — vista ${i + 1}" loading="lazy" decoding="async" class="w-full h-full object-contain p-1" />
                 </button>
               `,
                 )
