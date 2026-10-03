@@ -35,3 +35,7 @@ npm-debug.log*
 tools/card-cutouts/.venv/
 tools/card-cutouts/.cache/
 tools/card-cutouts/work/
+
+# Cloudflare Workers: estado local de `wrangler dev` y secretos locales
+.wrangler/
+.dev.vars

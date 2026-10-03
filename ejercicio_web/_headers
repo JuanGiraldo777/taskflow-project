@@ -1,0 +1,30 @@
+# Cabeceras HTTP de los archivos estáticos (Cloudflare Workers Static Assets).
+# Ojo: NO se aplican a lo que responde worker/index.js (/, /producto.html,
+# /sitemap.xml, /robots.txt): esas rutas ponen sus cabeceras en el código.
+
+/*
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY
+  Content-Security-Policy: frame-ancestors 'none'
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+
+# El panel no debe aparecer en Google (con cabecera y no con robots.txt:
+# si robots.txt lo bloqueara, Google no llegaría a ver este noindex).
+/admin.html
+  X-Robots-Tag: noindex, nofollow
+
+# Imágenes: 30 días en el navegador. No "immutable" de un año: algunos
+# nombres (p. ej. los recortes de assets/previews) no cambian si se
+# regenera la imagen. HTML, CSS y JS se revalidan siempre (valor por
+# defecto), así un cambio publicado se ve enseguida.
+/assets/*
+  Cache-Control: public, max-age=2592000
+
+/favicon.ico
+  Cache-Control: public, max-age=604800
+/*.png
+  Cache-Control: public, max-age=604800
+/og-image.jpg
+  Cache-Control: public, max-age=604800

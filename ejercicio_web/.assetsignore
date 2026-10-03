@@ -1,0 +1,18 @@
+# Archivos que NO se publican en Cloudflare (siguen en el repositorio).
+# Formato igual que .gitignore. Revisado 2026-10-03: ninguna página ni
+# script los carga.
+
+# Herramientas y documentación internas
+README.md
+_devserver.py
+
+# Originales en PNG reemplazados por sus versiones .webp (o sin uso)
+assets/imgs/banner_*.png
+assets/imgs/LOGO_PRINCIPAL_*.png
+assets/imgs/M_LOGO_SECUNDARIO.png
+assets/imgs/M_DORADA.png
+assets/screens_redes/*.png
+
+# Recursos guardados para usos futuros, hoy sin referencias
+assets/img_categories/
+assets/brands/

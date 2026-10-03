@@ -1,0 +1,26 @@
+// Configuración de Cloudflare Workers para el frontend (ejercicio_web/).
+// Despliegue: Workers Builds (Git) corre `npx wrangler deploy` en cada push
+// a main. Probar en local: `npx wrangler dev` (http://localhost:8787).
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "maison-eternelle",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "./ejercicio_web",
+    "binding": "ASSETS",
+    // "none": /producto.html se sirve tal cual (con "auto" Cloudflare lo
+    // redirigiría a /producto y cambiarían todas las URLs del sitio).
+    "html_handling": "none",
+    // URL inexistente → ejercicio_web/404.html con estado 404.
+    "not_found_handling": "404-page",
+    // Solo estas rutas pasan por worker/index.js; todo lo demás es estático.
+    "run_worker_first": ["/", "/producto.html", "/sitemap.xml", "/robots.txt"]
+  },
+  "vars": {
+    // Dominio principal (sin barra final). Se completa al conectar el dominio.
+    // Mientras esté vacío, robots.txt bloquea la indexación.
+    "SITE_URL": ""
+  },
+  "observability": { "enabled": true }
+}
