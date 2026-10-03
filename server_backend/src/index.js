@@ -67,13 +67,6 @@ app.get("/health", async (req, res) => {
   res.status(200).json({ status: "ok", db, message: "Servidor Maison activo" });
 });
 
-// TEMPORAL: comprobar en producción que req.ip es la IP real del visitante
-// con "trust proxy" = 3. Devuelve solo la IP de quien llama. Se quita en
-// cuanto se verifique.
-app.get("/health/ip", (req, res) => {
-  res.json({ ip: req.ip });
-});
-
 // ── Rutas de negocio ────────────────────────────────────────────────────────
 app.use("/api/v1/products", productRoutes);
 app.use("/api/v1/categories", categoryRoutes);
