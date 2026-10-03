@@ -31,6 +31,21 @@ app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok", message: "Servidor Maison activo" });
 });
 
+// TEMPORAL (se quita en el siguiente commit): muestra cómo llega la IP del
+// visitante detrás de Cloudflare + el balanceador de Render, para configurar
+// "trust proxy" antes de activar el límite de intentos por IP. Solo devuelve
+// la IP y las cabeceras de proxy de quien la llama — nada de terceros.
+app.get("/health/ip", (req, res) => {
+  const h = req.headers;
+  res.json({
+    remoteAddress: req.socket.remoteAddress,
+    xForwardedFor: h["x-forwarded-for"] || null,
+    cfConnectingIp: h["cf-connecting-ip"] || null,
+    trueClientIp: h["true-client-ip"] || null,
+    xRealIp: h["x-real-ip"] || null,
+  });
+});
+
 // ── Rutas de negocio ────────────────────────────────────────────────────────
 app.use("/api/v1/products", productRoutes);
 app.use("/api/v1/categories", categoryRoutes);
