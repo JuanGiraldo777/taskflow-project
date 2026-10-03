@@ -11,6 +11,7 @@ import {
   gendersApi,
   presentationsApi,
 } from "../api/client.js";
+import { escapeHtml } from "../escape.js";
 
 // Protección de UX, no de seguridad real — el backend ya rechaza estas
 // rutas con verifyAdmin. Esto solo evita mostrar el formulario a quien
@@ -84,11 +85,11 @@ function renderVariantFields(presentations) {
       <input
         type="checkbox"
         class="variant-checkbox"
-        data-presentation-id="${p.id}"
-        id="variant-${p.id}"
+        data-presentation-id="${escapeHtml(p.id)}"
+        id="variant-${escapeHtml(p.id)}"
       />
-      <label for="variant-${p.id}" class="flex-1 cursor-pointer">
-        ${p.label} — $${Number(p.price).toLocaleString()}
+      <label for="variant-${escapeHtml(p.id)}" class="flex-1 cursor-pointer">
+        ${escapeHtml(p.label)} — $${Number(p.price).toLocaleString()}
       </label>
       <input
         type="number"
@@ -97,7 +98,7 @@ function renderVariantFields(presentations) {
         value="0"
         disabled
         class="variant-stock w-24 px-2 py-1 bg-(--bg) text-(--text) border border-(--text) border-opacity-50 rounded text-sm disabled:opacity-40"
-        data-presentation-id="${p.id}"
+        data-presentation-id="${escapeHtml(p.id)}"
         placeholder="Stock"
       />
     </div>
@@ -289,17 +290,17 @@ function renderProductRow(product) {
   // que obligaba a deslizar para llegar a Editar/Eliminar.
   tr.innerHTML = `
     <td class="admin-cell-name py-3 px-3">
-      <div class="font-serif">${product.name}</div>
-      <div class="text-xs opacity-60">${product.category || ""} · ${product.gender || ""}</div>
+      <div class="font-serif">${escapeHtml(product.name)}</div>
+      <div class="text-xs opacity-60">${escapeHtml(product.category)} · ${escapeHtml(product.gender)}</div>
     </td>
-    <td class="py-3 px-3" data-label="Marca">${product.brand || ""}</td>
+    <td class="py-3 px-3" data-label="Marca">${escapeHtml(product.brand)}</td>
     <td class="py-3 px-3" data-label="Tipo">${product.type === "preparado" ? "Preparado" : "Original"}</td>
     <td class="py-3 px-3" data-label="Precio">${priceText}</td>
-    <td class="py-3 px-3" data-label="Stock">${stockText}</td>
+    <td class="py-3 px-3" data-label="Stock">${escapeHtml(stockText)}</td>
     <td class="admin-cell-actions py-3 px-3 text-right" style="white-space: nowrap">
       <button
         class="admin-edit-btn text-(--accent) bg-transparent border-none cursor-pointer font-sans text-sm hover:opacity-90"
-        data-id="${product.id}"
+        data-id="${escapeHtml(product.id)}"
       >
         Editar
       </button>
@@ -307,8 +308,8 @@ function renderProductRow(product) {
       <button
         class="admin-delete-btn bg-transparent border-none cursor-pointer font-sans text-sm hover:opacity-90"
         style="color: var(--color-red-500)"
-        data-id="${product.id}"
-        data-name="${product.name}"
+        data-id="${escapeHtml(product.id)}"
+        data-name="${escapeHtml(product.name)}"
       >
         Eliminar
       </button>
@@ -340,7 +341,7 @@ async function loadProductList(search = "") {
     tbody.innerHTML = "";
     products.forEach((product) => tbody.appendChild(renderProductRow(product)));
   } catch (err) {
-    tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center opacity-60">Error al cargar: ${err.message}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center opacity-60">Error al cargar: ${escapeHtml(err.message)}</td></tr>`;
   }
 }
 

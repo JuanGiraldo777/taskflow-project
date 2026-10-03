@@ -5,6 +5,7 @@
  */
 import { fetchProducts } from "./products.js";
 import { brandsApi } from "./api/client.js";
+import { escapeHtml } from "./escape.js";
 
 async function populateBrandFilters() {
   const list = document.getElementById("brand-filter-list");
@@ -19,9 +20,9 @@ async function populateBrandFilters() {
         <input
           type="checkbox"
           class="filter-brand-checkbox w-4 h-4 max-sm:w-5 max-sm:h-5 bg-(--bg) border border-(--text) rounded accent-(--accent) cursor-pointer"
-          value="${brand.slug}"
+          value="${escapeHtml(brand.slug)}"
         />
-        ${brand.name.toUpperCase()}
+        ${escapeHtml(brand.name.toUpperCase())}
       </label>
     `,
       )

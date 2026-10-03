@@ -13,6 +13,7 @@ import { initNav } from "../nav.js";
 import { initThemeToggle } from "../theme.js";
 import { getProductMetaParts } from "../productMeta.js";
 import { renderProductsInto } from "../products.js";
+import { escapeHtml } from "../escape.js";
 
 const params = new URLSearchParams(window.location.search);
 const productId = params.get("id");
@@ -215,8 +216,8 @@ async function renderProductDetail() {
           >
             <img
               id="main-product-image"
-              src="${mainImage}"
-              alt="${product.name}"
+              src="${escapeHtml(mainImage)}"
+              alt="${escapeHtml(product.name)}"
               class="max-h-100 object-contain transition-all duration-300"
             />
           </div>
@@ -231,7 +232,7 @@ async function renderProductDetail() {
                   class="thumbnail-btn shrink-0 w-20 h-20 bg-(--card-bg) rounded-lg overflow-hidden border-2 ${i === 0 ? "border-(--accent)" : "border-transparent"} hover:border-(--accent) transition-colors"
                   data-index="${i}"
                 >
-                  <img src="${img.url}" alt="Vista ${i + 1}" class="w-full h-full object-contain p-1" />
+                  <img src="${escapeHtml(img.url)}" alt="Vista ${i + 1}" class="w-full h-full object-contain p-1" />
                 </button>
               `,
                 )
@@ -245,16 +246,16 @@ async function renderProductDetail() {
         <div class="flex flex-col gap-6 py-4">
           <div class="flex items-center gap-3 flex-wrap">
             <span class="text-sm text-(--accent) font-sans tracking-widest uppercase">
-              ${productMeta.brand}
+              ${escapeHtml(productMeta.brand)}
             </span>
             <span class="text-(--text) opacity-30">·</span>
             <span class="text-sm text-(--text) opacity-60 font-sans">
-              ${productMeta.rest}
+              ${escapeHtml(productMeta.rest)}
             </span>
           </div>
 
           <h1 class="font-serif text-4xl max-sm:text-2xl text-(--text) leading-tight">
-            ${product.name}
+            ${escapeHtml(product.name)}
           </h1>
 
           <div class="flex items-end gap-3">
@@ -300,12 +301,12 @@ async function renderProductDetail() {
                         ? "border-(--accent) text-(--accent)"
                         : "border-(--text) border-opacity-40 text-(--text)"
                     } ${outOfStock ? "opacity-40 cursor-not-allowed" : "hover:border-(--accent) hover:text-(--accent)"}"
-                    data-variant-id="${v.variant_id}"
-                    data-price="${v.price}"
-                    data-stock="${v.stock}"
+                    data-variant-id="${escapeHtml(v.variant_id)}"
+                    data-price="${escapeHtml(v.price)}"
+                    data-stock="${escapeHtml(v.stock)}"
                     ${outOfStock ? "disabled" : ""}
                   >
-                    ${v.label}${outOfStock ? " (agotado)" : ""}
+                    ${escapeHtml(v.label)}${outOfStock ? " (agotado)" : ""}
                   </button>
                 `;
                   })
@@ -322,7 +323,7 @@ async function renderProductDetail() {
             <div class="border-t border-(--text) border-opacity-20 pt-6">
               <h3 class="font-serif text-lg text-(--text) mb-3">Descripción</h3>
               <p class="text-(--text) opacity-80 font-sans leading-relaxed">
-                ${product.description}
+                ${escapeHtml(product.description)}
               </p>
             </div>
           `
@@ -333,10 +334,10 @@ async function renderProductDetail() {
             <button
               id="detail-add-to-cart"
               class="w-full py-4 bg-(--bg) border border-(--text) text-(--text) font-serif text-lg hover:border-(--accent) hover:text-(--accent) transition-all duration-200 active:scale-95"
-              data-id="${product.id}"
-              data-name="${product.name}"
-              data-price="${displayPrice}"
-              data-variant-id="${initialVariant?.variant_id || ""}"
+              data-id="${escapeHtml(product.id)}"
+              data-name="${escapeHtml(product.name)}"
+              data-price="${escapeHtml(displayPrice)}"
+              data-variant-id="${escapeHtml(initialVariant?.variant_id)}"
               ${
                 isPreparado
                   ? !initialVariant || Number(initialVariant.stock) === 0
@@ -360,9 +361,9 @@ async function renderProductDetail() {
             <button
               id="detail-add-to-wishlist"
               class="add-to-favorites w-full py-3 border border-(--text) border-opacity-40 text-(--text) font-sans text-sm hover:border-(--accent) hover:text-(--accent) transition-all duration-200 active:scale-95"
-              data-id="${product.id}"
-              data-name="${product.name}"
-              data-price="${product.price}"
+              data-id="${escapeHtml(product.id)}"
+              data-name="${escapeHtml(product.name)}"
+              data-price="${escapeHtml(product.price)}"
             >
               ♡ Añadir a favoritos
             </button>

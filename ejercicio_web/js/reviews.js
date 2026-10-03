@@ -4,6 +4,7 @@
  * Soporta reseñas de tienda (index.html) y reseñas de producto (producto.html)
  */
 import { reviewsApi } from "./api/client.js";
+import { escapeHtml } from "./escape.js";
 import { getUserName, getUserRecommendation } from "./user.js";
 
 // Detectar en qué página estamos
@@ -16,7 +17,8 @@ const LIMIT = 10;
 let reviewsState = [];
 
 function generateStars(rating) {
-  return "★".repeat(rating) + "☆".repeat(5 - rating);
+  const stars = Math.min(5, Math.max(0, Math.round(Number(rating) || 0)));
+  return "★".repeat(stars) + "☆".repeat(5 - stars);
 }
 
 function calculateAverageRating(reviews) {
@@ -137,7 +139,7 @@ function renderStoreReviewsList(reviews, pagination) {
                 hover:border-opacity-40 transition-all duration-200">
                 <div class="flex justify-between items-start mb-3">
                   <div>
-                    <h4 class="font-serif text-lg text-(--text)">${review.author}</h4>
+                    <h4 class="font-serif text-lg text-(--text)">${escapeHtml(review.author)}</h4>
                     <div class="text-(--accent) text-lg mt-1">
                       ${generateStars(review.rating)}
                     </div>
@@ -145,7 +147,7 @@ function renderStoreReviewsList(reviews, pagination) {
                   <span class="text-xs text-(--text) opacity-60">${formattedDate}</span>
                 </div>
                 <p class="text-(--text) font-sans opacity-90 leading-relaxed">
-                  ${review.comment || ""}
+                  ${escapeHtml(review.comment)}
                 </p>
               </div>
             `;
@@ -513,7 +515,7 @@ function renderReviewForm() {
             type="text"
             id="review-name"
             placeholder="Ingresa tu nombre"
-            value="${userName}"
+            value="${escapeHtml(userName)}"
             class="w-full px-4 py-3 bg-(--bg) text-(--text) border border-(--text) border-opacity-50 rounded-lg focus:outline-none focus:border-(--accent) focus:border-opacity-100 transition-colors duration-200 placeholder-opacity-50"
           />
         </div>
@@ -685,7 +687,7 @@ function renderReviewsList(reviews) {
           MI RECOMENDACIÓN ESPECIAL
         </h4>
         <p class="text-(--text) font-sans leading-relaxed italic relative z-10">
-          "${userRecommendation}"
+          "${escapeHtml(userRecommendation)}"
         </p>
       </div>
     `;
@@ -716,7 +718,7 @@ function renderReviewsList(reviews) {
                 <div class="flex justify-between items-start mb-3">
                   <div>
                     <h4 class="font-serif text-lg text-(--text)">
-                      ${review.author}
+                      ${escapeHtml(review.author)}
                     </h4>
                     <div class="text text-(--accent) text-lg mt-1">
                       ${generateStars(Number(review.rating))}
@@ -727,7 +729,7 @@ function renderReviewsList(reviews) {
                   </span>
                 </div>
                 <p class="text-(--text) font-sans opacity-90 leading-relaxed">
-                  ${review.comment || ""}
+                  ${escapeHtml(review.comment)}
                 </p>
               </div>
             `;

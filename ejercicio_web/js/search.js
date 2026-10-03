@@ -6,6 +6,8 @@
  * la sección Destacados en el sitio. La búsqueda real corre ahí, contra
  * todo el catálogo, tenga o no resultados.
  */
+import { escapeHtml } from "./escape.js";
+
 const TRENDING_SEARCHES = [
   "Creed",
   "9Pm",
@@ -49,7 +51,7 @@ export function initSearch() {
       <div class="px-6 py-4">
         ${
           searchText
-            ? `<p class="text-(--text) font-sans text-xs opacity-60 mb-3">Presiona Enter para buscar "${searchText}"</p>`
+            ? `<p class="text-(--text) font-sans text-xs opacity-60 mb-3">Presiona Enter para buscar "${escapeHtml(searchText)}"</p>`
             : ""
         }
         <h3 class="font-serif text-(--text) text-sm font-bold mb-4 tracking-wide">TENDENCIAS</h3>

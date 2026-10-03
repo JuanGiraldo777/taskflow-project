@@ -6,6 +6,7 @@ import { productsApi } from "./api/client.js";
 import { trackProductView } from "./user.js";
 import { getProductMetaParts } from "./productMeta.js";
 import { cardImageFor } from "./cardImages.js";
+import { escapeHtml } from "./escape.js";
 
 export const currentFilters = {
   search: "",
@@ -37,7 +38,7 @@ function showErrorState(message, gridId = "products-grid") {
 
   grid.innerHTML = `
     <div class="col-span-4 flex justify-center items-center py-20">
-      <div class="text-(--text) font-serif text-lg opacity-60">${message}</div>
+      <div class="text-(--text) font-serif text-lg opacity-60">${escapeHtml(message)}</div>
     </div>
   `;
 }
@@ -64,16 +65,16 @@ function buildProductCard(product) {
         ? '<span class="product-card-badge absolute top-5 left-5 bg-(--accent) text-black text-xs px-[10px] py-[6px] rounded">OFERTA</span>'
         : ""
     }
-    <a href="producto.html?id=${product.id}" class="product-card-media block product-link">
+    <a href="producto.html?id=${encodeURIComponent(product.id)}" class="product-card-media block product-link">
       <img
-        src="${cardImage}"
-        alt="${product.name}"
+        src="${escapeHtml(cardImage)}"
+        alt="${escapeHtml(product.name)}"
         class="product-card-img w-[90%] h-[280px] object-contain transition-transform duration-300"
       />
     </a>
     <div class="product-card-body mt-1">
-      <span class="product-card-meta text-xs text-[#999]">${meta.brand || "SIN MARCA"}${meta.rest ? ` · ${meta.rest}` : ""}</span>
-      <h3 class="product-card-name font-serif text-lg my-2">${product.name}</h3>
+      <span class="product-card-meta text-xs text-[#999]">${escapeHtml(meta.brand || "SIN MARCA")}${meta.rest ? ` · ${escapeHtml(meta.rest)}` : ""}</span>
+      <h3 class="product-card-name font-serif text-lg my-2">${escapeHtml(product.name)}</h3>
       <div class="product-card-price flex gap-2 items-center">
         ${
           hasDiscount
@@ -86,19 +87,19 @@ function buildProductCard(product) {
     </div>
     <button
       class="add-to-cart font-serif absolute bottom-5 left-5 right-5 bg-(--bg) border border-(--text) text-(--text) py-[14px] cursor-pointer"
-      data-id="${product.id}"
-      data-name="${product.name}"
-      data-price="${product.price}"
-      data-type="${product.type || "original"}"
+      data-id="${escapeHtml(product.id)}"
+      data-name="${escapeHtml(product.name)}"
+      data-price="${escapeHtml(product.price)}"
+      data-type="${escapeHtml(product.type || "original")}"
       aria-label="${product.type === "preparado" ? "Ver presentaciones" : "Añadir producto al Carrito"}"
     >
       ${product.type === "preparado" ? "VER PRESENTACIONES" : "AÑADIR AL CARRITO"}
     </button>
     <button
       class="add-to-favorites absolute top-5 right-5 bg-transparent border-none cursor-pointer"
-      data-id="${product.id}"
-      data-name="${product.name}"
-      data-price="${product.price}"
+      data-id="${escapeHtml(product.id)}"
+      data-name="${escapeHtml(product.name)}"
+      data-price="${escapeHtml(product.price)}"
       aria-label="Añadir producto a Favoritos"
     >
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"

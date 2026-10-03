@@ -3,6 +3,7 @@
  * @description Módulo de sesión y perfil de usuario autenticado.
  */
 import { authApi, userApi } from "./api/client.js";
+import { escapeHtml } from "./escape.js";
 
 let isRegisterMode = false;
 
@@ -146,7 +147,7 @@ function updateUserIcon() {
 
     userButton.innerHTML = `
       <div class="w-8 h-8 rounded-full bg-(--accent) text-black flex items-center justify-center font-bold text-sm">
-        ${initials || "U"}
+        ${escapeHtml(initials || "U")}
       </div>
     `;
     return;
@@ -250,17 +251,19 @@ function buildProfileHtml(user, history) {
     <div class="p-6 space-y-6">
       <div class="text-center pb-4 border-b border-gray-700">
         <div class="w-20 h-20 rounded-full bg-(--accent) text-black flex items-center justify-center font-bold text-2xl mx-auto mb-3">
-          ${(
-            (user.fullName?.split(" ")[0]?.[0] || "") +
-            (user.fullName?.split(" ")[
-              user.fullName?.split(" ").length - 1
-            ]?.[0] || "")
-          )
-            .toUpperCase()
-            .slice(0, 2)}
+          ${escapeHtml(
+            (
+              (user.fullName?.split(" ")[0]?.[0] || "") +
+              (user.fullName?.split(" ")[
+                user.fullName?.split(" ").length - 1
+              ]?.[0] || "")
+            )
+              .toUpperCase()
+              .slice(0, 2),
+          )}
         </div>
-        <p class="font-serif text-lg text-(--text)">${user.fullName}</p>
-        <p class="text-sm text-gray-400">${user.email}</p>
+        <p class="font-serif text-lg text-(--text)">${escapeHtml(user.fullName)}</p>
+        <p class="text-sm text-gray-400">${escapeHtml(user.email)}</p>
       </div>
 
       ${
@@ -279,7 +282,7 @@ function buildProfileHtml(user, history) {
           <input
             type="text"
             id="edit-fullname"
-            value="${user.fullName || ""}"
+            value="${escapeHtml(user.fullName)}"
             placeholder="Tu nombre completo"
             class="w-full px-3 py-2 bg-(--bg) text-(--text) border border-(--text) border-opacity-50 rounded text-sm focus:outline-none focus:border-(--accent)"
           />
@@ -290,7 +293,7 @@ function buildProfileHtml(user, history) {
           <input
             type="email"
             id="edit-email"
-            value="${user.email || ""}"
+            value="${escapeHtml(user.email)}"
             readonly
             class="w-full px-3 py-2 bg-(--bg) text-(--text) border border-(--text) border-opacity-30 rounded text-sm opacity-70"
           />
@@ -301,7 +304,7 @@ function buildProfileHtml(user, history) {
           <input
             type="text"
             id="edit-favorite-perfume"
-            value="${user.favoritePerfume || ""}"
+            value="${escapeHtml(user.favoritePerfume)}"
             placeholder="Tu perfume favorito de Maison de L'Eternel"
             class="w-full px-3 py-2 bg-(--bg) text-(--text) border border-(--text) border-opacity-50 rounded text-sm focus:outline-none focus:border-(--accent)"
           />
@@ -314,7 +317,7 @@ function buildProfileHtml(user, history) {
             placeholder="Recomienda un perfume a otros clientes..."
             rows="3"
             class="w-full px-3 py-2 bg-(--bg) text-(--text) border border-(--text) border-opacity-50 rounded text-sm focus:outline-none focus:border-(--accent) resize-none"
-          >${user.perfumeRec || ""}</textarea>
+          >${escapeHtml(user.perfumeRec)}</textarea>
         </div>
       </div>
 
@@ -324,7 +327,7 @@ function buildProfileHtml(user, history) {
         <div class="bg-gradient-to-r from-gray-800 to-gray-700 p-4 rounded-lg border-2 border-(--accent) border-opacity-50">
           <div class="text-center">
             <p class="text-sm text-(--text) mb-2">Tienes un cupón de descuento en tu próxima compra</p>
-            <p class="font-mono font-bold text-(--accent) text-lg">${user.discountCode}</p>
+            <p class="font-mono font-bold text-(--accent) text-lg">${escapeHtml(user.discountCode)}</p>
           </div>
         </div>
       `
@@ -341,7 +344,7 @@ function buildProfileHtml(user, history) {
               .map(
                 (product) => `
               <div class="bg-(--bg) p-3 rounded flex justify-between items-center text-sm">
-                <span class="text-(--text)">${product.name}</span>
+                <span class="text-(--text)">${escapeHtml(product.name)}</span>
                 <span class="text-(--accent) font-semibold">$${Number(product.price || 0).toLocaleString()}</span>
               </div>
             `,

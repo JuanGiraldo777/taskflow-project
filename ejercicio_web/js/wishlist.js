@@ -3,6 +3,7 @@
  * @description Módulo UI e integración API para lista de deseos.
  */
 import { wishlistApi } from "./api/client.js";
+import { escapeHtml } from "./escape.js";
 
 let wishlistState = [];
 
@@ -149,12 +150,12 @@ function renderWishlistPanel() {
     <div class="wishlist-item border-b border-gray-700 py-3 px-4 hover:bg-gray-800/40 transition-colors">
       <div class="flex justify-between items-start gap-2 mb-2">
         <div class="flex-1 min-w-0">
-          <p class="text-(--text) text-sm font-serif truncate">${item.name}</p>
+          <p class="text-(--text) text-sm font-serif truncate">${escapeHtml(item.name)}</p>
           <p class="text-(--accent) text-sm font-semibold">$${Number(item.price || 0).toLocaleString()}</p>
         </div>
         <button
           class="remove-wishlist-item text-gray-400 hover:text-(--accent) hover:scale-125 transition-all duration-150"
-          data-item-id="${item.id}"
+          data-item-id="${escapeHtml(item.id)}"
           aria-label="Eliminar de lista de deseos"
           title="Eliminar"
         >

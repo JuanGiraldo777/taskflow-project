@@ -4,6 +4,7 @@
  */
 import { cartApi } from "./api/client.js";
 import { getCurrentUser } from "./user.js";
+import { escapeHtml } from "./escape.js";
 
 // Número real de la perfumería, sin "+" ni espacios (formato que exige
 // el link de wa.me): +57 315 9758805.
@@ -29,9 +30,9 @@ function createCartItemElement(item) {
   itemElement.innerHTML = `
     <div class="flex justify-between items-start mb-3">
       <h3 class="font-serif text-[15px] text-(--text) flex-1">
-        ${item.name}${item.variant_label ? ` <span class="text-(--accent) text-xs font-sans">(${item.variant_label})</span>` : ""}
+        ${escapeHtml(item.name)}${item.variant_label ? ` <span class="text-(--accent) text-xs font-sans">(${escapeHtml(item.variant_label)})</span>` : ""}
       </h3>
-      <button class="remove-item text-gray-400 hover:text-(--accent) transition-colors" data-id="${item.id}" aria-label="Eliminar producto" title="Eliminar">
+      <button class="remove-item text-gray-400 hover:text-(--accent) transition-colors" data-id="${escapeHtml(item.id)}" aria-label="Eliminar producto" title="Eliminar">
         <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
           <path d="M3 6h18M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2m-2 0H9M5 6l1 14a2 2 0 002 2h8a2 2 0 002-2l1-14M10 11v6M14 11v6"/>
         </svg>
@@ -39,13 +40,13 @@ function createCartItemElement(item) {
     </div>
     <div class="flex justify-between items-center mb-3">
       <span class="text-(--text) text-[13px]">$${Number(item.price || 0).toLocaleString()}</span>
-      <span class="text-gray-400 text-[12px]">x${item.quantity}</span>
+      <span class="text-gray-400 text-[12px]">x${escapeHtml(item.quantity)}</span>
     </div>
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-2 bg-gray-800 rounded-lg p-1">
-        <button class="decrease-qty w-7 h-7 flex items-center justify-center text-(--accent) hover:bg-gray-700 rounded transition-colors" data-id="${item.id}">−</button>
-        <span class="quantity w-6 text-center text-(--text) text-sm">${item.quantity}</span>
-        <button class="increase-qty w-7 h-7 flex items-center justify-center text-(--accent) hover:bg-gray-700 rounded transition-colors" data-id="${item.id}">+</button>
+        <button class="decrease-qty w-7 h-7 flex items-center justify-center text-(--accent) hover:bg-gray-700 rounded transition-colors" data-id="${escapeHtml(item.id)}">−</button>
+        <span class="quantity w-6 text-center text-(--text) text-sm">${escapeHtml(item.quantity)}</span>
+        <button class="increase-qty w-7 h-7 flex items-center justify-center text-(--accent) hover:bg-gray-700 rounded transition-colors" data-id="${escapeHtml(item.id)}">+</button>
       </div>
       <div class="text-right">
         <span class="text-gray-400 text-[11px] block">Subtotal</span>
