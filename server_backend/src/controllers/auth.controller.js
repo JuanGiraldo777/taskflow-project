@@ -3,21 +3,40 @@
  * @description Controlador de autenticación: registro e inicio de sesión.
  */
 const authService = require("../services/auth.service");
+const { text, isValidEmail } = require("../utils/validation");
 
 // ── POST /api/v1/auth/register ──────────────────────────────────────────────
 const register = async (req, res, next) => {
   try {
-    const { fullName, email, password } = req.body;
+    const fullName = text(req.body.fullName);
+    const email = text(req.body.email);
+    const password =
+      typeof req.body.password === "string" ? req.body.password : "";
 
     if (!fullName || !email || !password) {
       return res
         .status(400)
         .json({ error: "fullName, email y password son obligatorios" });
     }
-    if (password.length < 6) {
+    if (fullName.length < 2 || fullName.length > 100) {
       return res
         .status(400)
-        .json({ error: "La contraseña debe tener al menos 6 caracteres" });
+        .json({ error: "El nombre debe tener entre 2 y 100 caracteres" });
+    }
+    if (!isValidEmail(email)) {
+      return res.status(400).json({ error: "El email no es válido" });
+    }
+    // Mínimo 8 solo para cuentas NUEVAS (el login acepta las de 6-7 que ya
+    // existen). Máximo 72 BYTES: bcrypt ignora todo lo que pase de ahí.
+    if (password.length < 8) {
+      return res
+        .status(400)
+        .json({ error: "La contraseña debe tener al menos 8 caracteres" });
+    }
+    if (Buffer.byteLength(password, "utf8") > 72) {
+      return res
+        .status(400)
+        .json({ error: "La contraseña no puede superar los 72 caracteres" });
     }
 
     const user = await authService.register({ fullName, email, password });
@@ -33,7 +52,9 @@ const register = async (req, res, next) => {
 // ── POST /api/v1/auth/login ─────────────────────────────────────────────────
 const login = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const email = text(req.body.email);
+    const password =
+      typeof req.body.password === "string" ? req.body.password : "";
 
     if (!email || !password) {
       return res

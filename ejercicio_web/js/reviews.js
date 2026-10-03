@@ -6,6 +6,7 @@
 import { reviewsApi } from "./api/client.js";
 import { escapeHtml } from "./escape.js";
 import { getUserName, getUserRecommendation } from "./user.js";
+import { HONEYPOT_HTML, armForm, antiSpamFields, withSubmitLock } from "./formGuard.js";
 
 // Detectar en qué página estamos
 const isProductPage = !!new URLSearchParams(window.location.search).get("id");
@@ -197,7 +198,7 @@ function renderStoreReviewsList(reviews, pagination) {
   });
 }
 
-async function submitStoreReview(rating, comment) {
+async function submitStoreReview(rating, comment, guard = {}) {
   const token = localStorage.getItem("token");
   if (!token) {
     alert("Inicia sesión para dejar una reseña");
@@ -219,6 +220,7 @@ async function submitStoreReview(rating, comment) {
     const result = await reviewsApi.createStoreReview({
       rating: parseInt(rating),
       comment: comment.trim(),
+      ...guard,
     });
 
     if (result.discountCode) {
@@ -250,7 +252,8 @@ function renderStoreReviewForm() {
       <h3 class="font-serif text-2xl text-(--text) mb-6 tracking-wide">
         CUÉNTANOS TU EXPERIENCIA
       </h3>
-      <form id="review-form" class="space-y-4">
+      <form id="review-form" class="space-y-4" style="position: relative">
+        ${HONEYPOT_HTML}
         <div>
           <label class="block text-sm text-(--text) font-sans font-semibold mb-2">
             Puntuación
@@ -280,6 +283,7 @@ function renderStoreReviewForm() {
             id="review-comment"
             placeholder="Cuéntanos cómo ha sido tu experiencia con Maison de L'Eternel..."
             rows="5"
+            maxlength="1000"
             class="w-full px-4 py-3 bg-(--bg) text-(--text) border border-(--text)
               border-opacity-50 rounded-lg focus:outline-none focus:border-(--accent)
               focus:border-opacity-100 transition-colors duration-200 resize-none"
@@ -324,7 +328,9 @@ function renderStoreReviewForm() {
   });
 
   // Submit
-  document.getElementById("review-form")?.addEventListener("submit", async (e) => {
+  const storeForm = document.getElementById("review-form");
+  armForm(storeForm);
+  storeForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
     const rating = document.querySelector("input[name='rating']:checked")?.value;
     const comment = document.getElementById("review-comment")?.value;
@@ -334,7 +340,9 @@ function renderStoreReviewForm() {
       return;
     }
 
-    await submitStoreReview(rating, comment);
+    await withSubmitLock(storeForm.querySelector('button[type="submit"]'), () =>
+      submitStoreReview(rating, comment, antiSpamFields(storeForm)),
+    );
   });
 }
 
@@ -445,7 +453,7 @@ async function loadReviews() {
   }
 }
 
-async function addReview(name, rating, comment) {
+async function addReview(name, rating, comment, guard = {}) {
   const token = localStorage.getItem("token");
   if (!token) {
     alert("Inicia sesión para dejar una reseña");
@@ -464,6 +472,7 @@ async function addReview(name, rating, comment) {
     const result = await reviewsApi.create(PRODUCT_ID, {
       rating: parseInt(rating, 10),
       comment: comment.trim(),
+      ...guard,
     });
 
     if (result.discountCode) {
@@ -506,7 +515,8 @@ function renderReviewForm() {
         ESCRIBE TU RESEÑA
       </h3>
 
-      <form id="review-form" class="space-y-4">
+      <form id="review-form" class="space-y-4" style="position: relative">
+        ${HONEYPOT_HTML}
         <div>
           <label class="block text-sm text-(--text) font-sans font-semibold mb-2">
             Tu Nombre
@@ -556,6 +566,7 @@ function renderReviewForm() {
             id="review-comment"
             placeholder="Cuéntanos tu experiencia con este perfume..."
             rows="5"
+            maxlength="1000"
             class="w-full px-4 py-3 bg-(--bg) text-(--text) border border-(--text) border-opacity-50 rounded-lg focus:outline-none focus:border-(--accent) focus:border-opacity-100 transition-colors duration-200 placeholder-opacity-50 resize-none"
           ></textarea>
         </div>
@@ -634,13 +645,16 @@ function renderReviewForm() {
   });
 
   const form = document.getElementById("review-form");
+  armForm(form);
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     const name = document.getElementById("review-name").value;
     const rating = document.querySelector("input[name='rating']:checked")?.value;
     const comment = document.getElementById("review-comment").value;
 
-    addReview(name, rating, comment);
+    withSubmitLock(form.querySelector('button[type="submit"]'), () =>
+      addReview(name, rating, comment, antiSpamFields(form)),
+    );
   });
 }
 

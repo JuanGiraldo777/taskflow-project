@@ -3,6 +3,7 @@
  * @description Servicios de catálogo: búsqueda, filtros, detalle y relacionados.
  */
 const pool = require("../config/db");
+const { boundedInt } = require("../utils/validation");
 
 // Precio a mostrar: para un original es su propio precio (con descuento si
 // aplica); para un preparado no hay un precio único en `products`, así que
@@ -101,8 +102,10 @@ const getAll = async ({
   // su foto, vuelve solo a su lugar — no hay que tocar nada acá.
   const orderClause = `ORDER BY (pi.url IS NULL) ASC, ${sortOptions[sortBy] || "p.created_at DESC"}`;
 
-  const pageNum = Number(parseInt(page) || 1);
-  const limitNum = Number(parseInt(limit) || 10);
+  // Acotados: ?limit=99999999 obligaba a la base a devolver todo de golpe.
+  // 1000 cubre el admin (pide 500) y las herramientas internas (1000).
+  const pageNum = boundedInt(page, { fallback: 1, max: 100000 });
+  const limitNum = boundedInt(limit, { fallback: 10, max: 1000 });
   const offset = (pageNum - 1) * limitNum;
 
   const dataQuery = `

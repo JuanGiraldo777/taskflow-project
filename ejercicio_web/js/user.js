@@ -4,6 +4,7 @@
  */
 import { authApi, userApi } from "./api/client.js";
 import { escapeHtml } from "./escape.js";
+import { HONEYPOT_HTML, armForm, antiSpamFields, withSubmitLock } from "./formGuard.js";
 
 let isRegisterMode = false;
 
@@ -55,9 +56,9 @@ async function handleLogin(email, password) {
   }
 }
 
-async function handleRegister(fullName, email, password) {
+async function handleRegister(fullName, email, password, guard = {}) {
   try {
-    await authApi.register({ fullName, email, password });
+    await authApi.register({ fullName, email, password, ...guard });
     await handleLogin(email, password);
   } catch (err) {
     alert(err.message);
@@ -193,7 +194,8 @@ function buildAuthFormHtml() {
         </p>
       </div>
 
-      <form id="auth-form" class="space-y-4">
+      <form id="auth-form" class="space-y-4" style="position: relative">
+        ${isRegisterMode ? HONEYPOT_HTML : ""}
         ${
           isRegisterMode
             ? `
@@ -203,6 +205,8 @@ function buildAuthFormHtml() {
               type="text"
               id="auth-fullname"
               placeholder="Tu nombre completo"
+              maxlength="100"
+              autocomplete="name"
               class="w-full px-3 py-2 bg-(--bg) text-(--text) border border-(--text) border-opacity-50 rounded text-sm focus:outline-none focus:border-(--accent)"
               required
             />
@@ -229,7 +233,7 @@ function buildAuthFormHtml() {
             id="auth-password"
             placeholder="••••••••"
             class="w-full px-3 py-2 bg-(--bg) text-(--text) border border-(--text) border-opacity-50 rounded text-sm focus:outline-none focus:border-(--accent)"
-            minlength="6"
+            ${isRegisterMode ? 'minlength="8" maxlength="72" autocomplete="new-password"' : 'autocomplete="current-password"'}
             required
           />
         </div>
@@ -284,6 +288,7 @@ function buildProfileHtml(user, history) {
             id="edit-fullname"
             value="${escapeHtml(user.fullName)}"
             placeholder="Tu nombre completo"
+            maxlength="100"
             class="w-full px-3 py-2 bg-(--bg) text-(--text) border border-(--text) border-opacity-50 rounded text-sm focus:outline-none focus:border-(--accent)"
           />
         </div>
@@ -305,6 +310,7 @@ function buildProfileHtml(user, history) {
             type="text"
             id="edit-favorite-perfume"
             value="${escapeHtml(user.favoritePerfume)}"
+            maxlength="100"
             placeholder="Tu perfume favorito de Maison de L'Eternel"
             class="w-full px-3 py-2 bg-(--bg) text-(--text) border border-(--text) border-opacity-50 rounded text-sm focus:outline-none focus:border-(--accent)"
           />
@@ -315,6 +321,7 @@ function buildProfileHtml(user, history) {
           <textarea
             id="edit-recommendation"
             placeholder="Recomienda un perfume a otros clientes..."
+            maxlength="100"
             rows="3"
             class="w-full px-3 py-2 bg-(--bg) text-(--text) border border-(--text) border-opacity-50 rounded text-sm focus:outline-none focus:border-(--accent) resize-none"
           >${escapeHtml(user.perfumeRec)}</textarea>
@@ -441,19 +448,23 @@ function attachProfileModalListeners() {
     newOverlay?.classList.remove("hidden");
   });
 
+  armForm(authForm);
   authForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const email = document.getElementById("auth-email")?.value?.trim() || "";
     const password = document.getElementById("auth-password")?.value || "";
+    const submitBtn = document.getElementById("auth-submit-btn");
 
-    if (isRegisterMode) {
-      const fullName =
-        document.getElementById("auth-fullname")?.value?.trim() || "";
-      await handleRegister(fullName, email, password);
-    } else {
-      await handleLogin(email, password);
-    }
+    await withSubmitLock(submitBtn, async () => {
+      if (isRegisterMode) {
+        const fullName =
+          document.getElementById("auth-fullname")?.value?.trim() || "";
+        await handleRegister(fullName, email, password, antiSpamFields(authForm));
+      } else {
+        await handleLogin(email, password);
+      }
+    });
 
     const currentOverlay = document.getElementById("user-modal-overlay");
     currentOverlay?.classList.add("hidden");

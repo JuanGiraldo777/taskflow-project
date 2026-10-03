@@ -3,6 +3,7 @@
  * @description Servicios de reseñas y generación de código de descuento.
  */
 const pool = require("../config/db");
+const { boundedInt } = require("../utils/validation");
 
 // ── Generador de código de descuento ────────────────────────────────────────
 // Formato: MAISON-2026-XXXXXX (6 caracteres aleatorios alfanuméricos)
@@ -74,8 +75,10 @@ const create = async (userId, productId, { rating, comment }) => {
 // ── Reseñas de tienda — paginadas ───────────────────────────────────────────
 // product_id IS NULL identifica las reseñas de tienda
 const getStoreReviews = async ({ page, limit }) => {
-  const pageNum = Number(parseInt(page) || 1);
-  const limitNum = Number(parseInt(limit) || 10);
+  // Acotados: ?limit=99999999 obligaba a la base a devolver todo de golpe.
+  // 1000 cubre el admin (pide 500) y las herramientas internas (1000).
+  const pageNum = boundedInt(page, { fallback: 1, max: 100000 });
+  const limitNum = boundedInt(limit, { fallback: 10, max: 1000 });
   const offset = (pageNum - 1) * limitNum;
 
   const [rows] = await pool.query(

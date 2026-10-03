@@ -16,6 +16,18 @@ const errorHandler = (err, req, res, next) => {
       .json({ error: "JSON malformado en el body de la petición" });
   }
 
+  // ── Cuerpo demasiado grande (más de 20 KB, ver express.json en index.js) ──
+  if (err.type === "entity.too.large") {
+    return res
+      .status(413)
+      .json({ error: "El contenido enviado es demasiado grande" });
+  }
+
+  // ── Otros errores de cliente que marca express (4xx con expose) ─────────
+  if (err.expose && err.status >= 400 && err.status < 500) {
+    return res.status(err.status).json({ error: "Petición no válida" });
+  }
+
   // ── Errores de negocio — mapeo semántico a HTTP ──────────────────────────
   const businessErrors = {
     NOT_FOUND: { status: 404, message: "Recurso no encontrado" },
