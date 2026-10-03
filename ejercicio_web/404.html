@@ -1,0 +1,170 @@
+<!--
+  @file ejercicio_web/404.html
+  @description Página para cualquier URL que no existe. Cloudflare la sirve
+  con estado 404 real (not_found_handling: "404-page" en wrangler.jsonc).
+  Rutas ABSOLUTAS (/src/..., /js/...) porque puede mostrarse desde cualquier
+  dirección, p. ej. /perfumes/viejo/enlace. El dibujo y el texto son una
+  copia estática de js/notFound.js: deben verse aunque falle el JavaScript.
+-->
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Página no encontrada | Maison Eternelle Perfumería</title>
+    <meta name="robots" content="noindex" />
+
+    <!-- Favicon e íconos (generados desde assets/imgs/M_DORADA.png) -->
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#D4AF37" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&family=Playfair+Display:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/src/output.css" />
+  </head>
+
+  <body>
+    <script>
+      try {
+        if (localStorage.getItem("theme") !== "dark") {
+          document.body.classList.add("light-mode");
+        }
+      } catch (e) {
+        document.body.classList.add("light-mode");
+      }
+    </script>
+
+    <header class="top-bar simple-header">
+      <div class="simple-header-inner">
+        <div class="justify-self-start">
+          <button
+            id="darkModeToggle"
+            type="button"
+            role="switch"
+            aria-checked="false"
+            class="theme-switch"
+            aria-label="Cambiar entre modo oscuro y claro"
+          >
+            <span class="theme-switch-track">
+              <span class="theme-switch-thumb"></span>
+            </span>
+          </button>
+        </div>
+        <a href="/" class="simple-header-logo justify-self-center">
+          <img
+            src="/assets/imgs/LOGO_PRINCIPAL_NEGRO.png"
+            alt="Maison Eternelle Perfumería — ir al inicio"
+          />
+        </a>
+        <div></div>
+      </div>
+    </header>
+
+    <main class="bg-(--bg) px-4">
+      <div class="not-found">
+        <svg class="not-found-bottle" viewBox="0 0 200 250" width="170" height="212"
+             aria-hidden="true" focusable="false" fill="none">
+          <!-- estela de aroma saliendo del atomizador -->
+          <g class="not-found-scent" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity=".55">
+            <path d="M128 30c10-6 18-2 22 6" />
+            <path d="M134 16c12-8 24-4 30 6" />
+            <circle cx="170" cy="40" r="3.5" fill="currentColor" stroke="none" />
+            <circle cx="160" cy="54" r="2.5" fill="currentColor" stroke="none" />
+          </g>
+          <!-- tapa y cuello -->
+          <rect x="78" y="22" width="44" height="34" rx="5" fill="currentColor" />
+          <rect x="86" y="14" width="28" height="10" rx="3" fill="currentColor" opacity=".7" />
+          <rect x="90" y="56" width="20" height="14" fill="currentColor" opacity=".8" />
+          <!-- frasco -->
+          <rect x="34" y="70" width="132" height="166" rx="26" fill="currentColor" fill-opacity=".08"
+                stroke="currentColor" stroke-width="6" />
+          <!-- líquido -->
+          <path d="M40 176c20-10 40-10 60 0s40 10 60 0v34a20 20 0 0 1-20 20H60a20 20 0 0 1-20-20z"
+                fill="currentColor" fill-opacity=".22" />
+          <!-- brillo del vidrio -->
+          <path d="M52 96v60" stroke="currentColor" stroke-width="5" stroke-linecap="round" opacity=".35" />
+          <!-- signo de interrogación -->
+          <text x="104" y="190" text-anchor="middle" fill="currentColor"
+                font-family="'Playfair Display', Georgia, serif" font-size="104" font-weight="700">?</text>
+        </svg>
+        <h1 class="not-found-title">ESTO ME HUELE A QUE NO HAY NINGÚN RESULTADO</h1>
+        <p class="not-found-detail">
+          La página que buscas no existe o cambió de dirección. Los perfumes,
+          en cambio, siguen todos aquí.
+        </p>
+        <div class="not-found-actions">
+          <a href="/catalogo.html" class="not-found-btn not-found-btn-primary">Ver catálogo</a>
+          <a href="/" class="not-found-btn">Ir al inicio</a>
+        </div>
+      </div>
+    </main>
+
+    <footer
+      class="bg-(--card-bg) py-12 max-sm:py-8 px-20 max-sm:px-4 sm:px-8 md:px-12 text-center"
+    >
+      <div class="max-w-[1400px] mx-auto">
+        <img
+          src="/assets/imgs/LOGO_PRINCIPAL_DORADO.png"
+          alt="Maison Eternelle Perfumería"
+          class="h-12 mx-auto mb-4"
+        />
+        <p class="font-serif text-(--accent) text-sm tracking-wide mb-4">
+          ✨ Donde el aroma nunca muere ✨
+        </p>
+        <div class="footer-social-row mb-6">
+          <a
+            href="https://www.instagram.com/maisoneternelle_co/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="footer-social-link"
+            aria-label="Instagram de Maison Eternelle"
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.332.014 7.052.072 2.695.272.273 2.69.073 7.052.014 8.332 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.332 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"
+              />
+            </svg>
+          </a>
+          <a
+            href="https://www.tiktok.com/@maisoneternelle_co?lang=es"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="footer-social-link"
+            aria-label="TikTok de Maison Eternelle"
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M16.6 5.82a4.278 4.278 0 0 1-1.06-2.82h-3.09v12.4a2.592 2.592 0 1 1-2.59-2.6c.15 0 .3.01.44.03V9.66a5.85 5.85 0 1 0 5.45 5.83V9.4a7.72 7.72 0 0 0 4.51 1.44V7.68a4.278 4.278 0 0 1-3.66-1.86z"
+              />
+            </svg>
+          </a>
+          <a
+            href="https://www.facebook.com/692880320577326?ref=PROFILE_EDIT_xav_ig_profile_page_web"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="footer-social-link"
+            aria-label="Facebook de Maison Eternelle"
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M22 12.06C22 6.505 17.523 2 12 2S2 6.505 2 12.06c0 5.022 3.657 9.184 8.438 9.94v-7.03H7.898v-2.91h2.54V9.845c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.459h-1.26c-1.242 0-1.63.771-1.63 1.562v1.877h2.773l-.443 2.91h-2.33V22c4.78-.756 8.437-4.918 8.437-9.94z"
+              />
+            </svg>
+          </a>
+        </div>
+        <p class="text-(--text) opacity-50 font-sans text-xs">
+          © 2026 Maison Eternelle Perfumería. Todos los derechos reservados.
+        </p>
+      </div>
+    </footer>
+
+    <script type="module" src="/js/pages/simple.js"></script>
+  </body>
+</html>

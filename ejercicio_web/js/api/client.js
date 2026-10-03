@@ -24,8 +24,11 @@ function getToken() {
 async function request(endpoint, options = {}) {
   const token = getToken();
 
+  // Content-Type solo cuando hay cuerpo (POST/PUT). En un GET obligaba al
+  // navegador a hacer una petición previa OPTIONS (CORS) antes de CADA
+  // lectura del catálogo: el doble de viajes al servidor.
   const headers = {
-    "Content-Type": "application/json",
+    ...(options.body && { "Content-Type": "application/json" }),
     ...(token && { Authorization: `Bearer ${token}` }),
     ...options.headers,
   };
@@ -37,9 +40,15 @@ async function request(endpoint, options = {}) {
       headers,
     });
   } catch {
-    throw new Error(
-      "No se pudo conectar con el servidor. Verifica que el backend esté activo en localhost:3000.",
+    // status 0 = sin respuesta (red caída, servidor dormido o apagado). Las
+    // páginas lo distinguen de un 404 real: "no existe" ≠ "no hay conexión".
+    const networkError = new Error(
+      isLocalPreview
+        ? "No se pudo conectar con el servidor. Verifica que el backend esté activo en localhost:3000."
+        : "No pudimos conectar con el servidor. Revisa tu conexión e inténtalo de nuevo.",
     );
+    networkError.status = 0;
+    throw networkError;
   }
 
   if (response.status === 401) {
@@ -52,10 +61,14 @@ async function request(endpoint, options = {}) {
     return null;
   }
 
-  const data = await response.json();
+  // Si Render está despertando o falla, puede responder HTML en vez de
+  // JSON: sin el catch, el error real (502, 503...) se perdía.
+  const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
-    throw new Error(data.error || "Error desconocido");
+    const apiError = new Error(data.error || "Error desconocido");
+    apiError.status = response.status;
+    throw apiError;
   }
 
   return data;

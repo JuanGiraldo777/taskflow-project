@@ -7,6 +7,7 @@ import { trackProductView } from "./user.js";
 import { getProductMetaParts } from "./productMeta.js";
 import { cardImageFor } from "./cardImages.js";
 import { escapeHtml } from "./escape.js";
+import { notFoundHtml } from "./notFound.js";
 
 export const currentFilters = {
   search: "",
@@ -41,6 +42,18 @@ function showErrorState(message, gridId = "products-grid") {
       <div class="text-(--text) font-serif text-lg opacity-60">${escapeHtml(message)}</div>
     </div>
   `;
+}
+
+// Búsqueda o filtro sin resultados: el frasco con "?" (js/notFound.js) en
+// vez de una línea de texto suelta. Ocupa todo el ancho del grid.
+function showNoResults(gridId = "products-grid") {
+  const grid = document.getElementById(gridId);
+  if (!grid) return;
+  grid.innerHTML = notFoundHtml({
+    detail: currentFilters.search
+      ? `No encontramos perfumes para "${currentFilters.search}". Prueba con otra palabra, una marca o mira el catálogo completo.`
+      : "No hay perfumes con esta combinación de filtros. Prueba quitando alguno o mira el catálogo completo.",
+  });
 }
 
 // Arma una tarjeta de producto — usado tanto por renderProductsInto
@@ -174,7 +187,7 @@ export async function fetchProducts(filters = {}, { append = false } = {}) {
 
     if (products.length === 0) {
       if (!append) {
-        showErrorState("No se encontraron productos con esos filtros.");
+        showNoResults();
       }
       window.dispatchEvent(
         new CustomEvent("products-rendered", { detail: { pagination, append } }),

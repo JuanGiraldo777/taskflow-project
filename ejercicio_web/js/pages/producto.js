@@ -14,12 +14,50 @@ import { initThemeToggle } from "../theme.js";
 import { getProductMetaParts } from "../productMeta.js";
 import { renderProductsInto } from "../products.js";
 import { escapeHtml } from "../escape.js";
+import { notFoundHtml } from "../notFound.js";
+import { setPageMeta, productDescription } from "../seo.js";
 
 const params = new URLSearchParams(window.location.search);
 const productId = params.get("id");
+// Solo ids numéricos llegan a la API: "?id=abc" o sin ?id= es directamente
+// "no encontrado" (antes se redirigía al inicio sin explicar nada).
+const hasValidId = /^\d+$/.test(productId || "");
 
-if (!productId) {
-  window.location.href = "index.html";
+// Producto inexistente → el frasco con "?" (js/notFound.js). Se ocultan
+// "También te puede gustar" y las reseñas, que antes quedaban colgando
+// debajo del aviso, y se pide a los buscadores no indexar esta URL.
+function showProductNotFound(section) {
+  section.innerHTML = notFoundHtml({
+    detail: "Este perfume no existe o ya no está en nuestro catálogo. Mira los que sí tenemos.",
+  });
+  setPageMeta({ title: "Perfume no encontrado" });
+  document.getElementById("breadcrumb-product")?.replaceChildren("No encontrado");
+  document.getElementById("related-products")?.classList.add("hidden");
+  document.getElementById("reviews-section")?.classList.add("hidden");
+  if (!document.querySelector('meta[name="robots"]')) {
+    const robots = document.createElement("meta");
+    robots.name = "robots";
+    robots.content = "noindex";
+    document.head.appendChild(robots);
+  }
+}
+
+// Sin conexión con el servidor (Render despertando, red caída): NO es un
+// "no existe" — se ofrece reintentar en vez de decir que el perfume no está.
+function showProductLoadError(section, err) {
+  section.innerHTML = `
+    <div class="not-found" role="alert">
+      <h2 class="not-found-title">NO PUDIMOS CARGAR ESTE PERFUME</h2>
+      <p class="not-found-detail">${escapeHtml(err.message)}</p>
+      <div class="not-found-actions">
+        <button type="button" class="not-found-btn not-found-btn-primary" id="retry-product">Reintentar</button>
+        <a href="catalogo.html" class="not-found-btn">Ver catálogo</a>
+      </div>
+    </div>
+  `;
+  document.getElementById("related-products")?.classList.add("hidden");
+  document.getElementById("reviews-section")?.classList.add("hidden");
+  document.getElementById("retry-product")?.addEventListener("click", () => window.location.reload());
 }
 
 // Estado de la galería de imágenes del detalle. El lightbox es un único
@@ -32,6 +70,8 @@ if (!productId) {
 const galleryState = {
   images: [],
   currentIndex: 0,
+  // Para el texto alternativo del visor ampliado ("Nombre — vista 2").
+  productName: "",
 };
 
 function renderThumbnailActiveState() {
@@ -64,7 +104,10 @@ function setMainImage(index, { fade = true } = {}) {
   }
 
   const lightboxImg = document.getElementById("lightbox-image");
-  if (lightboxImg) lightboxImg.src = image.url;
+  if (lightboxImg) {
+    lightboxImg.src = image.url;
+    lightboxImg.alt = `${galleryState.productName} — vista ${index + 1}`;
+  }
 
   renderThumbnailActiveState();
 }
@@ -174,9 +217,15 @@ function openCartDrawer() {
   drawer?.classList.add("translate-x-0");
 }
 
+// Devuelve true si el producto se mostró (para decidir si cargar reseñas).
 async function renderProductDetail() {
   const section = document.getElementById("product-detail");
-  if (!section) return;
+  if (!section) return false;
+
+  if (!hasValidId) {
+    showProductNotFound(section);
+    return false;
+  }
 
   try {
     const product = await productsApi.getById(productId);
@@ -184,7 +233,7 @@ async function renderProductDetail() {
     const breadcrumb = document.getElementById("breadcrumb-product");
     if (breadcrumb) breadcrumb.textContent = product.name;
 
-    document.title = `Maison - ${product.name}`;
+    setPageMeta({ title: product.name, description: productDescription(product) });
 
     const hasDiscount = product.discounted_price !== null;
     const isPreparado = product.type === "preparado";
@@ -204,6 +253,7 @@ async function renderProductDetail() {
       ? product.images
       : [{ url: "assets/imgs/placeholder.svg", is_main: true }];
     galleryState.currentIndex = 0;
+    galleryState.productName = product.name;
     const images = galleryState.images;
     const mainImage = images[0].url;
 
@@ -232,7 +282,7 @@ async function renderProductDetail() {
                   class="thumbnail-btn shrink-0 w-20 h-20 bg-(--card-bg) rounded-lg overflow-hidden border-2 ${i === 0 ? "border-(--accent)" : "border-transparent"} hover:border-(--accent) transition-colors"
                   data-index="${i}"
                 >
-                  <img src="${escapeHtml(img.url)}" alt="Vista ${i + 1}" class="w-full h-full object-contain p-1" />
+                  <img src="${escapeHtml(img.url)}" alt="${escapeHtml(product.name)} — vista ${i + 1}" class="w-full h-full object-contain p-1" />
                 </button>
               `,
                 )
@@ -472,17 +522,14 @@ async function renderProductDetail() {
 
     await trackProductView(product.id);
     await loadRelated(product.id);
+    return true;
   } catch (err) {
-    section.innerHTML = `
-      <div class="flex flex-col items-center justify-center py-32">
-        <p class="text-(--text) font-serif text-xl opacity-60 mb-4">
-          Producto no encontrado
-        </p>
-        <a href="index.html" class="text-(--accent) font-sans text-sm hover:underline">
-          Volver al catalogo
-        </a>
-      </div>
-    `;
+    if (err.status === 404 || err.status === 400) {
+      showProductNotFound(section);
+    } else {
+      showProductLoadError(section, err);
+    }
+    return false;
   }
 }
 
@@ -517,8 +564,6 @@ async function loadRelated(id) {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
-  if (!productId) return;
-
   initNav();
   initThemeToggle();
   initCart();
@@ -526,8 +571,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   initUser();
   initLightboxControls();
 
-  await renderProductDetail();
-  renderReviews();
+  const found = await renderProductDetail();
+  if (found) renderReviews();
 
   document.getElementById("cart-overlay")?.addEventListener("click", () => {
     closeCartDrawer();

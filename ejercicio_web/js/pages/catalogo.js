@@ -17,6 +17,7 @@ import { initCart } from "../cart.js";
 import { initThemeToggle } from "../theme.js";
 import { initAdvancedFilters } from "../filters.js";
 import { categoriesApi, gendersApi } from "../api/client.js";
+import { setPageMeta } from "../seo.js";
 
 const SORT_LABELS = {
   "price-asc": "Precio: menor a mayor",
@@ -148,8 +149,39 @@ async function resolveHeading() {
   return "CATÁLOGO COMPLETO";
 }
 
+const SECTION_PHRASES = {
+  dama: "para dama",
+  caballero: "para caballero",
+  unisex: "unisex",
+  arabe: "árabes",
+  nicho: "de nicho",
+  disenador: "de diseñador",
+  original: "originales",
+  preparado: "preparados",
+};
+
 resolveHeading().then((text) => {
   if (heading) heading.textContent = text;
+  // Título de la pestaña y descripción para buscadores según la sección
+  // ("Perfumes: Árabe", "Perfumes: Dama"...). El catálogo completo conserva
+  // el título y la descripción fijos del HTML.
+  const section = text.charAt(0) + text.slice(1).toLowerCase();
+  if (query) {
+    setPageMeta({
+      title: `Resultados para "${query}"`,
+      description: `Perfumes que coinciden con "${query}" en Maison Eternelle: originales y preparados con envío a toda Colombia.`,
+    });
+  } else if (text !== "CATÁLOGO COMPLETO") {
+    // Frase natural por sección ("Perfumes para dama", "Perfumes árabes");
+    // una categoría nueva creada desde el admin cae en el nombre tal cual.
+    const phrase =
+      SECTION_PHRASES[genderSlug || categorySlug || productType] ||
+      section.toLowerCase();
+    setPageMeta({
+      title: `Perfumes ${phrase}`,
+      description: `Perfumes ${phrase} en Maison Eternelle, con envío a toda Colombia. Filtra por marca y precio y pide por WhatsApp.`,
+    });
+  }
 });
 
 renderSummary();
