@@ -13,6 +13,17 @@ export function initSlider(intervalMs = 5000) {
 
   if (!track || slides.length === 0) return;
 
+  // Las diapositivas 2 y 3 llevan loading="lazy" en el HTML para no
+  // repartirse la conexión con la primera (la que se ve al entrar y es el
+  // LCP de la página). Cuando la página terminó de cargar se piden ya, con
+  // tiempo de sobra antes del primer cambio de diapositiva.
+  const loadRemainingSlides = () =>
+    track.querySelectorAll('img[loading="lazy"]').forEach((img) => {
+      img.loading = "eager";
+    });
+  if (document.readyState === "complete") loadRemainingSlides();
+  else window.addEventListener("load", loadRemainingSlides, { once: true });
+
   let currentIndex = 0;
 
   setInterval(() => {
