@@ -35,6 +35,30 @@
   --font-serif: 'Playfair Display', serif;
 }
 
+/* ── Fuentes servidas desde el propio dominio (2026-10-06) ──────────────────
+   Antes venían de Google Fonts: una hoja de estilos externa que bloqueaba
+   el primer dibujado de la página (~860 ms en móvil lento según
+   Lighthouse) y le pasaba la IP de cada visitante a Google. Son fuentes
+   variables (un archivo cubre todos los pesos), subconjunto "latin", que
+   incluye á é í ó ú ñ ü ¿ ¡. Licencia SIL OFL 1.1: los textos de licencia
+   van junto a los archivos en assets/fonts/. */
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 300 500;
+  font-display: swap;
+  src: url("../assets/fonts/montserrat-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Playfair Display";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("../assets/fonts/playfair-display-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 /* 3. Variables CSS del tema (dark por defecto, light con clase) */
 :root {
   --bg: #0f0f0f;
@@ -681,12 +705,8 @@ body.light-mode .product-card-img {
   border-color: var(--accent);
   color: var(--accent-text);
 }
-/* El botón de WhatsApp sube para no quedar debajo del aviso. Con
-   "translate" y no con "bottom": un cambio de transform no cuenta como
-   salto de diseño (CLS) y no obliga a recalcular la página. */
-body.has-consent-banner .whatsapp-float-btn {
-  translate: 0 calc(-1 * var(--consent-banner-h, 0px));
-}
+/* El botón de WhatsApp sube para no quedar debajo del aviso: lo hace
+   js/consent.js (liftWhatsAppButton) moviendo solo ese elemento. */
 @media (max-width: 639px) {
   .consent-banner {
     left: 8px;

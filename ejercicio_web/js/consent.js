@@ -38,12 +38,21 @@ function saveConsent(value) {
 
 let bannerObserver = null;
 
+// Botón flotante de WhatsApp: sube lo que mida el aviso para no quedar
+// tapado. Se mueve SOLO ese elemento (con "translate", que no cuenta como
+// salto de diseño): cambiar una clase en <body> o una variable en <html>
+// obligaba a recalcular los estilos de toda la página (~250 ms en un móvil
+// lento, medido con Lighthouse).
+function liftWhatsAppButton(px) {
+  const btn = document.querySelector(".whatsapp-float-btn");
+  if (btn) btn.style.translate = px ? `0 -${px}px` : "";
+}
+
 function hideBanner() {
   bannerObserver?.disconnect();
   bannerObserver = null;
   document.getElementById(BANNER_ID)?.remove();
-  document.body.classList.remove("has-consent-banner");
-  document.documentElement.style.removeProperty("--consent-banner-h");
+  liftWhatsAppButton(0);
 }
 
 function choose(value) {
@@ -76,14 +85,12 @@ function showBanner() {
     if (btn) choose(btn.dataset.consent);
   });
   document.body.appendChild(banner);
-  document.body.classList.add("has-consent-banner");
-  // El botón flotante de WhatsApp sube lo que mida el aviso (ver style.css).
   // ResizeObserver mide después del dibujado: leer offsetHeight aquí
   // obligaba al navegador a calcular toda la página de golpe (~300 ms en
   // un móvil lento) y además sigue los cambios de tamaño (giro, fuente).
   bannerObserver = new ResizeObserver(([entry]) => {
     const height = entry.borderBoxSize?.[0]?.blockSize ?? entry.target.offsetHeight;
-    document.documentElement.style.setProperty("--consent-banner-h", `${Math.ceil(height)}px`);
+    liftWhatsAppButton(Math.ceil(height));
   });
   bannerObserver.observe(banner);
 }

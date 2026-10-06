@@ -32,12 +32,10 @@
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="theme-color" content="#D4AF37" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&family=Playfair+Display:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <!-- Fuentes propias (ver @font-face en src/style.css): se piden ya,
+         antes de que el CSS las descubra. -->
+    <link rel="preload" href="/assets/fonts/playfair-display-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/assets/fonts/montserrat-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="/src/output.css" />
   </head>
 
@@ -179,7 +177,7 @@
           <li><strong>Render</strong> (Estados Unidos): servidor de la aplicación.</li>
           <li><strong>Aiven</strong>: base de datos en la nube donde se guardan las cuentas.</li>
           <li><strong>Cloudinary</strong>: almacenamiento de las fotos de los productos.</li>
-          <li><strong>Google</strong>: Google Analytics, solo con tu consentimiento, y las fuentes tipográficas del sitio.</li>
+          <li><strong>Google</strong>: Google Analytics, solo con tu consentimiento.</li>
           <li><strong>WhatsApp (Meta)</strong>: la conversación de tu pedido, según las condiciones de WhatsApp.</li>
         </ul>
         <p>Además, compartimos con la transportadora los datos necesarios para entregar tu pedido (nombre, teléfono y dirección).</p>
