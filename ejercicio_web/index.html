@@ -131,6 +131,12 @@
         scroll-snap-type: x mandatory;
         scroll-behavior: smooth;
         padding: 0.5rem 0.25rem 1.75rem;
+        /* Igual al padding izquierdo: así la primera tarjeta ya está
+           "encajada" en scrollLeft 0. Sin esto, al llegar los productos el
+           navegador desplazaba el carrusel 4 px solo, y Chrome tomaba ese
+           desplazamiento como scroll y dejaba de medir el LCP (Lighthouse
+           daba "NO_LCP" en el inicio). */
+        scroll-padding-inline: 0.25rem;
         margin: 0 -0.25rem;
         -ms-overflow-style: none;
         scrollbar-width: none;
