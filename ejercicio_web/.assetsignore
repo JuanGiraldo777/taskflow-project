@@ -16,3 +16,6 @@ assets/screens_redes/*.png
 # Recursos guardados para usos futuros, hoy sin referencias
 assets/img_categories/
 assets/brands/
+
+# Configuración de Vercel (solo redirige la dirección vieja; no es parte del sitio)
+vercel.json

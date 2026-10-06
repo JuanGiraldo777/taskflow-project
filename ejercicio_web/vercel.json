@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "/:path*",
+      "destination": "https://maisoneternelleco.com/:path*",
+      "permanent": true
+    }
+  ]
+}

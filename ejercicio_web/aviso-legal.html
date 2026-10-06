@@ -14,6 +14,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      // Respaldo de la redirección de vercel.json: la dirección vieja de
+      // Vercel manda a la misma página en el dominio propio.
+      if (location.hostname.endsWith(".vercel.app")) {
+        location.replace("https://maisoneternelleco.com" + location.pathname + location.search + location.hash);
+      }
+    </script>
     <title>Aviso legal y términos de venta | Maison Eternelle</title>
     <meta name="description" content="Aviso legal y términos de venta de Maison Éternelle: quiénes somos, precios, envíos, garantía, retracto, cambios y devoluciones." />
     <link rel="canonical" href="https://maisoneternelleco.com/aviso-legal.html" />

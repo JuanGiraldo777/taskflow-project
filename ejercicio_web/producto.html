@@ -7,6 +7,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      // Respaldo de la redirección de vercel.json: la dirección vieja de
+      // Vercel manda a la misma página en el dominio propio.
+      if (location.hostname.endsWith(".vercel.app")) {
+        location.replace("https://maisoneternelleco.com" + location.pathname + location.search + location.hash);
+      }
+    </script>
     <title>Perfume | Maison Eternelle</title>
     <meta name="description" content="Detalle del perfume en Maison Eternelle: precio, presentaciones disponibles y notas olfativas. Envío a toda Colombia y pedidos por WhatsApp." />
     <link rel="canonical" href="https://maisoneternelleco.com/producto.html" />

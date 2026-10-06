@@ -7,6 +7,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      // Respaldo de la redirección de vercel.json: la dirección vieja de
+      // Vercel manda a la misma página en el dominio propio.
+      if (location.hostname.endsWith(".vercel.app")) {
+        location.replace("https://maisoneternelleco.com" + location.pathname + location.search + location.hash);
+      }
+    </script>
     <title>Maison Eternelle | Perfumes originales y preparados</title>
     <meta name="description" content="Perfumes originales de 100 ml y preparados en 1 oz, 3 oz y combos: fragancias árabes, de nicho y de diseñador con envío a toda Colombia. Pide por WhatsApp." />
     <link rel="canonical" href="https://maisoneternelleco.com/" />

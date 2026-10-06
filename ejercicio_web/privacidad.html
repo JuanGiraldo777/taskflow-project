@@ -14,6 +14,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      // Respaldo de la redirección de vercel.json: la dirección vieja de
+      // Vercel manda a la misma página en el dominio propio.
+      if (location.hostname.endsWith(".vercel.app")) {
+        location.replace("https://maisoneternelleco.com" + location.pathname + location.search + location.hash);
+      }
+    </script>
     <title>Política de Tratamiento de Datos | Maison Eternelle</title>
     <meta name="description" content="Cómo Maison Éternelle trata tus datos personales según la Ley 1581 de 2012: qué datos, para qué, tus derechos y cómo ejercerlos." />
     <link rel="canonical" href="https://maisoneternelleco.com/privacidad.html" />
