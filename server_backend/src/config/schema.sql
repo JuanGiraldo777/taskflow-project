@@ -43,6 +43,10 @@ CREATE TABLE IF NOT EXISTS users (
   perfume_rec      VARCHAR(100) DEFAULT NULL,
   discount_code    VARCHAR(50)  DEFAULT NULL,
   role             ENUM('user', 'admin') NOT NULL DEFAULT 'user',
+  -- Prueba de la autorización de datos (Ley 1581): cuándo y qué versión de
+  -- privacidad.html aceptó. Ver src/config/privacy.js.
+  privacy_accepted_at    DATETIME    DEFAULT NULL,
+  privacy_policy_version VARCHAR(20) DEFAULT NULL,
   created_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

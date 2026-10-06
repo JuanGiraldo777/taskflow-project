@@ -114,4 +114,22 @@ const addToHistory = async (req, res, next) => {
   }
 };
 
-module.exports = { getById, update, remove, getHistory, addToHistory };
+// ── POST /api/v1/users/:id/privacy-consent ──────────────────────────────────
+// Para cuentas anteriores a la política: guarda la prueba de que aceptó.
+const acceptPrivacy = async (req, res, next) => {
+  try {
+    const id = parseInt(req.params.id);
+    if (req.user.id !== id) {
+      return res.status(403).json({ error: "No autorizado" });
+    }
+    if (req.body.accept !== true) {
+      return res.status(400).json({ error: "Falta la aceptación de la política" });
+    }
+    const result = await userService.acceptPrivacy(id);
+    res.status(200).json(result);
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = { getById, update, remove, getHistory, addToHistory, acceptPrivacy };

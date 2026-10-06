@@ -16,5 +16,6 @@ router.put("/:id", userController.update);
 router.delete("/:id", userController.remove);
 router.get("/:id/history", userController.getHistory);
 router.post("/:id/history", userController.addToHistory);
+router.post("/:id/privacy-consent", userController.acceptPrivacy);
 
 module.exports = router;

@@ -11,6 +11,10 @@
  * Al conectar el dominio propio hay que añadirlo aquí (con y sin www).
  */
 const ALLOWED_ORIGINS = new Set([
+  // Dominio propio (Cloudflare). www redirige al principal, pero se deja
+  // por si alguna petición sale antes de la redirección.
+  "https://maisoneternelleco.com",
+  "https://www.maisoneternelleco.com",
   // Frontend actual en Vercel — se quita cuando el dominio propio esté activo.
   "https://taskflow-project-khaki.vercel.app",
   // Desarrollo local (ejercicio_web/_devserver.py, puerto 5500 por defecto).

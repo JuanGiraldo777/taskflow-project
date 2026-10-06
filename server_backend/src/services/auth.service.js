@@ -6,6 +6,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const pool = require("../config/db");
 const { jwt: jwtConfig } = require("../config/env");
+const { PRIVACY_POLICY_VERSION } = require("../config/privacy");
 
 // ── Registro ────────────────────────────────────────────────────────────────
 const register = async ({ fullName, email, password }) => {
@@ -22,10 +23,12 @@ const register = async ({ fullName, email, password }) => {
   // Nunca se guarda la contraseña en texto plano
   const passwordHash = await bcrypt.hash(password, 10);
 
-  // Insertar usuario en la BD
+  // Insertar usuario en la BD, con la prueba de que aceptó la política de
+  // datos (el controlador ya verificó la casilla): fecha + versión.
   const [result] = await pool.execute(
-    "INSERT INTO users (full_name, email, password_hash) VALUES (?, ?, ?)",
-    [fullName, email, passwordHash],
+    `INSERT INTO users (full_name, email, password_hash, privacy_accepted_at, privacy_policy_version)
+     VALUES (?, ?, ?, NOW(), ?)`,
+    [fullName, email, passwordHash, PRIVACY_POLICY_VERSION],
   );
 
   return {
@@ -40,7 +43,7 @@ const register = async ({ fullName, email, password }) => {
 const login = async ({ email, password }) => {
   // Buscar usuario por email
   const [rows] = await pool.execute(
-    "SELECT id, full_name, email, password_hash, role FROM users WHERE email = ?",
+    "SELECT id, full_name, email, password_hash, role, privacy_policy_version FROM users WHERE email = ?",
     [email],
   );
   if (rows.length === 0) {
@@ -72,6 +75,9 @@ const login = async ({ email, password }) => {
       fullName: user.full_name,
       email: user.email,
       role: user.role,
+      // false = cuenta anterior a la política (o a una versión nueva): el
+      // sitio le pide aceptarla antes de seguir.
+      privacyAccepted: user.privacy_policy_version === PRIVACY_POLICY_VERSION,
     },
   };
 };

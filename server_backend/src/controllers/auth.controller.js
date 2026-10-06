@@ -18,6 +18,13 @@ const register = async (req, res, next) => {
         .status(400)
         .json({ error: "fullName, email y password son obligatorios" });
     }
+    // Autorización previa y expresa (Ley 1581 de 2012, art. 9): sin la
+    // casilla marcada no se crea la cuenta.
+    if (req.body.acceptPrivacy !== true) {
+      return res.status(400).json({
+        error: "Para crear tu cuenta debes aceptar la Política de Tratamiento de Datos.",
+      });
+    }
     if (fullName.length < 2 || fullName.length > 100) {
       return res
         .status(400)

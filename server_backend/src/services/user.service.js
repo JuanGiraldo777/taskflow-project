@@ -3,18 +3,31 @@
  * @description Servicios de perfil de usuario e historial de productos vistos.
  */
 const pool = require("../config/db");
+const { PRIVACY_POLICY_VERSION } = require("../config/privacy");
 
 // ── Obtener perfil ──────────────────────────────────────────────────────────
 const getById = async (id) => {
   const [rows] = await pool.execute(
     `SELECT
       id, full_name, email, favorite_perfume,
-      perfume_rec, discount_code, role, created_at
+      perfume_rec, discount_code, role, created_at,
+      privacy_accepted_at, privacy_policy_version
     FROM users WHERE id = ?`,
     [id],
   );
   if (rows.length === 0) throw new Error("NOT_FOUND");
-  return rows[0];
+  const user = rows[0];
+  return { ...user, privacy_accepted: user.privacy_policy_version === PRIVACY_POLICY_VERSION };
+};
+
+// ── Aceptar la política de datos (cuentas creadas antes de que existiera) ──
+const acceptPrivacy = async (id) => {
+  const [result] = await pool.execute(
+    "UPDATE users SET privacy_accepted_at = NOW(), privacy_policy_version = ? WHERE id = ?",
+    [PRIVACY_POLICY_VERSION, id],
+  );
+  if (result.affectedRows === 0) throw new Error("NOT_FOUND");
+  return { privacyAccepted: true, version: PRIVACY_POLICY_VERSION };
 };
 
 // ── Actualizar perfil ───────────────────────────────────────────────────────
@@ -81,4 +94,4 @@ const addToHistory = async (userId, productId) => {
   );
 };
 
-module.exports = { getById, update, remove, getHistory, addToHistory };
+module.exports = { getById, update, remove, getHistory, addToHistory, acceptPrivacy };
