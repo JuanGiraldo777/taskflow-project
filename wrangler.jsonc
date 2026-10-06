@@ -18,9 +18,10 @@
     "run_worker_first": ["/", "/producto.html", "/sitemap.xml", "/robots.txt"]
   },
   "vars": {
-    // Dominio principal (sin barra final). Se completa al conectar el dominio.
-    // Mientras esté vacío, robots.txt bloquea la indexación.
-    "SITE_URL": ""
+    // Dominio principal (sin barra final): canonical, sitemap y robots.txt.
+    // robots.txt solo permite indexar este host; cualquier otro (workers.dev)
+    // queda bloqueado para no duplicar contenido en Google.
+    "SITE_URL": "https://maisoneternelleco.com"
   },
   "observability": { "enabled": true }
 }

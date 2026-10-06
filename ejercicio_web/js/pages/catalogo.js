@@ -17,7 +17,9 @@ import { initCart } from "../cart.js";
 import { initThemeToggle } from "../theme.js";
 import { initAdvancedFilters } from "../filters.js";
 import { categoriesApi, gendersApi } from "../api/client.js";
-import { setPageMeta } from "../seo.js";
+import { setPageMeta, setCanonical, setNoIndex } from "../seo.js";
+import { track } from "../analytics.js";
+import "../consent.js";
 
 const SORT_LABELS = {
   "price-asc": "Precio: menor a mayor",
@@ -166,7 +168,18 @@ resolveHeading().then((text) => {
   // ("Perfumes: Árabe", "Perfumes: Dama"...). El catálogo completo conserva
   // el título y la descripción fijos del HTML.
   const section = text.charAt(0) + text.slice(1).toLowerCase();
+  // Canónica: la sección (tipo/sexo/categoría) sin búsqueda, orden ni
+  // página — lo mismo que lista el sitemap. Las búsquedas no se indexan.
+  const sectionParams = new URLSearchParams();
+  for (const key of ["type", "gender", "category"]) {
+    if (params.get(key)) sectionParams.set(key, params.get(key));
+  }
+  const sectionQuery = sectionParams.toString();
+  setCanonical(`/catalogo.html${sectionQuery ? `?${sectionQuery}` : ""}`);
+  if (query) setNoIndex();
+
   if (query) {
+    track("search", { search_term: query });
     setPageMeta({
       title: `Resultados para "${query}"`,
       description: `Perfumes que coinciden con "${query}" en Maison Eternelle: originales y preparados con envío a toda Colombia.`,

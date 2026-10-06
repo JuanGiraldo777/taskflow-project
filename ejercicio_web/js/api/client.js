@@ -158,6 +158,12 @@ export const userApi = {
       method: "POST",
       body: JSON.stringify({ productId }),
     }),
+  // Cuentas anteriores a la Política de Tratamiento de Datos: registra que la aceptó.
+  acceptPrivacy: (id) =>
+    request(`/users/${id}/privacy-consent`, {
+      method: "POST",
+      body: JSON.stringify({ accept: true }),
+    }),
 };
 
 export const cartApi = {

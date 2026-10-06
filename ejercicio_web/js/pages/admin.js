@@ -37,8 +37,8 @@ let editingProductId = null;
 // las clases) — este cuadro de feedback nunca mostró color real, solo el
 // texto. Encontrado mientras se tocaba esta función para el CRUD nuevo.
 const FEEDBACK_COLORS = {
-  success: { color: "var(--color-green-500)", background: "color-mix(in srgb, var(--color-green-500) 15%, transparent)" },
-  error: { color: "var(--color-red-500)", background: "color-mix(in srgb, var(--color-red-500) 15%, transparent)" },
+  success: { color: "var(--success)", background: "color-mix(in srgb, var(--success) 12%, transparent)" },
+  error: { color: "var(--danger)", background: "color-mix(in srgb, var(--danger) 12%, transparent)" },
 };
 
 function showFeedback(message, type = "success", boxId = "admin-feedback") {
@@ -291,7 +291,7 @@ function renderProductRow(product) {
   tr.innerHTML = `
     <td class="admin-cell-name py-3 px-3">
       <div class="font-serif">${escapeHtml(product.name)}</div>
-      <div class="text-xs opacity-60">${escapeHtml(product.category)} · ${escapeHtml(product.gender)}</div>
+      <div class="text-xs text-(--text) opacity-60">${escapeHtml(product.category)} · ${escapeHtml(product.gender)}</div>
     </td>
     <td class="py-3 px-3" data-label="Marca">${escapeHtml(product.brand)}</td>
     <td class="py-3 px-3" data-label="Tipo">${product.type === "preparado" ? "Preparado" : "Original"}</td>
@@ -307,7 +307,7 @@ function renderProductRow(product) {
       <span class="admin-actions-sep opacity-30" style="margin: 0 8px">/</span>
       <button
         class="admin-delete-btn bg-transparent border-none cursor-pointer font-sans text-sm hover:opacity-90"
-        style="color: var(--color-red-500)"
+        style="color: var(--danger)"
         data-id="${escapeHtml(product.id)}"
         data-name="${escapeHtml(product.name)}"
       >

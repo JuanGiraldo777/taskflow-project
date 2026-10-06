@@ -43,6 +43,11 @@
   --accent-text: #D4AF37;
   --card-bg: #1a1a1a;
   --badge-bg: #D4AF37;
+  /* Rojo/verde de mensajes y botones de borrar: el 500 de Tailwind se lee
+     bien sobre negro (5.0:1 y 8.6:1) pero no sobre crema (3.5:1 y 2.0:1),
+     así que en claro se usan tonos más oscuros (5.9:1 y 4.6:1). */
+  --danger: #fb2c36;
+  --success: #00c950;
 }
 
 body.light-mode {
@@ -51,6 +56,8 @@ body.light-mode {
   --accent: #D4AF37;
   --accent-text: #80621A;
   --card-bg: #faf7f3;
+  --danger: #b91c1c;
+  --success: #15803d;
 }
 
 /* 4. Reset básico (Tailwind ya incluye Preflight, pero mantenemos lo tuyo) */
@@ -611,5 +618,321 @@ body.light-mode .product-card-img {
   .theme-switch-thumb,
   .theme-switch-track {
     transition: none;
+  }
+}
+
+/* ── Aviso de cookies (js/consent.js) ────────────────────────────────────────
+   Barra fija abajo. z-index 240: por debajo del fondo oscuro (250) y de los
+   paneles (carrito, menú, 300-360), que lo tapan al abrirse. Aceptar y
+   Rechazar con el MISMO estilo: rechazar no puede costar más que aceptar. */
+.consent-banner {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  z-index: 240;
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 16px 24px;
+  padding: 16px 20px;
+  border: 1px solid var(--accent);
+  border-radius: 14px;
+  background: var(--card-bg);
+  color: var(--text);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
+  font-family: var(--font-sans);
+}
+.consent-text {
+  margin: 0;
+  flex: 1;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.consent-text a {
+  color: var(--accent-text);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  white-space: nowrap;
+}
+.consent-actions {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.consent-btn {
+  min-width: 112px;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid var(--text);
+  border-radius: 9999px;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.consent-btn:hover,
+.consent-btn:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent-text);
+}
+/* El botón de WhatsApp sube para no quedar debajo del aviso. */
+body.has-consent-banner .whatsapp-float-btn {
+  bottom: calc(var(--consent-banner-h, 0px) + 24px);
+}
+@media (max-width: 639px) {
+  .consent-banner {
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 14px 16px;
+  }
+  .consent-actions .consent-btn {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+/* ── Enlaces legales del pie de página ───────────────────────────────────── */
+.footer-legal {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 18px;
+  margin: 0 0 14px;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+}
+.footer-legal a,
+.footer-legal button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.footer-legal a:hover,
+.footer-legal button:hover {
+  color: var(--accent-text);
+}
+
+/* ── Páginas legales (aviso-legal, privacidad, cookies) ──────────────────── */
+.legal {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 24px 20px 72px;
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 0.98rem;
+  line-height: 1.75;
+}
+.legal .legal-back {
+  display: inline-block;
+  margin-bottom: 24px;
+  color: var(--text);
+  font-size: 0.875rem;
+  text-decoration: none;
+}
+.legal .legal-back:hover {
+  color: var(--accent-text);
+}
+.legal h1 {
+  margin: 0 0 6px;
+  font-family: var(--font-serif);
+  font-size: clamp(1.7rem, 2.5vw + 1rem, 2.4rem);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+}
+.legal-updated {
+  margin: 0 0 28px;
+  font-size: 0.85rem;
+}
+.legal h2 {
+  margin: 40px 0 10px;
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-weight: 600;
+  line-height: 1.3;
+  scroll-margin-top: 24px;
+}
+.legal h3 {
+  margin: 24px 0 6px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+.legal p,
+.legal ul,
+.legal ol {
+  margin: 0 0 14px;
+}
+.legal ul,
+.legal ol {
+  padding-left: 1.3em;
+}
+.legal ul {
+  list-style: disc;
+}
+.legal ol {
+  list-style: decimal;
+}
+.legal li {
+  margin-bottom: 6px;
+}
+.legal a {
+  color: var(--accent-text);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  overflow-wrap: anywhere;
+}
+.legal strong {
+  font-weight: 600;
+}
+.legal-box {
+  margin: 0 0 24px;
+  padding: 16px 20px;
+  border: 1px solid var(--accent);
+  border-radius: 12px;
+  background: var(--card-bg);
+}
+.legal-box p:last-child {
+  margin-bottom: 0;
+}
+.legal-toc {
+  margin: 0 0 8px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  background: var(--card-bg);
+}
+.legal-toc ol {
+  margin: 0;
+  columns: 2;
+  column-gap: 32px;
+}
+.legal-toc a {
+  text-decoration: none;
+}
+.legal-toc a:hover {
+  text-decoration: underline;
+}
+.legal-table {
+  width: 100%;
+  margin: 0 0 18px;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.legal-table th,
+.legal-table td {
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, var(--text) 25%, transparent);
+  text-align: left;
+  vertical-align: top;
+}
+.legal-table th {
+  background: var(--card-bg);
+  font-weight: 600;
+}
+.legal-table-wrap {
+  overflow-x: auto;
+}
+@media (max-width: 639px) {
+  .legal {
+    padding: 16px 16px 56px;
+    font-size: 0.95rem;
+  }
+  .legal-toc ol {
+    columns: 1;
+  }
+}
+
+/* ── Casilla de autorización de datos (registro) y aviso de privacidad ───── */
+.privacy-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--text);
+  cursor: pointer;
+}
+.privacy-consent input {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: var(--accent);
+}
+.privacy-consent a,
+.form-legal-note a {
+  color: var(--accent-text);
+  text-decoration: underline;
+}
+.form-legal-note {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+/* ── Zona táctil mínima de 44×44 px sin cambiar el diseño ────────────────────
+   Íconos y enlaces que se ven pequeños (hamburguesa 26×18, íconos de 32,
+   corazón de 40, "← Volver"...) reciben una capa invisible centrada de al
+   menos 44×44 que también responde al toque. WCAG 2.2 exige 24 px; 44 es la
+   recomendación para dedos (Apple/Google). Ninguno de estos elementos tiene
+   position absolute/fixed propia, salvo .add-to-favorites, que ya es
+   absolute y por eso no se toca su position. */
+#close-cart-btn,
+#darkModeToggle,
+#threebars,
+#filter-btn,
+#user-profile-btn,
+.back-link,
+.legal .legal-back {
+  position: relative;
+}
+#close-cart-btn::after,
+#darkModeToggle::after,
+#threebars::after,
+#filter-btn::after,
+#user-profile-btn::after,
+.back-link::after,
+.legal .legal-back::after,
+.product-card .add-to-favorites::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: max(100%, 44px);
+  height: max(100%, 44px);
+  transform: translate(-50%, -50%);
+}
+/* Pestañas de categorías del inicio (16 px de alto) y presentaciones de
+   los preparados (38 px): aquí sí crece el botón, sin cambiar el texto. */
+.category-filter-btn {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.variant-btn {
+  min-height: 44px;
+}
+@media (max-width: 767px) {
+  .footer-legal a,
+  .footer-legal button {
+    min-height: 44px;
   }
 }

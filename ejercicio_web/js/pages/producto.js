@@ -15,8 +15,10 @@ import { getProductMetaParts } from "../productMeta.js";
 import { renderProductsInto } from "../products.js";
 import { escapeHtml } from "../escape.js";
 import { notFoundHtml } from "../notFound.js";
-import { setPageMeta, productDescription } from "../seo.js";
+import { setPageMeta, productDescription, setCanonical, setNoIndex } from "../seo.js";
 import { optimizedImage, IMAGE_WIDTHS } from "../imageUrl.js";
+import { track, gaItem } from "../analytics.js";
+import "../consent.js";
 
 const params = new URLSearchParams(window.location.search);
 const productId = params.get("id");
@@ -35,12 +37,7 @@ function showProductNotFound(section) {
   document.getElementById("breadcrumb-product")?.replaceChildren("No encontrado");
   document.getElementById("related-products")?.classList.add("hidden");
   document.getElementById("reviews-section")?.classList.add("hidden");
-  if (!document.querySelector('meta[name="robots"]')) {
-    const robots = document.createElement("meta");
-    robots.name = "robots";
-    robots.content = "noindex";
-    document.head.appendChild(robots);
-  }
+  setNoIndex();
 }
 
 // Sin conexión con el servidor (Render despertando, red caída): NO es un
@@ -235,6 +232,7 @@ async function renderProductDetail() {
     if (breadcrumb) breadcrumb.textContent = product.name;
 
     setPageMeta({ title: product.name, description: productDescription(product) });
+    setCanonical(`/producto.html?id=${product.id}`);
 
     const hasDiscount = product.discounted_price !== null;
     const isPreparado = product.type === "preparado";
@@ -373,7 +371,7 @@ async function renderProductDetail() {
             product.description
               ? `
             <div class="border-t border-(--text) border-opacity-20 pt-6">
-              <h3 class="font-serif text-lg text-(--text) mb-3">Descripción</h3>
+              <h2 class="font-serif text-lg text-(--text) mb-3">Descripción</h2>
               <p class="text-(--text) opacity-80 font-sans leading-relaxed">
                 ${escapeHtml(product.description)}
               </p>
@@ -500,6 +498,8 @@ async function renderProductDetail() {
             ? Number(addBtn.dataset.variantId)
             : null;
           await cartApi.addItem(product.id, 1, variantId);
+          const price = Number(addBtn?.dataset.price) || Number(product.price) || 0;
+          track("add_to_cart", { currency: "COP", value: price, items: [gaItem({ ...product, price })] });
           // Disparar evento para que cart.js sincronice su estado
           window.dispatchEvent(new CustomEvent("sync-cart"));
           // Abrir drawer
@@ -522,6 +522,11 @@ async function renderProductDetail() {
     // (por eso el botón se quedaba en "En favoritos" aunque ya le hubieras
     // dado para sacarlo).
 
+    track("view_item", {
+      currency: "COP",
+      value: Number(displayPrice) || 0,
+      items: [gaItem({ ...product, price: displayPrice })],
+    });
     await trackProductView(product.id);
     await loadRelated(product.id);
     return true;

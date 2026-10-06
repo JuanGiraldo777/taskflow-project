@@ -13,6 +13,7 @@ import { initThemeToggle } from "./theme.js";
 import { initAdvancedFilters } from "./filters.js";
 import { renderReviews } from "./reviews.js";
 import { initCarousels } from "./carousel.js";
+import "./consent.js";
 
 initUser();
 initAdvancedFilters();

@@ -5,6 +5,7 @@
 import { cartApi } from "./api/client.js";
 import { getCurrentUser } from "./user.js";
 import { escapeHtml } from "./escape.js";
+import { track, gaItem } from "./analytics.js";
 
 // Número real de la perfumería, sin "+" ni espacios (formato que exige
 // el link de wa.me): +57 315 9758805.
@@ -162,6 +163,12 @@ async function addItemToCart(productId) {
 
   try {
     cartState = await cartApi.addItem(productId, 1);
+    const added = cartState.items?.find((i) => String(i.product_id) === String(productId));
+    track("add_to_cart", {
+      currency: "COP",
+      value: Number(added?.price) || 0,
+      items: [gaItem({ id: productId, name: added?.name, price: added?.price })],
+    });
     renderCartDrawer();
     openCartDrawer();
   } catch (err) {
@@ -278,6 +285,17 @@ function goToWhatsAppCheckout() {
   if (cartState.items.length === 0) return;
 
   const message = buildWhatsAppOrderMessage();
+  // La compra real termina en WhatsApp: este clic es la conversión que mide GA4.
+  track("begin_checkout", {
+    currency: "COP",
+    value: Number(cartState.total) || 0,
+    items: cartState.items.map((item) =>
+      gaItem(
+        { id: item.product_id, name: item.name, price: item.price },
+        { quantity: Number(item.quantity) || 1, ...(item.variant_label && { item_variant: item.variant_label }) },
+      ),
+    ),
+  });
   const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
   window.open(url, "_blank", "noopener,noreferrer");
 }

@@ -1,0 +1,208 @@
+<!--
+  @file ejercicio_web/cookies.html
+  @description Política de Cookies de Maison Éternelle.
+  Redactado el 2026-10-06 con los datos que dio el negocio (titular Ivan
+  Florez, C.C. 1.110.445.027, Ibagué) y la normativa colombiana: Ley 1480 de
+  2011 (consumidor), Ley 1581 de 2012 y Decreto 1377 de 2013 (datos), Ley 527
+  de 1999 (comercio electrónico). Recomendado: revisión de un abogado, sobre
+  todo lo relativo a los preparados y las marcas de terceros.
+  Si se cambia la política de datos de forma importante, subir también la
+  versión en server_backend/src/config/privacy.js.
+-->
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Política de Cookies | Maison Eternelle</title>
+    <meta name="description" content="Qué cookies y almacenamiento usa la tienda Maison Éternelle, para qué sirven y cómo aceptar o rechazar Google Analytics." />
+    <link rel="canonical" href="https://maisoneternelleco.com/cookies.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Maison Eternelle Perfumería" />
+    <meta property="og:locale" content="es_CO" />
+    <meta property="og:title" content="Política de Cookies | Maison Eternelle" />
+    <meta property="og:description" content="Qué cookies y almacenamiento usa la tienda Maison Éternelle, para qué sirven y cómo aceptar o rechazar Google Analytics." />
+    <meta property="og:url" content="https://maisoneternelleco.com/cookies.html" />
+    <meta property="og:image" content="https://maisoneternelleco.com/og-image.jpg" />
+
+    <!-- Favicon e íconos (generados desde assets/imgs/M_DORADA.png) -->
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#D4AF37" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&family=Playfair+Display:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/src/output.css" />
+  </head>
+
+  <body>
+    <script>
+      try {
+        if (localStorage.getItem("theme") !== "dark") {
+          document.body.classList.add("light-mode");
+        }
+      } catch (e) {
+        document.body.classList.add("light-mode");
+      }
+    </script>
+
+    <header class="top-bar simple-header">
+      <div class="simple-header-inner">
+        <div class="justify-self-start">
+          <button
+            id="darkModeToggle"
+            type="button"
+            role="switch"
+            aria-checked="false"
+            class="theme-switch"
+            aria-label="Cambiar entre modo oscuro y claro"
+          >
+            <span class="theme-switch-track">
+              <span class="theme-switch-thumb"></span>
+            </span>
+          </button>
+        </div>
+        <a href="/" class="simple-header-logo justify-self-center">
+          <img
+            src="/assets/imgs/LOGO_PRINCIPAL_NEGRO.webp"
+            alt="Maison Eternelle Perfumería — ir al inicio"
+          />
+        </a>
+        <div></div>
+      </div>
+    </header>
+
+    <main class="bg-(--bg)">
+      <article class="legal">
+        <a href="/" class="legal-back">← Volver a la tienda</a>
+        <h1>Política de Cookies</h1>
+        <p class="legal-updated">Vigente desde el 6 de octubre de 2026</p>
+
+        <div class="legal-box">
+          <p><strong>En resumen:</strong> la tienda guarda en tu navegador solo lo necesario para funcionar (tu sesión, el tema claro u oscuro y tu elección sobre cookies). Las cookies de Google Analytics solo se activan si las aceptas. Puedes cambiar tu elección cuando quieras.</p>
+          <p><button type="button" class="consent-btn" data-cookie-settings>Configurar cookies</button></p>
+        </div>
+
+        <h2 id="que-son">1. Qué son las cookies</h2>
+        <p>Las cookies y el almacenamiento local (<em>localStorage</em>) son pequeños archivos o datos que un sitio web guarda en tu navegador para recordar información entre visitas, por ejemplo que ya iniciaste sesión.</p>
+
+        <h2 id="necesarias">2. Necesarias (siempre activas)</h2>
+        <p>Sin ellas la tienda no puede funcionar, por eso no requieren tu permiso. Se guardan en el almacenamiento local de tu navegador y no se comparten con terceros.</p>
+        <div class="legal-table-wrap" tabindex="0" role="region" aria-label="Tabla de almacenamiento necesario">
+          <table class="legal-table">
+            <thead>
+              <tr><th scope="col">Nombre</th><th scope="col">Para qué sirve</th><th scope="col">Duración</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>token</code></td><td>Mantiene tu sesión iniciada.</td><td>Hasta que cierres sesión o la sesión venza por seguridad.</td></tr>
+              <tr><td><code>user</code></td><td>Guarda tu nombre y datos básicos de cuenta para mostrarlos en tu perfil.</td><td>Hasta que cierres sesión.</td></tr>
+              <tr><td><code>theme</code></td><td>Recuerda si elegiste el tema claro u oscuro.</td><td>Hasta que borres los datos del navegador.</td></tr>
+              <tr><td><code>cookie_consent</code></td><td>Recuerda si aceptaste o rechazaste las cookies de análisis.</td><td>12 meses; después te volvemos a preguntar.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 id="analisis">3. De análisis (solo si las aceptas)</h2>
+        <p>Usamos <strong>Google Analytics 4</strong> para saber, de forma estadística, cuántas personas visitan la tienda, qué páginas y perfumes ven, desde qué ciudad o país aproximado y con qué tipo de dispositivo, y qué acciones hacen (por ejemplo, añadir al carrito o iniciar una compra por WhatsApp). Nos sirve para mejorar el catálogo y el sitio. Google Analytics 4 no guarda tu dirección IP.</p>
+        <p><strong>Si no las aceptas, no se carga Google Analytics y no se crea ninguna de estas cookies.</strong></p>
+        <div class="legal-table-wrap" tabindex="0" role="region" aria-label="Tabla de cookies de análisis">
+          <table class="legal-table">
+            <thead>
+              <tr><th scope="col">Nombre</th><th scope="col">Proveedor</th><th scope="col">Para qué sirve</th><th scope="col">Duración</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>_ga</code></td><td>Google</td><td>Distingue a un visitante de otro de forma anónima.</td><td>2 años</td></tr>
+              <tr><td><code>_ga_Q3Q2CGPY5H</code></td><td>Google</td><td>Mantiene el estado de la visita (sesión).</td><td>2 años</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Más información en la <a href="https://policies.google.com/technologies/partner-sites?hl=es" target="_blank" rel="noopener noreferrer">explicación de Google sobre el uso de datos</a>.</p>
+
+        <h2 id="terceros">4. Otros servicios que carga la página</h2>
+        <p>Para mostrar el sitio, tu navegador descarga las fuentes tipográficas de Google Fonts y las fotos de los productos desde Cloudinary, y se conecta a nuestro servidor (Render). Estos servicios reciben tu dirección IP para poder enviarte el contenido, pero no instalan cookies en tu navegador desde nuestra tienda.</p>
+
+        <h2 id="cambiar">5. Cómo cambiar tu elección</h2>
+        <ul>
+          <li>Pulsa <strong>«Configurar cookies»</strong> en el pie de cualquier página (o el botón al inicio de esta) y elige de nuevo. Si rechazas después de haber aceptado, desactivamos Google Analytics y borramos sus cookies.</li>
+          <li>También puedes borrar las cookies y los datos del sitio desde la configuración de tu navegador.</li>
+        </ul>
+        <p>Rechazar las cookies de análisis no afecta el funcionamiento de la tienda.</p>
+        <p>Para más información sobre cómo tratamos tus datos, lee la <a href="/privacidad.html">Política de Tratamiento de Datos</a>.</p>
+      </article>
+    </main>
+
+    <footer
+      class="bg-(--card-bg) py-12 max-sm:py-8 px-20 max-sm:px-4 sm:px-8 md:px-12 text-center"
+    >
+      <div class="max-w-[1400px] mx-auto">
+        <img
+          src="/assets/imgs/LOGO_PRINCIPAL_DORADO.webp"
+          loading="lazy"
+          alt="Maison Eternelle Perfumería"
+          class="h-12 mx-auto mb-4"
+        />
+        <p class="font-serif text-(--accent) text-sm tracking-wide mb-4">
+          ✨ Donde el aroma nunca muere ✨
+        </p>
+        <div class="footer-social-row mb-6">
+          <a
+            href="https://www.instagram.com/maisoneternelle_co/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="footer-social-link"
+            aria-label="Instagram de Maison Eternelle"
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.332.014 7.052.072 2.695.272.273 2.69.073 7.052.014 8.332 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.332 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"
+              />
+            </svg>
+          </a>
+          <a
+            href="https://www.tiktok.com/@maisoneternelle_co?lang=es"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="footer-social-link"
+            aria-label="TikTok de Maison Eternelle"
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M16.6 5.82a4.278 4.278 0 0 1-1.06-2.82h-3.09v12.4a2.592 2.592 0 1 1-2.59-2.6c.15 0 .3.01.44.03V9.66a5.85 5.85 0 1 0 5.45 5.83V9.4a7.72 7.72 0 0 0 4.51 1.44V7.68a4.278 4.278 0 0 1-3.66-1.86z"
+              />
+            </svg>
+          </a>
+          <a
+            href="https://www.facebook.com/692880320577326"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="footer-social-link"
+            aria-label="Facebook de Maison Eternelle"
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M22 12.06C22 6.505 17.523 2 12 2S2 6.505 2 12.06c0 5.022 3.657 9.184 8.438 9.94v-7.03H7.898v-2.91h2.54V9.845c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.459h-1.26c-1.242 0-1.63.771-1.63 1.562v1.877h2.773l-.443 2.91h-2.33V22c4.78-.756 8.437-4.918 8.437-9.94z"
+              />
+            </svg>
+          </a>
+        </div>
+        <nav class="footer-legal" aria-label="Información legal">
+          <a href="/aviso-legal.html">Aviso legal y términos</a>
+          <a href="/privacidad.html">Privacidad</a>
+          <a href="/cookies.html">Cookies</a>
+          <button type="button" data-cookie-settings>Configurar cookies</button>
+        </nav>
+        <p class="text-(--text) opacity-50 font-sans text-xs">
+          © 2026 Maison Eternelle Perfumería. Todos los derechos reservados.
+        </p>
+      </div>
+    </footer>
+
+    <script type="module" src="/js/pages/simple.js"></script>
+  </body>
+</html>

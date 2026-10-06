@@ -1,0 +1,276 @@
+<!--
+  @file ejercicio_web/aviso-legal.html
+  @description Aviso legal y términos de venta de Maison Éternelle.
+  Redactado el 2026-10-06 con los datos que dio el negocio (titular Ivan
+  Florez, C.C. 1.110.445.027, Ibagué) y la normativa colombiana: Ley 1480 de
+  2011 (consumidor), Ley 1581 de 2012 y Decreto 1377 de 2013 (datos), Ley 527
+  de 1999 (comercio electrónico). Recomendado: revisión de un abogado, sobre
+  todo lo relativo a los preparados y las marcas de terceros.
+  Si se cambia la política de datos de forma importante, subir también la
+  versión en server_backend/src/config/privacy.js.
+-->
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aviso legal y términos de venta | Maison Eternelle</title>
+    <meta name="description" content="Aviso legal y términos de venta de Maison Éternelle: quiénes somos, precios, envíos, garantía, retracto, cambios y devoluciones." />
+    <link rel="canonical" href="https://maisoneternelleco.com/aviso-legal.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Maison Eternelle Perfumería" />
+    <meta property="og:locale" content="es_CO" />
+    <meta property="og:title" content="Aviso legal y términos de venta | Maison Eternelle" />
+    <meta property="og:description" content="Aviso legal y términos de venta de Maison Éternelle: quiénes somos, precios, envíos, garantía, retracto, cambios y devoluciones." />
+    <meta property="og:url" content="https://maisoneternelleco.com/aviso-legal.html" />
+    <meta property="og:image" content="https://maisoneternelleco.com/og-image.jpg" />
+
+    <!-- Favicon e íconos (generados desde assets/imgs/M_DORADA.png) -->
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#D4AF37" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&family=Playfair+Display:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/src/output.css" />
+  </head>
+
+  <body>
+    <script>
+      try {
+        if (localStorage.getItem("theme") !== "dark") {
+          document.body.classList.add("light-mode");
+        }
+      } catch (e) {
+        document.body.classList.add("light-mode");
+      }
+    </script>
+
+    <header class="top-bar simple-header">
+      <div class="simple-header-inner">
+        <div class="justify-self-start">
+          <button
+            id="darkModeToggle"
+            type="button"
+            role="switch"
+            aria-checked="false"
+            class="theme-switch"
+            aria-label="Cambiar entre modo oscuro y claro"
+          >
+            <span class="theme-switch-track">
+              <span class="theme-switch-thumb"></span>
+            </span>
+          </button>
+        </div>
+        <a href="/" class="simple-header-logo justify-self-center">
+          <img
+            src="/assets/imgs/LOGO_PRINCIPAL_NEGRO.webp"
+            alt="Maison Eternelle Perfumería — ir al inicio"
+          />
+        </a>
+        <div></div>
+      </div>
+    </header>
+
+    <main class="bg-(--bg)">
+      <article class="legal">
+        <a href="/" class="legal-back">← Volver a la tienda</a>
+        <h1>Aviso legal y términos de venta</h1>
+        <p class="legal-updated">Vigente desde el 6 de octubre de 2026</p>
+
+        <div class="legal-box">
+          <p><strong>En resumen:</strong> compras por WhatsApp · precios finales en pesos colombianos (no cobramos IVA) · envíos a toda Colombia en 2 a 3 días hábiles, desde $18.000 · garantía legal y derecho de retracto según la Ley 1480 de 2011.</p>
+        </div>
+
+        <nav class="legal-toc" aria-label="Contenido">
+          <ol>
+            <li><a href="#quienes-somos">Quiénes somos</a></li>
+            <li><a href="#aceptacion">Aceptación de estos términos</a></li>
+            <li><a href="#productos">Nuestros productos</a></li>
+            <li><a href="#precios">Precios</a></li>
+            <li><a href="#como-comprar">Cómo comprar</a></li>
+            <li><a href="#pagos">Pagos</a></li>
+            <li><a href="#envios">Envíos</a></li>
+            <li><a href="#garantia">Garantía legal</a></li>
+            <li><a href="#retracto">Derecho de retracto</a></li>
+            <li><a href="#cambios">Cambios y devoluciones</a></li>
+            <li><a href="#reversion">Reversión del pago</a></li>
+            <li><a href="#promocion">Promoción: 10% por tu reseña</a></li>
+            <li><a href="#cuenta">Tu cuenta y el uso del sitio</a></li>
+            <li><a href="#propiedad">Propiedad intelectual</a></li>
+            <li><a href="#pqr">Peticiones, quejas y reclamos</a></li>
+            <li><a href="#ley">Ley aplicable</a></li>
+          </ol>
+        </nav>
+
+        <h2 id="quienes-somos">1. Quiénes somos</h2>
+        <p>Este sitio web (<a href="https://maisoneternelleco.com">maisoneternelleco.com</a>) es operado por <strong>Ivan Florez</strong>, persona natural identificada con cédula de ciudadanía <strong>1.110.445.027</strong>, quien vende perfumes con el nombre comercial <strong>Maison Éternelle</strong> (también «Maison Eternelle Perfumería»). En estos términos lo llamamos «Maison Éternelle», «nosotros» o «la tienda».</p>
+        <ul>
+          <li><strong>Dirección:</strong> Calle 15 # 4-33, Edificio Villa Sol, Ibagué, Tolima, Colombia.</li>
+          <li><strong>Teléfono:</strong> <a href="tel:+573053461548">+57 305 346 1548</a></li>
+          <li><strong>WhatsApp para pedidos:</strong> <a href="https://wa.me/573159758805">+57 315 975 8805</a></li>
+          <li><strong>Correo:</strong> <a href="mailto:maisondeleternelco@gmail.com">maisondeleternelco@gmail.com</a></li>
+        </ul>
+
+        <h2 id="aceptacion">2. Aceptación de estos términos</h2>
+        <p>Al navegar por el sitio, crear una cuenta o hacer un pedido aceptas estos términos. Léelos junto con la <a href="/privacidad.html">Política de Tratamiento de Datos</a> y la <a href="/cookies.html">Política de Cookies</a>. Podemos actualizarlos: la versión vigente es siempre la publicada en esta página, con su fecha, y cada pedido se rige por los términos vigentes en el momento en que lo hiciste.</p>
+
+        <h2 id="productos">3. Nuestros productos</h2>
+        <ul>
+          <li><strong>Originales:</strong> perfumes de las marcas indicadas en cada ficha, nuevos y en su presentación comercial (por ejemplo, 100 ml).</li>
+          <li><strong>Preparados:</strong> fragancias de elaboración propia de Maison Éternelle, inspiradas en el perfil olfativo de perfumes conocidos, en presentaciones de 1 oz, 3 oz y combos. Se preparan por pedido.</li>
+        </ul>
+        <div class="legal-box">
+          <p><strong>Importante sobre los preparados:</strong> no son los perfumes originales de las marcas que se mencionan, ni son fabricados, distribuidos o avalados por ellas. Los nombres de marcas y perfumes de terceros se usan únicamente como referencia del aroma en el que se inspira cada preparado y pertenecen a sus respectivos titulares. Maison Éternelle no tiene relación comercial con esas marcas.</p>
+        </div>
+        <p>Las fotos son ilustrativas y el empaque puede variar según el lote o la presentación. Las descripciones de aromas son orientativas: cada fragancia se percibe distinto según la piel de cada persona.</p>
+
+        <h2 id="precios">4. Precios</h2>
+        <p>Todos los precios están en <strong>pesos colombianos (COP)</strong> y son el <strong>precio final</strong> del producto: Maison Éternelle no es responsable de IVA, así que no se suma ningún impuesto al pagar. El costo del envío no está incluido y te lo informamos antes de confirmar el pedido (ver <a href="#envios">Envíos</a>). Podemos cambiar los precios del sitio en cualquier momento, pero respetamos el precio publicado cuando nos enviaste tu pedido.</p>
+
+        <h2 id="como-comprar">5. Cómo comprar</h2>
+        <ol>
+          <li>Crea tu cuenta o inicia sesión.</li>
+          <li>Agrega los productos al carrito (en los preparados, elige primero la presentación).</li>
+          <li>Pulsa <strong>«Finalizar compra»</strong>: se abre WhatsApp con tu pedido ya escrito (productos, cantidades y total).</li>
+          <li>Te confirmamos por WhatsApp la disponibilidad, el costo del envío a tu ciudad y el total a pagar.</li>
+          <li>Pagas por el medio acordado y despachamos tu pedido.</li>
+        </ol>
+        <p>El pedido queda confirmado —y la compra perfeccionada— cuando te confirmamos disponibilidad y total por WhatsApp y realizas el pago. Hasta ese momento puedes modificarlo o cancelarlo sin costo. Si algún producto no está disponible, te lo diremos antes de cobrarte y podrás cambiarlo o cancelarlo.</p>
+
+        <h2 id="pagos">6. Pagos</h2>
+        <p>El pago se coordina por WhatsApp al confirmar el pedido; ahí te indicamos los medios de pago disponibles. Este sitio web no recibe ni guarda datos de tarjetas ni de cuentas bancarias, y nunca te pediremos contraseñas ni códigos de seguridad de tu banco.</p>
+
+        <h2 id="envios">7. Envíos</h2>
+        <ul>
+          <li><strong>Cobertura:</strong> toda Colombia.</li>
+          <li><strong>Tiempo:</strong> de 2 a 3 días hábiles después de confirmado el pago. Puede ser mayor en zonas de difícil acceso o temporadas de alta demanda; si ocurre, te avisaremos.</li>
+          <li><strong>Costo:</strong> desde $18.000. El valor exacto depende de la ciudad de destino y te lo informamos antes del pago.</li>
+        </ul>
+        <p>Al recibir el paquete, revísalo. Si llega abierto, golpeado o mojado, tómale fotos y escríbenos (ver <a href="#garantia">Garantía legal</a>).</p>
+
+        <h2 id="garantia">8. Garantía legal</h2>
+        <p>Todos nuestros productos tienen la garantía legal de la Ley 1480 de 2011 (Estatuto del Consumidor): deben corresponder a lo ofrecido y llegar en buen estado. Si tu producto llega roto, con fugas, con el atomizador dañado, con un defecto de fabricación o es distinto al que pediste, escríbenos con tu nombre, la fecha del pedido y fotos o video. Te ofreceremos el cambio por un producto igual en buen estado o, si no es posible, la devolución de tu dinero, sin costo para ti.</p>
+        <p>Para atenderte más rápido, te pedimos reportar los daños del transporte apenas recibas el paquete; aun así, esto no limita tu derecho a la garantía legal. La garantía no cubre daños por mal uso o mala conservación (por ejemplo, exposición prolongada al sol o al calor) ni la preferencia personal por un aroma.</p>
+
+        <h2 id="retracto">9. Derecho de retracto</h2>
+        <p>En las compras a distancia —como las que se hacen por este sitio y por WhatsApp— puedes retractarte de la compra dentro de los <strong>5 días hábiles</strong> siguientes a la entrega del producto (artículo 47 de la Ley 1480 de 2011). Para hacerlo:</p>
+        <ul>
+          <li>avísanos por WhatsApp o por correo dentro de ese plazo;</li>
+          <li>devuelve el producto sin usar, con su sello o celofán y su empaque original intactos;</li>
+          <li>los costos de transporte de la devolución corren por tu cuenta, como establece la ley.</li>
+        </ul>
+        <p>Te devolveremos el dinero pagado dentro de los 30 días calendario siguientes a tu solicitud, sin descuentos ni retenciones.</p>
+        <p><strong>No aplica el retracto</strong> —por tratarse de bienes de uso personal o elaborados según tu pedido, excepciones previstas en el mismo artículo— para: (a) los <strong>preparados</strong>, que elaboramos por encargo en la presentación que elegiste, y (b) los perfumes <strong>abiertos, usados o sin su sello</strong>, por razones de higiene. Esto no afecta tu garantía legal si el producto llegó defectuoso.</p>
+
+        <h2 id="cambios">10. Cambios y devoluciones</h2>
+        <p>Además de la garantía y el retracto, aceptamos <strong>cambios de perfumes originales</strong> por otra referencia de igual o mayor valor (pagando la diferencia) dentro de los 5 días hábiles siguientes a la entrega, siempre que el producto esté sin abrir, con sello y empaque intactos. El envío del cambio corre por tu cuenta. Los preparados no tienen cambio, salvo por defecto (ver <a href="#garantia">Garantía legal</a>).</p>
+        <p><strong>Cómo solicitar un cambio, una garantía o un retracto:</strong> escríbenos por <a href="https://wa.me/573159758805">WhatsApp</a> o a <a href="mailto:maisondeleternelco@gmail.com">maisondeleternelco@gmail.com</a> con tu nombre, la fecha del pedido, el producto, el motivo y, si aplica, fotos. Te responderemos con las instrucciones de envío.</p>
+
+        <h2 id="reversion">11. Reversión del pago</h2>
+        <p>Si pagaste con tarjeta de crédito, débito u otro instrumento de pago electrónico, puedes pedir la reversión del pago en los casos del artículo 51 de la Ley 1480 de 2011: fraude, operación no solicitada, producto no recibido, o producto que no corresponde a lo pedido o es defectuoso. Debes presentar la queja ante nosotros y avisar al emisor de tu medio de pago dentro de los 5 días hábiles siguientes a la fecha en que conociste la situación, y devolver el producto si lo recibiste.</p>
+
+        <h2 id="promocion">12. Promoción: 10% por tu reseña</h2>
+        <ul>
+          <li><strong>Beneficio:</strong> 10% de descuento en tu siguiente compra.</li>
+          <li><strong>Requisitos:</strong> tener una cuenta, haber hecho en Maison Éternelle al menos una compra por más de $50.000 y publicar al menos una reseña (de un producto o de la tienda).</li>
+          <li><strong>Cómo se usa:</strong> al publicar tu reseña el sitio te muestra un código, que también ves en tu perfil. Menciónalo al hacer tu siguiente pedido por WhatsApp; verificaremos tu compra anterior antes de aplicar el descuento.</li>
+          <li><strong>Condiciones:</strong> el código es de un solo uso (si publicas otra reseña, el sitio te muestra un código nuevo que reemplaza al anterior); el descuento se aplica sobre el valor de los productos, no del envío; no es acumulable con otras promociones ni canjeable por dinero.</li>
+          <li><strong>Vigencia:</strong> desde el 6 de octubre de 2026 y hasta que anunciemos su finalización en esta página.</li>
+        </ul>
+        <p><strong>Transparencia:</strong> el descuento se da por publicar una reseña, no por lo que diga. Puedes calificar con cualquier puntuación y contar tu experiencia real. Las reseñas publicadas en la tienda pueden haber recibido este beneficio.</p>
+
+        <h2 id="cuenta">13. Tu cuenta y el uso del sitio</h2>
+        <ul>
+          <li>Eres responsable de que tus datos sean correctos y de mantener tu contraseña en reserva. Puedes actualizar tus datos o borrar tu cuenta desde «Mi perfil».</li>
+          <li>Las reseñas deben contar tu experiencia real. Podemos retirar las que tengan insultos, contenido ofensivo, datos personales de otras personas, publicidad o spam.</li>
+          <li>No está permitido usar el sitio con fines ilícitos, intentar entrar a cuentas o secciones restringidas, ni enviar información de forma automatizada (bots).</li>
+          <li>Procuramos que el sitio funcione siempre, pero puede haber interrupciones por mantenimiento o por fallas de proveedores externos.</li>
+        </ul>
+
+        <h2 id="propiedad">14. Propiedad intelectual</h2>
+        <p>El nombre y el logotipo de Maison Éternelle, el diseño del sitio, los textos y las fotografías propias pertenecen a Maison Éternelle y no pueden usarse sin autorización. Las marcas, nombres e imágenes de productos de terceros pertenecen a sus respectivos titulares.</p>
+
+        <h2 id="pqr">15. Peticiones, quejas y reclamos (PQR)</h2>
+        <p>Puedes enviarnos cualquier petición, queja o reclamo a <a href="mailto:maisondeleternelco@gmail.com">maisondeleternelco@gmail.com</a> o por <a href="https://wa.me/573159758805">WhatsApp</a>. Te responderemos lo antes posible y, como máximo, dentro de los 15 días hábiles siguientes. Si no quedas satisfecho con la respuesta, puedes acudir a la <a href="https://www.sic.gov.co" target="_blank" rel="noopener noreferrer">Superintendencia de Industria y Comercio (SIC)</a>, autoridad de protección al consumidor en Colombia.</p>
+
+        <h2 id="ley">16. Ley aplicable</h2>
+        <p>Estos términos se rigen por las leyes de la República de Colombia, en especial la Ley 1480 de 2011 (Estatuto del Consumidor), la Ley 527 de 1999 (comercio electrónico) y sus normas reglamentarias.</p>
+      </article>
+    </main>
+
+    <footer
+      class="bg-(--card-bg) py-12 max-sm:py-8 px-20 max-sm:px-4 sm:px-8 md:px-12 text-center"
+    >
+      <div class="max-w-[1400px] mx-auto">
+        <img
+          src="/assets/imgs/LOGO_PRINCIPAL_DORADO.webp"
+          loading="lazy"
+          alt="Maison Eternelle Perfumería"
+          class="h-12 mx-auto mb-4"
+        />
+        <p class="font-serif text-(--accent) text-sm tracking-wide mb-4">
+          ✨ Donde el aroma nunca muere ✨
+        </p>
+        <div class="footer-social-row mb-6">
+          <a
+            href="https://www.instagram.com/maisoneternelle_co/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="footer-social-link"
+            aria-label="Instagram de Maison Eternelle"
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.332.014 7.052.072 2.695.272.273 2.69.073 7.052.014 8.332 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.332 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"
+              />
+            </svg>
+          </a>
+          <a
+            href="https://www.tiktok.com/@maisoneternelle_co?lang=es"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="footer-social-link"
+            aria-label="TikTok de Maison Eternelle"
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M16.6 5.82a4.278 4.278 0 0 1-1.06-2.82h-3.09v12.4a2.592 2.592 0 1 1-2.59-2.6c.15 0 .3.01.44.03V9.66a5.85 5.85 0 1 0 5.45 5.83V9.4a7.72 7.72 0 0 0 4.51 1.44V7.68a4.278 4.278 0 0 1-3.66-1.86z"
+              />
+            </svg>
+          </a>
+          <a
+            href="https://www.facebook.com/692880320577326"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="footer-social-link"
+            aria-label="Facebook de Maison Eternelle"
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M22 12.06C22 6.505 17.523 2 12 2S2 6.505 2 12.06c0 5.022 3.657 9.184 8.438 9.94v-7.03H7.898v-2.91h2.54V9.845c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.459h-1.26c-1.242 0-1.63.771-1.63 1.562v1.877h2.773l-.443 2.91h-2.33V22c4.78-.756 8.437-4.918 8.437-9.94z"
+              />
+            </svg>
+          </a>
+        </div>
+        <nav class="footer-legal" aria-label="Información legal">
+          <a href="/aviso-legal.html">Aviso legal y términos</a>
+          <a href="/privacidad.html">Privacidad</a>
+          <a href="/cookies.html">Cookies</a>
+          <button type="button" data-cookie-settings>Configurar cookies</button>
+        </nav>
+        <p class="text-(--text) opacity-50 font-sans text-xs">
+          © 2026 Maison Eternelle Perfumería. Todos los derechos reservados.
+        </p>
+      </div>
+    </footer>
+
+    <script type="module" src="/js/pages/simple.js"></script>
+  </body>
+</html>

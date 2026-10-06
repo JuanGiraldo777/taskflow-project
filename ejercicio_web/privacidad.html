@@ -1,0 +1,269 @@
+<!--
+  @file ejercicio_web/privacidad.html
+  @description Política de Tratamiento de Datos de Maison Éternelle.
+  Redactado el 2026-10-06 con los datos que dio el negocio (titular Ivan
+  Florez, C.C. 1.110.445.027, Ibagué) y la normativa colombiana: Ley 1480 de
+  2011 (consumidor), Ley 1581 de 2012 y Decreto 1377 de 2013 (datos), Ley 527
+  de 1999 (comercio electrónico). Recomendado: revisión de un abogado, sobre
+  todo lo relativo a los preparados y las marcas de terceros.
+  Si se cambia la política de datos de forma importante, subir también la
+  versión en server_backend/src/config/privacy.js.
+-->
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Política de Tratamiento de Datos | Maison Eternelle</title>
+    <meta name="description" content="Cómo Maison Éternelle trata tus datos personales según la Ley 1581 de 2012: qué datos, para qué, tus derechos y cómo ejercerlos." />
+    <link rel="canonical" href="https://maisoneternelleco.com/privacidad.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Maison Eternelle Perfumería" />
+    <meta property="og:locale" content="es_CO" />
+    <meta property="og:title" content="Política de Tratamiento de Datos | Maison Eternelle" />
+    <meta property="og:description" content="Cómo Maison Éternelle trata tus datos personales según la Ley 1581 de 2012: qué datos, para qué, tus derechos y cómo ejercerlos." />
+    <meta property="og:url" content="https://maisoneternelleco.com/privacidad.html" />
+    <meta property="og:image" content="https://maisoneternelleco.com/og-image.jpg" />
+
+    <!-- Favicon e íconos (generados desde assets/imgs/M_DORADA.png) -->
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#D4AF37" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&family=Playfair+Display:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/src/output.css" />
+  </head>
+
+  <body>
+    <script>
+      try {
+        if (localStorage.getItem("theme") !== "dark") {
+          document.body.classList.add("light-mode");
+        }
+      } catch (e) {
+        document.body.classList.add("light-mode");
+      }
+    </script>
+
+    <header class="top-bar simple-header">
+      <div class="simple-header-inner">
+        <div class="justify-self-start">
+          <button
+            id="darkModeToggle"
+            type="button"
+            role="switch"
+            aria-checked="false"
+            class="theme-switch"
+            aria-label="Cambiar entre modo oscuro y claro"
+          >
+            <span class="theme-switch-track">
+              <span class="theme-switch-thumb"></span>
+            </span>
+          </button>
+        </div>
+        <a href="/" class="simple-header-logo justify-self-center">
+          <img
+            src="/assets/imgs/LOGO_PRINCIPAL_NEGRO.webp"
+            alt="Maison Eternelle Perfumería — ir al inicio"
+          />
+        </a>
+        <div></div>
+      </div>
+    </header>
+
+    <main class="bg-(--bg)">
+      <article class="legal">
+        <a href="/" class="legal-back">← Volver a la tienda</a>
+        <h1>Política de Tratamiento de Datos</h1>
+        <p class="legal-updated">Vigente desde el 6 de octubre de 2026</p>
+
+        <div class="legal-box">
+          <p><strong>En resumen:</strong> usamos tus datos solo para gestionar tu cuenta, tus pedidos y las reseñas que publiques. No vendemos tus datos. Puedes consultarlos, corregirlos o borrar tu cuenta cuando quieras, escribiendo a <a href="mailto:maisondeleternelco@gmail.com">maisondeleternelco@gmail.com</a> o desde «Mi perfil».</p>
+        </div>
+
+        <nav class="legal-toc" aria-label="Contenido">
+          <ol>
+            <li><a href="#responsable">Responsable</a></li>
+            <li><a href="#datos">Qué datos tratamos</a></li>
+            <li><a href="#finalidades">Para qué los usamos</a></li>
+            <li><a href="#autorizacion">Tu autorización</a></li>
+            <li><a href="#derechos">Tus derechos</a></li>
+            <li><a href="#procedimiento">Cómo ejercerlos</a></li>
+            <li><a href="#encargados">Quién más los procesa</a></li>
+            <li><a href="#seguridad">Seguridad</a></li>
+            <li><a href="#conservacion">Cuánto tiempo los guardamos</a></li>
+            <li><a href="#menores">Menores de edad</a></li>
+            <li><a href="#cambios">Cambios a esta política</a></li>
+          </ol>
+        </nav>
+
+        <p>Esta Política de Tratamiento de Datos Personales cumple la Ley 1581 de 2012 y el Decreto 1377 de 2013 (compilado en el Decreto 1074 de 2015) y explica cómo tratamos la información que nos das en <a href="https://maisoneternelleco.com">maisoneternelleco.com</a> y por WhatsApp.</p>
+
+        <h2 id="responsable">1. Responsable del tratamiento</h2>
+        <ul>
+          <li><strong>Responsable:</strong> Ivan Florez, cédula de ciudadanía 1.110.445.027, nombre comercial Maison Éternelle.</li>
+          <li><strong>Domicilio:</strong> Calle 15 # 4-33, Edificio Villa Sol, Ibagué, Tolima, Colombia.</li>
+          <li><strong>Correo para temas de datos personales:</strong> <a href="mailto:maisondeleternelco@gmail.com">maisondeleternelco@gmail.com</a></li>
+          <li><strong>Teléfono:</strong> <a href="tel:+573053461548">+57 305 346 1548</a></li>
+        </ul>
+
+        <h2 id="datos">2. Qué datos tratamos</h2>
+        <h3>Si creas una cuenta</h3>
+        <ul>
+          <li>Nombre, correo electrónico y contraseña. La contraseña se guarda cifrada: nadie, ni siquiera nosotros, puede verla.</li>
+          <li>Si los escribes en tu perfil: tu perfume favorito y tu recomendación personal.</li>
+          <li>Tu código de descuento, la fecha de registro y la fecha y versión en que aceptaste esta política.</li>
+        </ul>
+        <h3>Mientras usas la tienda</h3>
+        <ul>
+          <li>Tu carrito y tu lista de favoritos.</li>
+          <li>Los últimos 10 productos que viste, para mostrarte recomendaciones. Además, de forma agregada y sin identificarte, contamos qué perfumes se ven más para la sección de tendencias.</li>
+          <li>Las reseñas que publicas: tu nombre, la puntuación y el comentario <strong>se muestran públicamente</strong> en la tienda.</li>
+        </ul>
+        <h3>Si haces un pedido o nos escribes por WhatsApp</h3>
+        <ul>
+          <li>El mensaje del pedido (productos, cantidades y total) y los datos que nos compartas para el envío y el pago: nombre, número de teléfono, dirección y ciudad.</li>
+        </ul>
+        <h3>Datos técnicos</h3>
+        <ul>
+          <li>Tu dirección IP se usa de forma temporal para limitar intentos de inicio de sesión y registro y frenar el spam; no la asociamos a tu cuenta.</li>
+          <li>Datos de navegación de Google Analytics, <strong>solo si aceptas las cookies de análisis</strong>. Ver la <a href="/cookies.html">Política de Cookies</a>.</li>
+        </ul>
+        <p>No pedimos datos sensibles (salud, origen étnico, opiniones políticas, etc.) ni datos de tarjetas o cuentas bancarias.</p>
+
+        <h2 id="finalidades">3. Para qué los usamos</h2>
+        <ul>
+          <li>Crear y administrar tu cuenta, tu carrito y tus favoritos.</li>
+          <li>Recibir, confirmar, cobrar y enviar tus pedidos, y atender garantías, cambios y devoluciones.</li>
+          <li>Responder tus peticiones, quejas y reclamos.</li>
+          <li>Publicar las reseñas que escribas y gestionar la promoción del 10% por reseña.</li>
+          <li>Proteger el sitio contra fraude, spam y accesos no autorizados.</li>
+          <li>Medir de forma estadística cómo se usa el sitio para mejorarlo, solo si aceptas las cookies de análisis.</li>
+          <li>Cumplir obligaciones legales, contables y tributarias.</li>
+        </ul>
+        <p>No vendemos ni cedemos tus datos. No te enviaremos publicidad por correo ni por WhatsApp sin tu autorización previa.</p>
+
+        <h2 id="autorizacion">4. Tu autorización</h2>
+        <p>Al crear tu cuenta marcas la casilla en la que aceptas esta política y autorizas el tratamiento de tus datos para las finalidades anteriores; guardamos la fecha y la versión aceptada como prueba. Si nos escribes por WhatsApp para hacer un pedido, nos autorizas a usar los datos que compartas para gestionarlo. Publicar reseñas es voluntario.</p>
+
+        <h2 id="derechos">5. Tus derechos</h2>
+        <p>Como titular de tus datos tienes derecho a:</p>
+        <ul>
+          <li>conocer, actualizar y rectificar tus datos;</li>
+          <li>pedir prueba de la autorización que nos diste;</li>
+          <li>saber qué uso le hemos dado a tus datos;</li>
+          <li>revocar la autorización y pedir que borremos tus datos, cuando no exista un deber legal de conservarlos;</li>
+          <li>acceder gratis a tus datos;</li>
+          <li>presentar quejas ante la <a href="https://www.sic.gov.co" target="_blank" rel="noopener noreferrer">Superintendencia de Industria y Comercio</a>, después de haber hecho la consulta o el reclamo ante nosotros.</li>
+        </ul>
+
+        <h2 id="procedimiento">6. Cómo ejercer tus derechos</h2>
+        <p>Desde «Mi perfil» puedes actualizar tu nombre, tu perfume favorito y tu recomendación, y <strong>borrar tu cuenta</strong>: al hacerlo se eliminan tus datos de cuenta y los asociados a ella (carrito, favoritos, historial y reseñas).</p>
+        <p>Para cualquier otra solicitud, escribe a <a href="mailto:maisondeleternelco@gmail.com">maisondeleternelco@gmail.com</a> con el asunto «Datos personales», tu nombre, el correo de tu cuenta y lo que necesitas.</p>
+        <ul>
+          <li><strong>Consultas</strong> (qué datos tenemos y cómo los usamos): respondemos en máximo 10 días hábiles. Si no es posible, te avisamos el motivo y respondemos en máximo 5 días hábiles más.</li>
+          <li><strong>Reclamos</strong> (corregir, actualizar, borrar o revocar): respondemos en máximo 15 días hábiles. Si no es posible, te avisamos el motivo y respondemos en máximo 8 días hábiles más. Si el reclamo está incompleto, te pediremos lo que falta dentro de los 5 días hábiles siguientes; si pasan 2 meses sin respuesta tuya, entenderemos que desististe.</li>
+        </ul>
+
+        <h2 id="encargados">7. Quién más procesa tus datos</h2>
+        <p>Para que la tienda funcione usamos proveedores tecnológicos que procesan datos por nuestra cuenta y con sus propias medidas de seguridad. Algunos están fuera de Colombia, lo que implica una transmisión internacional de datos:</p>
+        <ul>
+          <li><strong>Cloudflare</strong>: alojamiento y entrega del sitio web.</li>
+          <li><strong>Render</strong> (Estados Unidos): servidor de la aplicación.</li>
+          <li><strong>Aiven</strong>: base de datos en la nube donde se guardan las cuentas.</li>
+          <li><strong>Cloudinary</strong>: almacenamiento de las fotos de los productos.</li>
+          <li><strong>Google</strong>: Google Analytics, solo con tu consentimiento, y las fuentes tipográficas del sitio.</li>
+          <li><strong>WhatsApp (Meta)</strong>: la conversación de tu pedido, según las condiciones de WhatsApp.</li>
+        </ul>
+        <p>Además, compartimos con la transportadora los datos necesarios para entregar tu pedido (nombre, teléfono y dirección).</p>
+
+        <h2 id="seguridad">8. Seguridad</h2>
+        <p>El sitio funciona solo con conexión cifrada (HTTPS), las contraseñas se guardan cifradas, el panel de administración tiene acceso restringido y limitamos los intentos de inicio de sesión. Ningún sistema es infalible: si detectamos un incidente que afecte tus datos, te lo informaremos.</p>
+
+        <h2 id="conservacion">9. Cuánto tiempo guardamos tus datos</h2>
+        <p>Los datos de tu cuenta se guardan mientras la tengas activa; al borrarla se eliminan. Los datos de tus pedidos se conservan el tiempo que exijan las normas contables y tributarias.</p>
+
+        <h2 id="menores">10. Menores de edad</h2>
+        <p>Si eres menor de 18 años, crea tu cuenta y haz tus pedidos con la autorización de tu madre, padre o representante legal.</p>
+
+        <h2 id="cambios">11. Cambios a esta política</h2>
+        <p>Si cambiamos esta política de forma importante, publicaremos la nueva versión aquí y te pediremos que la aceptes la próxima vez que inicies sesión.</p>
+      </article>
+    </main>
+
+    <footer
+      class="bg-(--card-bg) py-12 max-sm:py-8 px-20 max-sm:px-4 sm:px-8 md:px-12 text-center"
+    >
+      <div class="max-w-[1400px] mx-auto">
+        <img
+          src="/assets/imgs/LOGO_PRINCIPAL_DORADO.webp"
+          loading="lazy"
+          alt="Maison Eternelle Perfumería"
+          class="h-12 mx-auto mb-4"
+        />
+        <p class="font-serif text-(--accent) text-sm tracking-wide mb-4">
+          ✨ Donde el aroma nunca muere ✨
+        </p>
+        <div class="footer-social-row mb-6">
+          <a
+            href="https://www.instagram.com/maisoneternelle_co/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="footer-social-link"
+            aria-label="Instagram de Maison Eternelle"
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.332.014 7.052.072 2.695.272.273 2.69.073 7.052.014 8.332 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.332 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"
+              />
+            </svg>
+          </a>
+          <a
+            href="https://www.tiktok.com/@maisoneternelle_co?lang=es"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="footer-social-link"
+            aria-label="TikTok de Maison Eternelle"
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M16.6 5.82a4.278 4.278 0 0 1-1.06-2.82h-3.09v12.4a2.592 2.592 0 1 1-2.59-2.6c.15 0 .3.01.44.03V9.66a5.85 5.85 0 1 0 5.45 5.83V9.4a7.72 7.72 0 0 0 4.51 1.44V7.68a4.278 4.278 0 0 1-3.66-1.86z"
+              />
+            </svg>
+          </a>
+          <a
+            href="https://www.facebook.com/692880320577326"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="footer-social-link"
+            aria-label="Facebook de Maison Eternelle"
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M22 12.06C22 6.505 17.523 2 12 2S2 6.505 2 12.06c0 5.022 3.657 9.184 8.438 9.94v-7.03H7.898v-2.91h2.54V9.845c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.459h-1.26c-1.242 0-1.63.771-1.63 1.562v1.877h2.773l-.443 2.91h-2.33V22c4.78-.756 8.437-4.918 8.437-9.94z"
+              />
+            </svg>
+          </a>
+        </div>
+        <nav class="footer-legal" aria-label="Información legal">
+          <a href="/aviso-legal.html">Aviso legal y términos</a>
+          <a href="/privacidad.html">Privacidad</a>
+          <a href="/cookies.html">Cookies</a>
+          <button type="button" data-cookie-settings>Configurar cookies</button>
+        </nav>
+        <p class="text-(--text) opacity-50 font-sans text-xs">
+          © 2026 Maison Eternelle Perfumería. Todos los derechos reservados.
+        </p>
+      </div>
+    </footer>
+
+    <script type="module" src="/js/pages/simple.js"></script>
+  </body>
+</html>

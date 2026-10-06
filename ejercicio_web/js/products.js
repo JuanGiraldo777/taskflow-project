@@ -97,7 +97,7 @@ function buildProductCard(product, { eager = false } = {}) {
     </a>
     <div class="product-card-body mt-1">
       <span class="product-card-meta text-xs text-[#999]">${escapeHtml(meta.brand || "SIN MARCA")}${meta.rest ? ` · ${escapeHtml(meta.rest)}` : ""}</span>
-      <h3 class="product-card-name font-serif text-lg my-2">${escapeHtml(product.name)}</h3>
+      <h2 class="product-card-name font-serif text-lg my-2">${escapeHtml(product.name)}</h2>
       <div class="product-card-price flex gap-2 items-center">
         ${
           hasDiscount
@@ -114,7 +114,7 @@ function buildProductCard(product, { eager = false } = {}) {
       data-name="${escapeHtml(product.name)}"
       data-price="${escapeHtml(product.price)}"
       data-type="${escapeHtml(product.type || "original")}"
-      aria-label="${product.type === "preparado" ? "Ver presentaciones" : "Añadir producto al Carrito"}"
+      aria-label="${product.type === "preparado" ? `Ver presentaciones de ${escapeHtml(product.name)}` : `Añadir al carrito: ${escapeHtml(product.name)}`}"
     >
       ${product.type === "preparado" ? "VER PRESENTACIONES" : "AÑADIR AL CARRITO"}
     </button>

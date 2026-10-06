@@ -4,6 +4,7 @@
  */
 import { wishlistApi } from "./api/client.js";
 import { escapeHtml } from "./escape.js";
+import { track, gaItem } from "./analytics.js";
 
 let wishlistState = [];
 
@@ -39,6 +40,7 @@ async function addToWishlist(productId) {
 
   try {
     wishlistState = await wishlistApi.addItem(productId);
+    track("add_to_wishlist", { items: [gaItem({ id: productId })] });
     updateWishlistCount();
     renderWishlistPanel();
     initializeFavoriteIcons();

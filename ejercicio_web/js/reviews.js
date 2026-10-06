@@ -289,6 +289,11 @@ function renderStoreReviewForm() {
               focus:border-opacity-100 transition-colors duration-200 resize-none"
           ></textarea>
         </div>
+<p class="form-legal-note">
+          Tu nombre y tu reseña se publican en la tienda. Por reseñar puedes recibir un
+          10% de descuento en tu siguiente compra, sin importar la puntuación que des
+          (<a href="aviso-legal.html#promocion">condiciones</a>).
+        </p>
         <button type="submit"
           class="w-full mt-6 px-6 py-3 bg-(--accent) text-black font-serif
             font-bold text-lg rounded-lg transition-all duration-200
@@ -571,6 +576,11 @@ function renderReviewForm() {
           ></textarea>
         </div>
 
+<p class="form-legal-note">
+          Tu nombre y tu reseña se publican en la tienda. Por reseñar puedes recibir un
+          10% de descuento en tu siguiente compra, sin importar la puntuación que des
+          (<a href="aviso-legal.html#promocion">condiciones</a>).
+        </p>
         <button
           type="submit"
           class="w-full mt-6 px-6 py-3 bg-(--accent) text-black font-serif font-bold text-lg rounded-lg transition-all duration-200 hover:opacity-90 active:scale-95 cursor-pointer"

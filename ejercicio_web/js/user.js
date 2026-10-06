@@ -5,6 +5,7 @@
 import { authApi, userApi } from "./api/client.js";
 import { escapeHtml } from "./escape.js";
 import { HONEYPOT_HTML, armForm, antiSpamFields, withSubmitLock } from "./formGuard.js";
+import { track } from "./analytics.js";
 
 let isRegisterMode = false;
 
@@ -19,6 +20,9 @@ function normalizeUser(user) {
     perfumeRec: user.perfumeRec || user.perfume_rec || "",
     discountCode: user.discountCode || user.discount_code || "",
     role: user.role || "user",
+    // true/false según el servidor; undefined = sesión abierta antes de que
+    // existiera la política (se consulta una vez, ver ensurePrivacyConsent).
+    privacyAccepted: user.privacyAccepted ?? user.privacy_accepted,
   };
 }
 
@@ -47,22 +51,95 @@ async function handleLogin(email, password) {
   try {
     const result = await authApi.login({ email, password });
     saveSession(result.token, result.user);
+    track("login", { method: "email" });
     isRegisterMode = false;
     updateUserIcon();
     await renderProfileModal();
     window.dispatchEvent(new CustomEvent("user-logged-in"));
+    ensurePrivacyConsent();
   } catch (err) {
     alert(err.message);
   }
 }
 
-async function handleRegister(fullName, email, password, guard = {}) {
+async function handleRegister(fullName, email, password, extra = {}) {
   try {
-    await authApi.register({ fullName, email, password, ...guard });
+    await authApi.register({ fullName, email, password, ...extra });
+    track("sign_up", { method: "email" });
     await handleLogin(email, password);
   } catch (err) {
     alert(err.message);
   }
+}
+
+// ── Autorización de datos de cuentas anteriores a la política ────────────────
+// La Ley 1581 exige autorización previa. Las cuentas nuevas la dan con la
+// casilla del registro; a las que ya existían se les pide aquí una vez.
+// Si no aceptan, se cierra la sesión (no podemos seguir tratando sus datos).
+async function ensurePrivacyConsent() {
+  const user = getCurrentUser();
+  if (!isLoggedIn() || !user || user.privacyAccepted === true) return;
+
+  if (user.privacyAccepted === undefined) {
+    try {
+      const fresh = await userApi.getById(user.id);
+      if (fresh.privacy_accepted) {
+        saveSession(null, { ...user, privacyAccepted: true });
+        return;
+      }
+    } catch {
+      return; // sin conexión: se vuelve a intentar en la próxima visita
+    }
+  }
+  showPrivacyConsentModal(user);
+}
+
+function showPrivacyConsentModal(user) {
+  if (document.getElementById("privacy-consent-modal")) return;
+  const modal = document.createElement("div");
+  modal.id = "privacy-consent-modal";
+  modal.className = "fixed inset-0 bg-black/60 z-[450] flex items-center justify-center p-4";
+  modal.innerHTML = `
+    <div role="dialog" aria-modal="true" aria-labelledby="privacy-consent-title"
+         class="bg-(--card-bg) text-(--text) rounded-xl w-full max-w-md p-6 border border-(--accent) space-y-4">
+      <h2 id="privacy-consent-title" class="font-serif text-2xl">Tu autorización de datos</h2>
+      <p class="font-sans text-sm leading-relaxed">
+        Publicamos nuestra <a href="privacidad.html" target="_blank" rel="noopener" class="underline text-(--accent)">Política de Tratamiento de Datos</a>.
+        Para seguir usando tu cuenta (carrito, favoritos y reseñas) necesitamos que la aceptes,
+        como exige la Ley 1581 de 2012.
+      </p>
+      <div class="flex flex-col gap-2">
+        <button type="button" data-privacy="accept"
+                class="w-full min-h-11 px-4 bg-(--accent) text-black font-serif font-bold rounded hover:opacity-90">
+          Acepto la política
+        </button>
+        <button type="button" data-privacy="decline"
+                class="w-full min-h-11 px-4 border border-(--text) font-sans text-sm rounded hover:border-(--accent)">
+          No acepto, cerrar sesión
+        </button>
+      </div>
+    </div>
+  `;
+  modal.addEventListener("click", async (e) => {
+    const choice = e.target.closest("[data-privacy]")?.dataset.privacy;
+    if (choice === "accept") {
+      try {
+        await userApi.acceptPrivacy(user.id);
+        saveSession(null, { ...getCurrentUser(), privacyAccepted: true });
+        modal.remove();
+      } catch (err) {
+        alert(err.message);
+      }
+    } else if (choice === "decline") {
+      modal.remove();
+      handleLogout();
+      alert(
+        "Cerramos tu sesión. Si quieres que borremos tu cuenta, escríbenos a maisondeleternelco@gmail.com.",
+      );
+    }
+  });
+  document.body.appendChild(modal);
+  modal.querySelector("[data-privacy='accept']")?.focus();
 }
 
 function handleLogout() {
@@ -140,12 +217,15 @@ function updateUserIcon() {
 
   if (isLoggedIn() && user?.fullName) {
     const names = user.fullName.trim().split(" ").filter(Boolean);
+    // Con un solo nombre ("Ana"), una sola inicial (antes salía "AA").
     const initials = (
-      (names[0]?.[0] || "") + (names[names.length - 1]?.[0] || "")
+      (names[0]?.[0] || "") + (names.length > 1 ? names[names.length - 1][0] : "")
     )
       .toUpperCase()
       .slice(0, 2);
 
+    // El nombre accesible debe contener lo que se ve (las iniciales), WCAG 2.5.3.
+    userButton.setAttribute("aria-label", `Abrir mi perfil ${initials || "U"}`);
     userButton.innerHTML = `
       <div class="w-8 h-8 rounded-full bg-(--accent) text-black flex items-center justify-center font-bold text-sm">
         ${escapeHtml(initials || "U")}
@@ -154,6 +234,7 @@ function updateUserIcon() {
     return;
   }
 
+  userButton.setAttribute("aria-label", "Abrir perfil de usuario");
   userButton.innerHTML = `
     <svg
       class="stroke-(--bg) cursor-pointer opacity-85 hover:opacity-100 hover:-translate-y-px transition-all duration-200"
@@ -238,6 +319,23 @@ function buildAuthFormHtml() {
           />
         </div>
 
+        ${
+          isRegisterMode
+            ? `
+        <label class="privacy-consent">
+          <input type="checkbox" id="auth-privacy" required />
+          <span>
+            Acepto la <a href="privacidad.html" target="_blank" rel="noopener">Política de Tratamiento de Datos</a>
+            y autorizo el uso de mis datos para gestionar mi cuenta y mis pedidos.
+          </span>
+        </label>
+        <p class="form-legal-note">
+          Responsable: Maison Éternelle (Ivan Florez, Ibagué). Puedes consultar, corregir o
+          borrar tus datos cuando quieras.
+        </p>
+        `
+            : ""
+        }
         <button id="auth-submit-btn" type="submit" class="w-full px-4 py-2 bg-(--accent) text-black font-serif font-bold rounded hover:opacity-90 active:scale-95 transition-all">
           ${isRegisterMode ? "Crear Cuenta" : "Iniciar Sesión"}
         </button>
@@ -258,9 +356,9 @@ function buildProfileHtml(user, history) {
           ${escapeHtml(
             (
               (user.fullName?.split(" ")[0]?.[0] || "") +
-              (user.fullName?.split(" ")[
-                user.fullName?.split(" ").length - 1
-              ]?.[0] || "")
+              (user.fullName?.trim().split(" ").length > 1
+                ? user.fullName.trim().split(" ").at(-1)[0]
+                : "")
             )
               .toUpperCase()
               .slice(0, 2),
@@ -460,7 +558,10 @@ function attachProfileModalListeners() {
       if (isRegisterMode) {
         const fullName =
           document.getElementById("auth-fullname")?.value?.trim() || "";
-        await handleRegister(fullName, email, password, antiSpamFields(authForm));
+        await handleRegister(fullName, email, password, {
+          ...antiSpamFields(authForm),
+          acceptPrivacy: document.getElementById("auth-privacy")?.checked === true,
+        });
       } else {
         await handleLogin(email, password);
       }
@@ -498,6 +599,7 @@ function attachProfileModalListeners() {
 export function initUser() {
   updateUserIcon();
   renderProfileModal();
+  ensurePrivacyConsent();
 
   window.addEventListener("session-expired", () => {
     updateUserIcon();

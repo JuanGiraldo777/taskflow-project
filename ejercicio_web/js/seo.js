@@ -8,6 +8,9 @@
  * los mismos datos desde el servidor (worker/index.js en Cloudflare).
  */
 const SITE_NAME = "Maison Eternelle";
+// Dominio principal: las URL canónicas siempre apuntan aquí, aunque la página
+// se abra desde otra dirección (la vieja de Vercel, una copia de prueba...).
+export const SITE_URL = "https://maisoneternelleco.com";
 const MAX_DESCRIPTION = 155;
 
 /** Recorta en el último espacio antes del límite y agrega "…". */
@@ -37,11 +40,31 @@ export function setPageMeta({ title, description }) {
   const fullTitle = `${title} | ${SITE_NAME}`;
   document.title = fullTitle;
   setMeta('meta[property="og:title"]', "property", "og:title", fullTitle);
+  setMeta('meta[name="twitter:title"]', "name", "twitter:title", fullTitle);
   if (description) {
     const desc = truncate(description);
     setMeta('meta[name="description"]', "name", "description", desc);
     setMeta('meta[property="og:description"]', "property", "og:description", desc);
+    setMeta('meta[name="twitter:description"]', "name", "twitter:description", desc);
   }
+}
+
+/** URL canónica de la página (p. ej. "/catalogo.html?type=preparado"). */
+export function setCanonical(path) {
+  const url = SITE_URL + path;
+  let link = document.head.querySelector('link[rel="canonical"]');
+  if (!link) {
+    link = document.createElement("link");
+    link.rel = "canonical";
+    document.head.appendChild(link);
+  }
+  link.href = url;
+  setMeta('meta[property="og:url"]', "property", "og:url", url);
+}
+
+/** Páginas que no deben aparecer en Google (búsquedas internas, "no encontrado"). */
+export function setNoIndex() {
+  setMeta('meta[name="robots"]', "name", "robots", "noindex");
 }
 
 /** Descripción de un producto: su propio texto, o una frase armada con sus datos. */
