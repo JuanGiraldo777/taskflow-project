@@ -30,6 +30,7 @@ const hasValidId = /^\d+$/.test(productId || "");
 // "También te puede gustar" y las reseñas, que antes quedaban colgando
 // debajo del aviso, y se pide a los buscadores no indexar esta URL.
 function showProductNotFound(section) {
+  section.classList.remove("is-loading");
   section.innerHTML = notFoundHtml({
     detail: "Este perfume no existe o ya no está en nuestro catálogo. Mira los que sí tenemos.",
   });
@@ -43,6 +44,7 @@ function showProductNotFound(section) {
 // Sin conexión con el servidor (Render despertando, red caída): NO es un
 // "no existe" — se ofrece reintentar en vez de decir que el perfume no está.
 function showProductLoadError(section, err) {
+  section.classList.remove("is-loading");
   section.innerHTML = `
     <div class="not-found" role="alert">
       <h2 class="not-found-title">NO PUDIMOS CARGAR ESTE PERFUME</h2>
@@ -256,6 +258,7 @@ async function renderProductDetail() {
     const images = galleryState.images;
     const mainImage = images[0].url;
 
+    section.classList.remove("is-loading");
     section.innerHTML = `
       <div class="grid grid-cols-2 gap-16 max-lg:grid-cols-1 max-lg:gap-8">
         <div class="flex flex-col gap-4">

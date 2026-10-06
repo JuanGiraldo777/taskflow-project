@@ -574,9 +574,6 @@
   .cursor-text {
     cursor: text;
   }
-  .resize {
-    resize: both;
-  }
   .resize-none {
     resize: none;
   }
@@ -1978,7 +1975,7 @@ h1, h2, h3, h4, h5, h6 {
     --name-size: 14px;
   }
   .product-card-meta {
-    --meta-size: 11px;
+    --meta-size: 12px;
   }
   .product-card-price {
     padding-top: 8px;
@@ -2282,7 +2279,7 @@ body.light-mode .product-card-img {
   color: var(--accent-text);
 }
 body.has-consent-banner .whatsapp-float-btn {
-  bottom: calc(var(--consent-banner-h, 0px) + 24px);
+  translate: 0 calc(-1 * var(--consent-banner-h, 0px));
 }
 @media (max-width: 639px) {
   .consent-banner {
@@ -2523,6 +2520,9 @@ body.has-consent-banner .whatsapp-float-btn {
   .footer-legal button {
     min-height: 44px;
   }
+}
+#product-detail.is-loading {
+  min-height: 100vh;
 }
 @property --tw-translate-x {
   syntax: "*";

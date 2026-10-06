@@ -36,7 +36,11 @@ function saveConsent(value) {
   }
 }
 
+let bannerObserver = null;
+
 function hideBanner() {
+  bannerObserver?.disconnect();
+  bannerObserver = null;
   document.getElementById(BANNER_ID)?.remove();
   document.body.classList.remove("has-consent-banner");
   document.documentElement.style.removeProperty("--consent-banner-h");
@@ -74,10 +78,14 @@ function showBanner() {
   document.body.appendChild(banner);
   document.body.classList.add("has-consent-banner");
   // El botón flotante de WhatsApp sube lo que mida el aviso (ver style.css).
-  const syncHeight = () =>
-    document.documentElement.style.setProperty("--consent-banner-h", `${banner.offsetHeight}px`);
-  syncHeight();
-  window.addEventListener("resize", syncHeight, { passive: true });
+  // ResizeObserver mide después del dibujado: leer offsetHeight aquí
+  // obligaba al navegador a calcular toda la página de golpe (~300 ms en
+  // un móvil lento) y además sigue los cambios de tamaño (giro, fuente).
+  bannerObserver = new ResizeObserver(([entry]) => {
+    const height = entry.borderBoxSize?.[0]?.blockSize ?? entry.target.offsetHeight;
+    document.documentElement.style.setProperty("--consent-banner-h", `${Math.ceil(height)}px`);
+  });
+  bannerObserver.observe(banner);
 }
 
 export function initConsent() {

@@ -333,7 +333,9 @@ h1, h2, h3, h4, h5, h6 {
     --name-size: 14px;
   }
   .product-card-meta {
-    --meta-size: 11px;
+    /* 12 px como en escritorio: con 11 Lighthouse marcaba "texto ilegible"
+       en móvil (menos del 60% del texto llegaba a 12 px). */
+    --meta-size: 12px;
   }
   .product-card-price {
     padding-top: 8px;
@@ -679,9 +681,11 @@ body.light-mode .product-card-img {
   border-color: var(--accent);
   color: var(--accent-text);
 }
-/* El botón de WhatsApp sube para no quedar debajo del aviso. */
+/* El botón de WhatsApp sube para no quedar debajo del aviso. Con
+   "translate" y no con "bottom": un cambio de transform no cuenta como
+   salto de diseño (CLS) y no obliga a recalcular la página. */
 body.has-consent-banner .whatsapp-float-btn {
-  bottom: calc(var(--consent-banner-h, 0px) + 24px);
+  translate: 0 calc(-1 * var(--consent-banner-h, 0px));
 }
 @media (max-width: 639px) {
   .consent-banner {
@@ -935,4 +939,11 @@ body.has-consent-banner .whatsapp-float-btn {
   .footer-legal button {
     min-height: 44px;
   }
+}
+
+/* Ficha de producto mientras carga: reserva una pantalla de alto para que
+   "También te puede gustar" no salte hacia abajo cuando llega el perfume
+   (Lighthouse medía CLS 0.33 por ese salto). producto.js quita la clase. */
+#product-detail.is-loading {
+  min-height: 100vh;
 }
