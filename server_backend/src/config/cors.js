@@ -15,8 +15,6 @@ const ALLOWED_ORIGINS = new Set([
   // por si alguna petición sale antes de la redirección.
   "https://maisoneternelleco.com",
   "https://www.maisoneternelleco.com",
-  // Frontend actual en Vercel — se quita cuando el dominio propio esté activo.
-  "https://taskflow-project-khaki.vercel.app",
   // Desarrollo local (ejercicio_web/_devserver.py, puerto 5500 por defecto).
   "http://localhost:5500",
   "http://127.0.0.1:5500",

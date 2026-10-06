@@ -1,4 +1,11 @@
 {
   "buildCommand": "",
-  "outputDirectory": "ejercicio_web"
+  "outputDirectory": "ejercicio_web",
+  "redirects": [
+    {
+      "source": "/:path*",
+      "destination": "https://maisoneternelleco.com/:path*",
+      "permanent": true
+    }
+  ]
 }

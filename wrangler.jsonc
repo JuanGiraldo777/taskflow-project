@@ -23,5 +23,9 @@
     // queda bloqueado para no duplicar contenido en Google.
     "SITE_URL": "https://maisoneternelleco.com"
   },
+  // Sin copias públicas en *.workers.dev ni URLs de vista previa: el sitio
+  // solo existe en maisoneternelleco.com (evita contenido duplicado).
+  "workers_dev": false,
+  "preview_urls": false,
   "observability": { "enabled": true }
 }
